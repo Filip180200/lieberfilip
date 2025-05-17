@@ -29,10 +29,15 @@
 
 <body>
     <header>
-        <nav class="navbar">
-            <div class="logo">
-                <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
-            </div>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
+        </div>
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
         <ul class="nav-links">
             <li><a href="doswiadczenie.html">Doświadczenie</a></li>
             <li><a href="projekty.html">Projekty</a></li>
@@ -40,7 +45,7 @@
             <li><a href="rekomendacje.html">Rekomendacje</a></li>
             <li><a href="statystyka.html">Statystyka</a></li>
         </ul>
-        </nav>
+    </nav>
     </header>
 
     <main class="experience-container">
@@ -213,15 +218,17 @@
     <footer>
         <div class="footer-content">
             <div class="social-icons">
-                <a href="[Link do LinkedIn]" target="_blank" style="text-decoration: none; color: white;">
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
                     <i class="fab fa-linkedin" style="font-size: 24px;"></i>
+                </a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
+                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
                 </a>
             </div>
             <div class="contact-info">
                 Możesz się ze mną skontaktować:
-                <a href="mailto:filip.liebersbach@przykladowy.pl"
-                    style="color: white; text-decoration: underline;">
-                    filip.liebersbach@przykladowy.pl
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
+                    kontakt@lieberfilip.pl
                 </a>
             </div>
         </div>
@@ -303,6 +310,23 @@
                 document.body.style.setProperty('--parallax-x', `${x}px`);
                 document.body.style.setProperty('--parallax-y', `${y}px`);
             });
+            
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Opcjonalnie: Zamknij menu po kliknięciu linku
+        document.querySelectorAll('.nav-links li a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
         </script>
 </body>
 

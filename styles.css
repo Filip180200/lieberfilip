@@ -1,441 +1,461 @@
 /* Reset i bazowe style */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html, body {
-  height: auto;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+    height: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 body {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: auto;
-  position: relative;
-  font-family: 'Montserrat', sans-serif;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto;
+    position: relative;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    overflow: hidden; /* Domyślnie wyłączone przewijanie - możesz usunąć, jeśli nie chcesz tego globalnie */
 }
 
 body::before {
-  content: '';
-  position: fixed;
-  top: -20px;
-  left: -20px;
-  width: 120%;
-  height: 120%;
-  background-image: url('images/tlo3.jpg');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  filter: blur(5px);
-  z-index: -1;
-  transform: translate(var(--parallax-x, 0px), var(--parallax-y, 0px));
-  will-change: transform;
+    content: '';
+    position: fixed;
+    top: -20px;
+    left: -20px;
+    width: 120%;
+    height: 120%;
+    background-image: url('images/tlo3.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    filter: blur(5px);
+    z-index: -1;
+    transform: translate(var(--parallax-x, 0px), var(--parallax-y, 0px));
+    will-change: transform;
 }
 
 /* Nawigacja */
 .navbar {
-  background: linear-gradient(135deg, rgba(217, 217, 217, 0.7) 0%, rgba(230, 230, 230, 0.7) 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  gap: 10px;
-  flex-wrap: wrap;
+    background: linear-gradient(135deg, rgba(217, 217, 217, 0.7) 0%, rgba(230, 230, 230, 0.7) 100%);
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    padding: 10px 20px; /* Dodano padding po bokach */
+    gap: 20px; /* Zwiększono gap dla lepszego odstępu */
+    flex-wrap: wrap; /* Pozwól na zawijanie w razie potrzeby */
 }
 
 .logo img {
-  height: 40px;
-  width: auto;
-  border-radius: 50%;
-  object-fit: cover;
+    height: 40px;
+    width: auto;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .nav-links {
-  list-style: none;
-  display: flex;
-  gap: 10px;
-  margin-left: 0;
+    list-style: none;
+    display: flex;
+    gap: 15px; /* Zwiększono gap */
 }
 
 .nav-links li a {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  padding: 8px 15px;
-  height: auto;
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  background-color: transparent;
-  border: 1px solid #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding: 8px 15px;
+    height: auto;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .nav-links li a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hamburger {
+    display: none; /* Ukryj ikonę na większych ekranach */
+    cursor: pointer;
+    margin-left: 20px; /* Dodano margines z lewej strony ikony */
+}
+
+.hamburger .line {
+    width: 25px;
+    height: 3px;
+    background-color: #fff; /* Zmieniono kolor na biały, pasujący do linków */
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
 }
 
 /* Sekcja główna */
 main.intro {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px; /* Większy padding na większych ekranach */
-  padding-bottom: 0px;
-  flex-grow: 1;
-  overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    padding-bottom: 0px;
+    flex-grow: 1;
+    overflow: hidden;
 }
 
 .main_content {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .profile-photo img {
-  width: auto; /* Przywracamy automatyczną szerokość */
-  max-width: 540px; /* Ustawiamy maksymalną szerokość */
-  height: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  margin-bottom: 20px;
+    width: auto;
+    max-width: 440px;
+    height: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
 }
 
 .intro-text {
-  padding: 20px;
-  max-width: 600px;
-  background: linear-gradient(135deg, rgba(217, 217, 217, 0.7) 0%, rgba(230, 230, 230, 0.7) 100%);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    background: linear-gradient(135deg, rgba(217, 217, 217, 0.7) 0%, rgba(230, 230, 230, 0.7) 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
 .intro-text h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.5em;
-  color: #333;
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+    color: #333;
 }
 
 .intro-text p {
-  font-size: 1.2em;
-  color: #333;
+    font-size: 1.2em;
+    color: #333;
 }
 
 /* Stopka */
 footer {
-  color: white;
-  text-align: center;
-  padding: 15px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .footer-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .social-icons {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .social-icons a i {
-  font-size: 20px;
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
+    font-size: 20px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
 .social-icons a:hover i {
-  opacity: 1;
+    opacity: 1;
 }
 
 .contact-info {
-  white-space: normal;
-  font-size: 0.9em;
+    white-space: normal;
+    font-size: 0.9em;
 }
 
 .contact-info a {
-  color: white;
-  text-decoration: underline;
+    color: white;
+    text-decoration: underline;
 }
 
 .copyright {
-  font-size: 0.7em;
-  color: #ddd;
+    font-size: 0.7em;
+    color: #ddd;
+}
+
+/* Style dla strony doswiadczenie.html */
+.experience-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.experience-navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.experience-navigation button {
+    padding: 8px 15px;
+    border: 2px solid #433F3F;
+    border-radius: 12px;
+    background-color: transparent;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: auto;
+    height: auto;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.experience-navigation button:hover {
+    background-color: #e6e6e68e;
+    color: #000;
+}
+
+.experience-navigation button.active {
+    background-color: #e6e6e6;
+    color: #313131;
+}
+
+.experience-list {
+    width: 95%;
+    max-width: 900px;
+}
+
+.experience-item {
+    background-color: #e6e6e6b3;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+}
+
+.experience-item:hover {
+    background-color: #ccc;
+}
+
+.experience-item .icon-container {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    margin-bottom: 0;
+}
+
+.experience-item .content {
+    flex-grow: 1;
+}
+
+.experience-item .toggle-icon {
+    font-size: 1.2em;
+    color: #555;
+    margin-left: auto;
+}
+
+.experience-item .details {
+    margin-top: 10px;
+    display: none;
+    width: 100%;
+}
+
+.experience-item.active-details .details {
+    display: block;
+}
+
+.book-images{
+    padding: 10px;
+    align-self: center;
+}
+
+.name_title {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+    color: #d9d9d9;
+    text-align: center;
 }
 
 /* Media Queries dla responsywności */
 
 /* Dla ekranów o szerokości do 992px (większe tablety i mniejsze laptopy) */
 @media (max-width: 992px) {
-  main.intro {
-      padding: 30px;
-  }
+    main.intro {
+        padding: 30px;
+    }
 
-  .profile-photo img {
-      max-width: 400px;
-  }
+    .profile-photo img {
+        max-width: 400px;
+    }
 
-  .intro-text h1 {
-      font-size: 2.2em;
-  }
+    .intro-text h1 {
+        font-size: 2.2em;
+    }
 
-  .intro-text p {
-      font-size: 1.1em;
-  }
+    .intro-text p {
+        font-size: 1.1em;
+    }
 }
 
-/* Dla ekranów o szerokości do 768px (tablety) */
+/* Dla ekranów o szerokości do 768px (tablety i telefony w poziomie) */
 @media (max-width: 768px) {
-  main.intro {
-      padding: 20px;
-  }
+    .navbar {
+        justify-content: space-between; /* Logo po lewej, ikona po prawej */
+        padding: 10px 15px;
+    }
 
-  .main_content {
-      flex-direction: column;
-      align-items: center;
-  }
+    .nav-links {
+        display: none; /* Ukryj menu domyślnie */
+        flex-direction: column;
+        position: absolute;
+        top: 60px; /* Wysokość navbar */
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.9); /* Białe tło dla menu */
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        z-index: 10; /* Upewnij się, że jest nad innymi elementami */
+        margin-left: 0; /* Resetuj margines */
+    }
 
-  .profile-photo img {
-      max-width: 300px;
-      margin-bottom: 20px;
-  }
+    .nav-links.active {
+        display: flex;
+    }
 
-  .intro-text {
-      text-align: center;
-      max-width: 90%; /* Większa szerokość tekstu na tabletach */
-  }
+    .nav-links li {
+        width: 100%;
+    }
 
-  .nav-links {
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-  }
+    .nav-links li a {
+        color: #333; /* Ciemniejszy kolor linków w menu mobilnym */
+        width: 100%;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        border: none; /* Usuń obramowanie linków */
+    }
 
-  .nav-links li {
-      width: 100%;
-      margin-bottom: 5px;
-  }
+    .nav-links li a:hover {
+        background-color: #f9f9f9;
+        box-shadow: none;
+    }
 
-  .nav-links li a {
-      width: 100%;
-      text-align: center;
-      padding: 10px;
-  }
+    .hamburger {
+        display: block; /* Pokaż ikonę hamburgera */
+        color: #fff; /* Kolor ikony hamburgera */
+    }
+
+    main.intro {
+        padding: 20px;
+    }
+
+    .main_content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-photo img {
+        max-width: 300px;
+        margin-bottom: 20px;
+    }
+
+    .intro-text {
+        text-align: center;
+        max-width: 90%;
+    }
+
+    .experience-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .experience-item .icon-container {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+
+    .name_title {
+        font-size: 2em;
+    }
 }
 
-/* Dla ekranów o szerokości do 480px (telefony) */
+/* Dla ekranów o szerokości do 480px (telefony w pionie) */
 @media (max-width: 480px) {
-  main.intro {
-      padding: 15px;
-  }
+    main.intro {
+        padding: 15px;
+    }
 
-  .profile-photo img {
-      max-width: 200px;
-  }
+    .profile-photo img {
+        max-width: 200px;
+    }
 
-  .intro-text h1 {
-      font-size: 1.7em;
-  }
+    .intro-text h1 {
+        font-size: 1.7em;
+    }
 
-  .intro-text p {
-      font-size: 0.9em;
-  }
+    .intro-text p {
+        font-size: 0.9em;
+    }
 
-  .footer-content {
-      flex-direction: column;
-      align-items: center;
-  }
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .contact-info {
-      white-space: normal;
-      text-align: center;
-  }
+    .contact-info {
+        white-space: normal;
+        text-align: center;
+    }
+
+    .experience-navigation button {
+        font-size: 0.8em;
+        padding: 5px 10px;
+    }
 }
 
-/* Style dla strony doswiadczenie.html */
-.experience-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  flex-grow: 1;
-  overflow-y: auto;
+/* Style dla animacji ikony hamburgera */
+.hamburger.active .line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
 }
 
-.experience-navigation {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
+.hamburger.active .line:nth-child(2) {
+    opacity: 0;
 }
 
-.experience-navigation button {
-  padding: 8px 15px;
-  border: 2px solid #433F3F;
-  border-radius: 12px;
-  background-color: transparent;
-  color: #ffffff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  width: auto; /* Pozwalamy guzkom dopasować szerokość do zawartości */
-  height: auto;
-  margin-bottom: 5px;
-  font-size: 0.9em; /* Trochę mniejsza czcionka na mniejszych ekranach */
-}
-
-.experience-navigation button:hover {
-  background-color: #e6e6e68e;
-  color: #000;
-}
-
-.experience-navigation button.active {
-  background-color: #e6e6e6;
-  color: #313131;
-}
-
-.experience-list {
-  width: 95%;
-  max-width: 900px;
-}
-
-/* ... inne style ... */
-
-.experience-item {
-  background-color: #e6e6e6b3;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  display: flex; /* Włączamy flexbox dla elementu .experience-item */
-  align-items: center; /* Wyrównujemy elementy w pionie do środka */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: relative;
-  flex-direction: row; /* Zmieniamy na układ wierszowy, aby ikony były obok siebie */
-  align-items: center; /* Ponownie wyrównujemy w pionie */
-}
-
-.experience-item:hover {
-  background-color: #ccc;
-}
-
-.experience-item .icon-container {
-  width: 30px;
-  height: 30px;
-  margin-right: 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2em;
-  margin-bottom: 0; /* Resetujemy margines dolny */
-}
-
-.experience-item .content {
-  flex-grow: 1; /* Tekst zajmuje dostępną przestrzeń */
-}
-
-.experience-item .toggle-icon {
-  font-size: 1.2em;
-  color: #555;
-  margin-left: auto; /* Wepchnij ikonę na prawą stronę */
-}
-
-.experience-item .details {
-  margin-top: 10px;
-  display: none;
-  width: 100%;
-}
-
-.experience-item.active-details .details {
-  display: block;
-}
-
-.book-images{
-  padding: 10px;
-  align-self: center;
-}
-
-/* ... inne style ... */
-
-/* Media Query dla strony doswiadczenie.html - telefony */
-@media (max-width: 480px) {
-  .experience-item {
-    flex-direction: column; /* Przywracamy układ kolumnowy na małych ekranach */
-    align-items: flex-start; /* Wyrównujemy do lewej na małych ekranach */
-  }
-
-  .experience-item .icon-container {
-    margin-bottom: 10px; /* Dodajemy margines dolny dla ikony na małych ekranach */
-    margin-right: 0; /* Usuwamy prawy margines na małych ekranach */
-  }
-
-  .experience-item .toggle-icon {
-    position: static; /* Usuwamy pozycjonowanie absolutne na małych ekranach */
-    margin-left: 0; /* Resetujemy margines */
-    margin-top: 10px; /* Dodajemy margines od tekstu */
-  }
-}
-
-.name_title {
-  font-size: 2.5em;
-  margin-bottom: 0.5em;
-  color: #d9d9d9;
-  text-align: center; /* Wyśrodkowujemy tytuł */
-}
-
-/* Media Query dla strony doswiadczenie.html - większe ekrany */
-@media (min-width: 769px) {
-  .experience-item {
-      flex-direction: row; /* Dla większych ekranów układ wierszowy */
-      align-items: center;
-  }
-}
-
-/* Media Query dla strony doswiadczenie.html - telefony */
-@media (max-width: 480px) {
-  .experience-navigation button {
-      font-size: 0.8em;
-      padding: 5px 10px;
-  }
-
-  .experience-item {
-      flex-direction: column; /* Przywracamy układ kolumnowy na małych ekranach */
-      align-items: flex-start; /* Wyrównujemy do lewej na małych ekranach */
-  }
-
-  .experience-item .icon-container {
-      margin-bottom: 10px; /* Dodajemy margines dolny dla ikony na małych ekranach */
-      margin-right: 0; /* Usuwamy prawy margines na małych ekranach */
-  }
-
-  .name_title {
-      font-size: 2em;
-  }
+.hamburger.active .line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
 }
