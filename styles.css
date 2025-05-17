@@ -379,6 +379,7 @@ footer {
 
 .book-images{
   padding: 10px;
+  align-self: center;
 }
 
 /* ... inne style ... */
