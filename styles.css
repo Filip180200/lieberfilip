@@ -459,3 +459,364 @@ footer {
 .hamburger.active .line:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
 }
+
+/* Styles for the calculator */
+.calculator-container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 700px;
+    margin: 20px auto; /* Adjust margin for overall centering */
+    color: #333; /* Ensure text color matches overall style */
+}
+
+.calculator-container h1 {
+    font-size: 2em; /* Adjusted to fit the general style */
+    color: #333;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.calculator-container p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.calculator-container label,
+.calculator-container select,
+.calculator-container input,
+.calculator-container button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.calculator-container input[type="number"],
+.calculator-container input[type="text"],
+.calculator-container select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+.calculator-container button {
+    background-color: #433F3F; /* Matched to button style in existing CSS */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px; /* Slightly more rounded */
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.calculator-container button:hover {
+    background-color: #2a2828; /* Darker on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.variable-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.variable-input-row label {
+    margin-bottom: 0;
+}
+
+.variable-input-row input,
+.variable-input-row select {
+    flex: 1;
+}
+
+.variable-selection-group {
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    background-color: #f9f9f9; /* Light background for groups */
+}
+
+#analysis-options,
+#distribution-test-instruction,
+#distribution-test-choice {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.result {
+    margin-top: 30px;
+    padding: 15px;
+    border: 1px dashed #433F3F; /* Matched to button color */
+    background-color: #e6e6e6b3; /* Lighter background for results */
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+.instruction-box {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.instruction-box p {
+    margin: 5px 0;
+}
+
+.error-message {
+    color: red;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.radio-group label {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.small-text {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Ensure the main content can grow to accommodate the calculator */
+main.intro {
+    align-items: flex-start; /* Align to start to prevent calculator from being vertically centered too much */
+    padding-top: 20px; /* Add some top padding */
+    padding-bottom: 20px; /* Add some bottom padding */
+    overflow-y: auto; /* Allow vertical scrolling if content is too long */
+}
+
+.main_content {
+    flex-direction: column; /* Stack elements vertically */
+    gap: 20px; /* Space between calculator and other potential content */
+    width: 100%; /* Ensure it takes full width */
+}
+
+/* Responsive adjustments for calculator */
+@media (max-width: 768px) {
+    .calculator-container {
+        padding: 15px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .calculator-container input[type="number"],
+    .calculator-container input[type="text"],
+    .calculator-container select,
+    .calculator-container button {
+        width: 100%; /* Full width on smaller screens */
+    }
+
+    .variable-input-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+/* Styling for help buttons */
+.help-button {
+    background-color: #6c757d; /* Grey color for help button */
+    margin-left: 10px; /* Space between "Dalej" and "Pomoc" */
+}
+
+.help-button:hover {
+    background-color: #5a6268;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Styling for help boxes */
+.help-box {
+    background-color: #e2f0d9; /* Light green */
+    border: 1px solid #b7e0aa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: left;
+    color: #333;
+}
+
+.help-box h3 {
+    color: #4CAF50; /* Green heading */
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.help-box p, .help-box ul {
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.help-box ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding-left: 0;
+}
+
+/* Ensure italics render correctly */
+em, i {
+    font-style: italic;
+}
+
+/* Styling for custom selection buttons (replacing radio/checkboxes) */
+.button-group {
+    /* Upewnij się, że te style są obecne, jeśli ich nie masz */
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.selection-button {
+    padding: 10px 15px;
+    border: 1px solid #dcdcdc; /* Zmieniony z #ccc */
+    border-radius: 5px;
+    background-color: #f8f8f8; /* Zmieniony z #f0f0f0 */
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    user-select: none; /* Prevent text selection */
+    min-width: 120px; /* Ensure buttons have a minimum width */
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Dodany subtelny początkowy cień */
+}
+
+.selection-button:hover {
+    background-color: #eef0f2; /* Zmieniony z #e0e0e0 */
+    border-color: #c9c9c9; /* Zmieniony z #bbb */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtelny cień przy najechaniu */
+    transform: translateY(-0.5px); /* Delikatniejsze uniesienie przy najechaniu dla niezaznaczonych */
+}
+
+.selection-button.selected-button {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4); /* Wyraźniejszy cień po zaznaczeniu */
+    transform: translateY(-1px); /* Delikatne uniesienie */
+}
+
+.selection-button.selected-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.5); /* Mocniejszy cień przy najechaniu na zaznaczony */
+}
+
+/* Style dla nagłówków testów, aby wyglądały jak guziki */
+.test-card h3 {
+    background-color: #007bff; /* Kolor tła, np. niebieski */
+    color: white; /* Kolor tekstu */
+    padding: 10px 15px; /* Wewnętrzny margines */
+    margin-bottom: 10px; /* Margines pod nagłówkiem */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    cursor: pointer; /* Kursor wskazujący, że można kliknąć */
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Płynne przejście przy najechaniu */
+    text-align: left; /* Wyrównanie tekstu do lewej */
+    border: none; /* Brak ramki */
+    font-size: 1.1em; /* Rozmiar czcionki */
+    display: block; /* Upewnij się, że element zachowuje się jak blok */
+    width: 100%; /* Rozciągnij na całą szerokość karty */
+    box-sizing: border-box; /* Uwzględnij padding w szerokości */
+}
+
+.test-card h3:hover {
+    background-color: #0056b3; /* Ciemniejszy kolor przy najechaniu */
+}
+
+.test-card h3:active {
+    transform: translateY(1px); /* Efekt wciśnięcia */
+}
+
+/* Style dla nagłówków testów, aby wyglądały jak guziki nawigacyjne */
+.test-card h3 {
+    background-color: transparent; /* Przezroczyste tło */
+    color: #333; /* Kolor tekstu, podobny do standardowego tekstu na stronie */
+    padding: 10px 15px; /* Wewnętrzny margines */
+    margin-bottom: 10px; /* Margines pod nagłówkiem */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    cursor: pointer; /* Kursor wskazujący, że można kliknąć */
+    /* Płynne przejście przy najechaniu dla koloru tła, ramki i tekstu */
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease; 
+    text-align: left; /* Wyrównanie tekstu do lewej */
+    border: 1px solid #ccc; /* Delikatna, jasnoszara ramka */
+    font-size: 1.1em; /* Rozmiar czcionki */
+    display: block; /* Upewnij się, że element zachowuje się jak blok */
+    width: 100%; /* Rozciągnij na całą szerokość karty */
+    box-sizing: border-box; /* Uwzględnij padding w szerokości */
+}
+
+.test-card h3:hover {
+    background-color: rgba(217, 217, 217, 0.7); /* Lekko szare, półprzezroczyste tło przy najechaniu, nawiązujące do tła nawigacji */
+    color: #333; /* Kolor tekstu pozostaje taki sam */
+    border-color: #aaa; /* Nieco ciemniejsza ramka przy najechaniu */
+}
+
+.test-card h3:active {
+    transform: translateY(1px); /* Efekt wciśnięcia */
+}
+
+/* Style dla nagłówków testów, aby wyglądały nowocześniej i były bardziej przezroczyste */
+.test-card h3 {
+    background-color: transparent; /* W pełni przezroczyste tło */
+    color: #333; /* Kolor tekstu */
+    padding: 10px 15px; /* Wewnętrzny margines */
+    margin-bottom: 10px; /* Margines pod nagłówkiem */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    cursor: pointer; /* Kursor wskazujący, że można kliknąć */
+    /* Płynne przejścia dla tła, cienia i transformacji */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    text-align: left; /* Wyrównanie tekstu do lewej */
+    border: none; /* Brak ramki dla czystszego, nowoczesnego wyglądu */
+    font-size: 1.1em; /* Rozmiar czcionki */
+    display: block; /* Upewnij się, że element zachowuje się jak blok */
+    width: 100%; /* Rozciągnij na całą szerokość karty */
+    box-sizing: border-box; /* Uwzględnij padding w szerokości */
+}
+
+.test-card h3:hover {
+    /* Bardzo subtelne, półprzezroczyste tło przy najechaniu */
+    background-color: rgba(240, 240, 240, 0.8); 
+    /* Nowoczesny efekt uniesienia (box-shadow i transform) */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny, ale widoczny cień */
+    transform: translateY(-2px); /* Lekkie uniesienie elementu */
+}
+
+.test-card h3:active {
+    transform: translateY(0); /* Powrót do pierwotnej pozycji po kliknięciu */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Bardziej miękki cień podczas kliknięcia */
+    background-color: rgba(230, 230, 230, 0.9); /* Nieznacznie ciemniejsze tło podczas kliknięcia */
+}
+
+/* Pozostałe style karty testu i zawartości informacji - bez zmian */
+.test-card {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 0;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.test-info-content {
+    padding: 15px;
+    padding-top: 0;
+}

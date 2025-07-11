@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Statystyka</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <header>
@@ -31,9 +32,171 @@
 
     <main class="intro">
         <div class="main_content">
-            <div class="intro-text">
-            <h1>KONTAKT</h1>
-            <p>Email: lieberfilip@gmail.com</p>
+            <div class="calculator-container">
+                <h1>Prosty Analizator Statystyczny (Szkielet)</h1>
+
+                <p>Ten program to uproszczony przykład, żeby pokazać koncepcję. Do pełnej analizy statystycznej potrzebujesz zaawansowanych bibliotek i bardziej złożonej logiki.</p>
+
+                <label for="numVariables">Ile masz zmiennych? (max 10)</label>
+                <input type="number" id="numVariables" min="1" max="10" value="2">
+
+                <label for="numPeople">Ilość osób/obserwacji:</label>
+                <input type="number" id="numPeople" min="1" value="100">
+
+                <div class="button-row">
+                    <button onclick="generateVariableInputs()">Dalej</button>
+                    <button class="help-button" onclick="showHelp('help-step1')">Pomoc</button>
+                </div>
+
+                <div id="help-step1" class="help-box hidden">
+                    <h3>Więcej o Kroku 1:</h3>
+                    <p><strong>Ilość zmiennych:</strong> Określa, ile różnych cech będziesz analizować w swoich danych (np. wiek, płeć, wynik testu).</p>
+                    <p><strong>Ilość osób/obserwacji:</strong> To liczba przypadków w Twoim zbiorze danych. Liczba obserwacji ma wpływ na wybór testu rozkładu normalnego:</p>
+                    <ul>
+                        <li>Dla małych prób (np. do 100 osób) zalecany jest <em>Test Shapiro-Wilka</em>.</li>
+                        <li>Dla dużych prób (powyżej 100 osób) zalecany jest <em>Test Kołmogorowa-Smirnowa</em>.</li>
+                    </ul>
+                </div>
+
+                <div id="variable-names" class="hidden">
+                    <h2>Wprowadź nazwy i typy zmiennych:</h2>
+                    <div id="variableInputsContainer">
+                    </div>
+                    <div class="button-row">
+                        <button onclick="showAnalysisOptions()">Dalej</button>
+                        <button class="help-button" onclick="showHelp('help-step2')">Pomoc</button>
+                    </div>
+                </div>
+
+                <div id="help-step2" class="help-box hidden">
+                    <h3>Więcej o typach zmiennych:</h3>
+                    <ul>
+                        <li><strong>Zmienna interwałowa (ilościowa):</strong> Dane numeryczne, gdzie różnice między wartościami są znaczące i równe (np. wiek w latach, wynik IQ, temperatura w stopniach Celsjusza). Można na nich wykonywać pełne operacje arytmetyczne.</li>
+                        <li><strong>Zmienna porządkowa:</strong> Dane, które można uporządkować (np. stopnie naukowe: licencjat, magister, doktor; oceny szkolne: bdb, db, dst). Różnice między kategoriami niekoniecznie są równe.</li>
+                        <li><strong>Zmienna nominalna (kategorialna):</strong> Dane, które można jedynie kategoryzować bez naturalnego porządku (np. płeć: kobieta/mężczyzna; kolor włosów: blond/brunatne/czarne).</li>
+                    </ul>
+                </div>
+
+                <div id="analysis-options" class="hidden">
+                    <h2>Wybierz typ analizy:</h2>
+                    <label for="analysisType">Jaką analizę chcesz wykonać?</label>
+                    <select id="analysisType">
+                        <option value="">-- Wybierz rodzaj analizy --</option>
+                        <option value="correlation">Korelacje (związek między zmiennymi)</option>
+                        <option value="groupComparison">Porównania międzygrupowe (t-Studenta, ANOVA itd.)</option>
+                        <option value="regression">Regresja liniowa (przewidywanie zmiennej zależnej ilościowej)</option>
+                        <option value="factorialANOVA">Wieloczynnikowa ANOVA (wpływ kilku czynników kategorialnych na zmienną ilościową)</option>
+                    </select>
+
+                    <div id="correlationOptions" class="hidden variable-selection-group">
+                        <h3>Związek między dwiema zmiennymi</h3>
+                        <label for="var1Correlation">Wybierz pierwszą zmienną:</label>
+                        <select id="var1Correlation"></select>
+                        <label for="var2Correlation">Wybierz drugą zmienną:</label>
+                        <select id="var2Correlation"></select>
+                    </div>
+
+                    <div id="groupComparisonOptions" class="hidden variable-selection-group">
+                        <h3>Porównanie grup</h3>
+                        <label for="dependentVar">Wybierz zmienną zależną (ilościową lub porządkową):</label>
+                        <select id="dependentVar"></select>
+                        <label for="categoricalVar">Wybierz zmienną kategorialną (grupującą):</label>
+                        <select id="categoricalVar"></select>
+                        <label for="numGroups" id="numGroupsLabel">Ile grup ma zmienna kategorialna?</label>
+                        <input type="number" id="numGroups" min="2" value="2">
+
+                        <div id="groupDependencyQuestion" class="hidden">
+                            <label>Czy grupy są od siebie zależne (były mierzone dwa razy u jednej osoby)?</label>
+                            <div class="button-group">
+                                <div class="selection-button" data-value="no" data-target="areGroupsDependent">Nie (grupy niezależne)</div>
+                                <div class="selection-button" data-value="yes" data-target="areGroupsDependent">Tak (grupy zależne)</div>
+                                <input type="hidden" id="areGroupsDependent" value="no">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="regressionOptions" class="hidden variable-selection-group">
+                        <h3>Regresja liniowa</h3>
+                        <label for="regressionDependentVar">Wybierz zmienną zależną (ilościową):</label>
+                        <select id="regressionDependentVar"></select>
+
+                        <label for="numPredictors">Ile zmiennych niezależnych (predyktorów)?</label>
+                        <input type="number" id="numPredictors" min="1" value="1">
+                        <div id="predictorInputsContainer"></div>
+                        <p class="small-text">Dla zmiennych kategorialnych jako predyktorów pamiętaj o ich kodowaniu (np. dummy variables).</p>
+                    </div>
+
+                    <div id="factorialANOVAOptions" class="hidden variable-selection-group">
+                        <h3>Wieloczynnikowa ANOVA</h3>
+                        <label for="factorialDependentVar">Wybierz zmienną zależną (ilościową):</label>
+                        <select id="factorialDependentVar"></select>
+
+                        <label for="numFactors">Ile czynników (zmiennych kategorialnych)?</label>
+                        <input type="number" id="numFactors" min="2" value="2">
+                        <div id="factorInputsContainer"></div>
+                    </div>
+                    
+                    <div class="button-row">
+                        <button onclick="handleNextFromAnalysisOptions()">Dalej</button>
+                        <button class="help-button" onclick="showHelp('help-all-tests-info'); populateAllTestsHelp()">Pomoc z testami</button>
+                    </div>
+                </div>
+
+                <div id="help-all-tests-info" class="help-box hidden">
+                    <h3>Informacje o dostępnych testach:</h3>
+                    <div id="allTestsContainer">
+                        </div>
+                </div>
+
+                <div id="distribution-test-instruction" class="hidden">
+                    <h2>Test rozkładu:</h2>
+                    <div class="instruction-box">
+                        <p id="standardDistributionText">
+                            Teraz wykonaj <strong><span id="suggestedDistributionTestType"></span></strong>.
+                        </p>
+                        <p id="standardDistributionInstruction">
+                            Następnie zaznacz poniżej wynik tego testu.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="distribution-test-choice" class="hidden">
+                    <h2>Zaznacz wynik testu rozkładu:</h2>
+                    <div class="button-group">
+                        <div class="selection-button" data-value="normal" data-target="distributionResult">Rozkład normalny</div>
+                        <div class="selection-button" data-value="non-normal" data-target="distributionResult">Odbiegający od normy</div>
+                        <input type="hidden" id="distributionResult" value="normal">
+                    </div>
+                    <div class="button-row">
+                        <button onclick="recommendTests()">Zasugeruj testy</button>
+                        <button class="help-button" onclick="showHelp('help-distribution-test')">Pomoc</button>
+                    </div>
+                </div>
+
+                <div id="help-distribution-test" class="help-box hidden">
+                    <h3>Więcej o wyniku testu rozkładu:</h3>
+                    <p>Po wykonaniu testu, sprawdź wartość <em>p</em>:</p>
+                    <ul>
+                        <li><strong>Rozkład normalny:</strong> jeśli <em>p</em> > 0.05</li>
+                        <li><strong>Rozkład nienormalny:</strong> jeśli <em>p</em> &le; 0.05</li>
+                    </ul>
+                    <p>Wartość <em>p</em> (istotność) wskazuje na prawdopodobieństwo uzyskania zaobserwowanych danych (lub bardziej ekstremalnych), jeśli hipoteza zerowa jest prawdziwa. W przypadku testów normalności, hipoteza zerowa ($H_0$) zakłada, że dane pochodzą z rozkładu normalnego.</p>
+                    <ul>
+                        <li>Jeśli $p > 0.05$, nie ma podstaw do odrzucenia $H_0$, co sugeruje, że rozkład jest normalny (lub nie ma dowodów na to, że nim nie jest).</li>
+                        <li>Jeśli $p \le 0.05$, odrzucamy $H_0$, co sugeruje, że rozkład danych jest istotnie różny od normalnego.</li>
+                    </ul>
+                </div>
+
+                <div id="results" class="help-box hidden">
+                    <h3>Sugerowane testy:</h3>
+                    <div id="recommendedTestsContainer">
+                        </div>
+                    <p class="small-text">Pamiętaj, że to jedynie <strong>uproszczone sugestie</strong>. Wybór odpowiedniego testu zależy od wielu czynników, w tym od rzeczywistego rozkładu danych, ich typu (ciągłe, dyskretne, nominalne, porządkowe), liczby grup, założeń testu i pytań badawczych. Zawsze konsultuj się ze statystykiem lub specjalistyczną literaturą.</p>
+                    <p class="contact-invitation">Jeśli potrzebujesz bardziej szczegółowej konsultacji lub profesjonalnej analizy danych, śmiało <a href="mailto:kontakt@lieberfilip.pl">skontaktuj się ze mną</a>!</p>
+                    <div class="button-row">
+                        <button onclick="resetCalculator()">Zacznij od nowa</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -86,5 +249,1086 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
     });
 });
 
+// Skrypt kalkulatora
+        let variables = []; // Tablica obiektów { name, type }
+
+        // Globalny obiekt z danymi o testach
+        const testData = {
+            'Korelacja Pearsona': {
+                description: 'Mierzy siłę i kierunek liniowego związku między dwiema zmiennymi interwałowymi.',
+                assumptions: [
+                    'Obie zmienne są na skali interwałowej (lub stosunkowej).',
+                    'Zmienne są normalnie rozłożone (lub próba jest wystarczająco duża by zastosować Centralne Twierdzenie Graniczne).',
+                    'Związek między zmiennymi jest liniowy.',
+                    'Brak znaczących wartości odstających.'
+                ],
+                hypotheses: (v1 = "Czynnik 1", v2 = "Czynnik 2") => [ // Dodano domyślne wartości
+                    `$H_0$: Nie ma liniowego związku między ${v1} a ${v2}$ (współczynnik korelacji r = 0).`,
+                    `$H_1$: Istnieje liniowy związek między ${v1} a ${v2}$ (współczynnik korelacji r \\neq 0).`
+                ]
+            },
+            'Korelacja Spearmana': {
+                description: 'Mierzy siłę i kierunek monotonicznego związku między dwiema zmiennymi (porządkowymi lub interwałowymi o nienormalnym rozkładzie). Jest to nieparametryczny odpowiednik korelacji Pearsona.',
+                assumptions: [
+                    'Zmienne są co najmniej na skali porządkowej.',
+                    'Związek między zmiennymi jest monotoniczny (rosnący lub malejący, ale niekoniecznie liniowy).'
+                ],
+                hypotheses: (v1 = "Czynnik 1", v2 = "Czynnik 2") => [
+                    `$H_0$: Nie ma monotonicznego związku między ${v1} a ${v2}$ (współczynnik korelacji \\rho = 0).`,
+                    `$H_1$: Istnieje monotoniczny związek między ${v1} a ${v2}$ (współczynnik korelacji \\rho \\neq 0).`
+                ]
+            },
+            'Korelacja Kendalla Tau': {
+                description: 'Mierzy siłę i kierunek monotonicznego związku między dwiema zmiennymi porządkowymi. Często preferowany dla mniejszych prób lub gdy jest dużo wartości powiązanych.',
+                assumptions: [
+                    'Zmienne są co najmniej na skali porządkowej.',
+                    'Związek między zmiennymi jest monotoniczny.'
+                ],
+                hypotheses: (v1 = "Czynnik 1", v2 = "Czynnik 2") => [
+                    `$H_0$: Nie ma monotonicznego związku między ${v1} a ${v2}$ (współczynnik korelacji \\tau = 0).`,
+                    `$H_1$: Istnieje monotoniczny związek między ${v1} a ${v2}$ (współczynnik korelacji \\tau \\neq 0).`
+                ]
+            },
+            'Test chi-kwadrat': {
+                description: 'Służy do badania związku między dwiema zmiennymi nominalnymi lub do porównania rozkładu obserwacji z rozkładem oczekiwanym.',
+                assumptions: [
+                    'Zmienne są nominalne (kategorialne).',
+                    'Obserwacje są niezależne.',
+                    'Oczekiwane częstości w większości komórek tabeli kontyngencji są większe niż 5.'
+                ],
+                hypotheses: (v1 = "Zmienna A", v2 = "Zmienna B") => [
+                    `$H_0$: Zmienne ${v1}$ i ${v2}$ są niezależne (nie ma związku).`,
+                    `$H_1$: Zmienne ${v1}$ i ${v2}$ są zależne (istnieje związek).`
+                ]
+            },
+            'Test t-Studenta dla prób niezależnych': {
+                description: 'Porównuje średnie dla dwóch niezależnych grup, gdy zmienna zależna jest interwałowa i ma rozkład normalny.',
+                assumptions: [
+                    'Zmienna zależna jest na skali interwałowej (lub stosunkowej).',
+                    'Zmienna zależna ma rozkład normalny w obu grupach.',
+                    'Grupy są niezależne.',
+                    'Jednorodność wariancji (równość wariancji w grupach, sprawdzana testem Levene\'a).'
+                ],
+                hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
+                    `$H_0$: Średnia ${depVar}$ jest taka sama w obu grupach zmiennej ${catVar}$.`,
+                    `$H_1$: Średnia ${depVar}$ różni się między grupami zmiennej ${catVar}$.`
+                ]
+            },
+            'Test t-Studenta dla prób zależnych': {
+                description: 'Porównuje średnie dla dwóch pomiarów u tej samej grupy osób (np. przed i po interwencji), gdy zmienna zależna jest interwałowa i ma rozkład normalny.',
+                assumptions: [
+                    'Zmienna zależna jest na skali interwałowej (lub stosunkowej).',
+                    'Różnice między parami pomiarów mają rozkład normalny.',
+                    'Pomiary są zależne (sparowane).'
+                ],
+                hypotheses: (depVar = "Wynik") => [
+                    `$H_0$: Nie ma różnicy między średnimi dla dwóch pomiarów zmiennej ${depVar}$.`,
+                    `$H_1$: Istnieje różnica między średnimi dla dwóch pomiarów zmiennej ${depVar}$.`
+                ]
+            },
+            'Test U Manna-Whitneya': {
+                description: 'Nieparametryczny odpowiednik testu t-Studenta dla prób niezależnych. Porównuje rozkłady dwóch niezależnych grup, gdy zmienna zależna jest porządkowa lub interwałowa o nienormalnym rozkładzie.',
+                assumptions: [
+                    'Zmienna zależna jest co najmniej na skali porządkowej.',
+                    'Grupy są niezależne.',
+                    'Kształt rozkładów jest podobny w obu grupach (dla porównania median).'
+                ],
+                hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
+                    `$H_0$: Rozkład ${depVar}$ jest taki sam w obu grupach zmiennej ${catVar}$.`,
+                    `$H_1$: Rozkład ${depVar}$ różni się między grupami zmiennej ${catVar}$.`
+                ]
+            },
+            'Test Wilcoxona': {
+                description: 'Nieparametryczny odpowiednik testu t-Studenta dla prób zależnych. Porównuje rozkłady dwóch pomiarów u tej samej grupy osób, gdy zmienna zależna jest porządkowa lub interwałowa o nienormalnym rozkładzie.',
+                assumptions: [
+                    'Zmienna zależna jest co najmniej na skali porządkowej.',
+                    'Pomiary są zależne (sparowane).',
+                    'Symetryczny rozkład różnic (mniej rygorystyczne niż normalność).'
+                ],
+                hypotheses: (depVar = "Wynik") => [
+                    `$H_0$: Medianowa różnica między pomiarami zmiennej ${depVar}$ wynosi zero.`,
+                    `$H_1$: Medianowa różnica między pomiarami zmiennej ${depVar}$ jest różna od zera.`
+                ]
+            },
+            'ANOVA jednoczynnikowa': {
+                description: 'Porównuje średnie dla trzech lub więcej niezależnych grup, gdy zmienna zależna jest interwałowa i ma rozkład normalny.',
+                assumptions: [
+                    'Zmienna zależna jest na skali interwałowej (lub stosunkowej).',
+                    'Zmienna zależna ma rozkład normalny w każdej grupie.',
+                    'Grupy są niezależne.',
+                    'Jednorodność wariancji (równość wariancji w grupach, sprawdzana testem Levene\'a).'
+                ],
+                hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
+                    `$H_0$: Średnia ${depVar}$ jest taka sama we wszystkich grupach zmiennej ${catVar}$.`,
+                    `$H_1$: Przynajmniej jedna średnia ${depVar}$ różni się od pozostałych w grupach zmiennej ${catVar}$.`
+                ]
+            },
+            'Test Kruskala-Wallisa': {
+                description: 'Nieparametryczny odpowiednik ANOVA jednoczynnikowej. Porównuje rozkłady trzech lub więcej niezależnych grup, gdy zmienna zależna jest porządkowa lub interwałowa o nienormalnym rozkładzie.',
+                assumptions: [
+                    'Zmienna zależna jest co najmniej na skali porządkowej.',
+                    'Grupy są niezależne.',
+                    'Kształt rozkładów jest podobny w każdej grupie (dla porównania median).'
+                ],
+                hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
+                    `$H_0$: Rozkład ${depVar}$ jest taki sam we wszystkich grupach zmiennej ${catVar}$.`,
+                    `$H_1$: Rozkład ${depVar}$ różni się między grupami zmiennej ${catVar}$.`
+                ]
+            },
+            'Regresja liniowa wielokrotna': {
+                description: 'Modeluje związek między jedną zmienną zależną (ilościową) a dwiema lub więcej zmiennymi niezależnymi (predyktorami).',
+                assumptions: [
+                    'Liniowość: związek między predyktorami a zmienną zależną jest liniowy.',
+                    'Niezależność reszt: reszty są niezależne od siebie.',
+                    'Homoscedastyczność: wariancja reszt jest stała dla wszystkich poziomów predyktorów.',
+                    'Normalność reszt: reszty są normalnie rozłożone.',
+                    'Brak silnej multicolinearności między predyktorami.'
+                ],
+                hypotheses: (depVar = "Zmienna Zależna", ...predictors) => {
+                    const predList = predictors.length > 0 ? predictors.join(', ') : 'predyktorach';
+                    return [
+                        `$H_0$: Predyktory (${predList}) nie wyjaśniają zmienności w ${depVar}$ (współczynniki regresji = 0).`,
+                        `$H_1$: Przynajmniej jeden predyktor (${predList}) wyjaśnia zmienność w ${depVar}$ (przynajmniej jeden współczynnik regresji \\neq 0).`
+                    ];
+                }
+            },
+            'Wieloczynnikowa ANOVA': {
+                description: 'Analizuje wpływ dwóch lub więcej zmiennych kategorialnych (czynników) na jedną zmienną ilościową, a także interakcje między tymi czynnikami.',
+                assumptions: [
+                    'Zmienna zależna jest na skali interwałowej (lub stosunkowej).',
+                    'Zmienna zależna ma rozkład normalny w każdej komórce (kombinacji poziomów czynników).',
+                    'Niezależność obserwacji.',
+                    'Jednorodność wariancji (homoscedastyczność) w każdej komórce (sprawdzana testem Levene\'a lub Box\'s M).'
+                ],
+                hypotheses: (depVar = "Zmienna Zależna", ...factors) => {
+                    const factorList = factors.length > 1 ? factors.slice(0, -1).join(', ') + ' i ' + factors[factors.length - 1] : factors[0];
+                    let h = factors.map(factor => `$H_0$: Nie ma głównego efektu czynnika ${factor}$ na ${depVar}$.`);
+                    if (factors.length > 1) {
+                        h.push(`$H_0$: Nie ma efektu interakcji między ${factorList}$ na ${depVar}$.`);
+                        // For H1, we generally state that at least one effect is significant.
+                        h.push(`$H_1$: Przynajmniej jeden z efektów głównych lub interakcji jest istotny dla zmiennej ${depVar}$.`);
+                    } else {
+                         h.push(`$H_1$: Istnieje główny efekt czynnika ${factors[0]}$ na ${depVar}$.`);
+                    }
+                    return h;
+                }
+            }
+        };
+
+        // Helper function to translate variable types
+        function getPolishTypeName(type) {
+            switch (type) {
+                case 'interval':
+                    return 'Interwałowa';
+                case 'ordinal':
+                    return 'Porządkowa';
+                case 'nominal':
+                    return 'Nominalna';
+                default:
+                    return type;
+            }
+        }
+
+        // Helper function to toggle help boxes - MODIFIED
+        function showHelp(id) {
+            const helpBox = document.getElementById(id);
+            helpBox.classList.toggle('hidden');
+        }
+
+        function generateVariableInputs() {
+            const numVariablesInput = document.getElementById('numVariables');
+            let numVariables = parseInt(numVariablesInput.value);
+
+            if (isNaN(numVariables) || numVariables < 1) {
+                alert("Liczba zmiennych musi być liczbą całkowitą większą od zera.");
+                numVariablesInput.value = 1;
+                numVariables = 1;
+            }
+            if (numVariables > 10) {
+                alert("Maksymalna liczba zmiennych to 10.");
+                numVariablesInput.value = 10;
+                numVariables = 10;
+            }
+
+            const container = document.getElementById('variableInputsContainer');
+            container.innerHTML = ''; // Wyczyść poprzednie pola
+            variables = []; // Resetuj tablicę zmiennych
+
+            for (let i = 0; i < numVariables; i++) {
+                const row = document.createElement('div');
+                row.className = 'variable-input-row';
+
+                const nameLabel = document.createElement('label');
+                nameLabel.textContent = `Zmienna ${i + 1}:`;
+                row.appendChild(nameLabel);
+
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.id = `variableName${i}`;
+                nameInput.placeholder = `Nazwa (np. Wynik, Wiek)`;
+                row.appendChild(nameInput);
+
+                const typeSelect = document.createElement('select');
+                typeSelect.id = `variableType${i}`;
+                typeSelect.innerHTML = `
+                    <option value="interval">Interwałowa</option>
+                    <option value="ordinal">Porządkowa</option>
+                    <option value="nominal">Nominalna</option>
+                `;
+                row.appendChild(typeSelect);
+
+                container.appendChild(row);
+            }
+            document.getElementById('variable-names').classList.remove('hidden');
+            document.getElementById('analysis-options').classList.add('hidden');
+            document.getElementById('distribution-test-instruction').classList.add('hidden');
+            document.getElementById('distribution-test-choice').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('help-step1').classList.add('hidden'); // Hide help if user proceeds
+            document.getElementById('help-step2').classList.add('hidden'); // Ensure step 2 help is hidden initially
+            document.getElementById('help-distribution-test').classList.add('hidden'); // Hide help box
+            document.getElementById('help-all-tests-info').classList.add('hidden'); // Hide all tests info
+        }
+
+        function showAnalysisOptions() {
+            const numVariables = document.getElementById('numVariables').value;
+            variables = [];
+            for (let i = 0; i < numVariables; i++) {
+                const nameInput = document.getElementById(`variableName${i}`);
+                const typeSelect = document.getElementById(`variableType${i}`);
+                if (nameInput && nameInput.value.trim() !== '') {
+                    variables.push({ name: nameInput.value.trim(), type: typeSelect.value });
+                } else {
+                    alert(`Proszę wprowadzić nazwę dla zmiennej ${i + 1}.`);
+                    return;
+                }
+            }
+
+            if (variables.length < numVariables) {
+                alert("Proszę wprowadzić nazwy dla wszystkich zmiennych.");
+                return;
+            }
+
+            // Wyczyść wszystkie dynamiczne selecty
+            clearAllAnalysisSelects();
+
+            // Wypełnij stałe selecty do wyboru zmiennych
+            const var1CorrelationSelect = document.getElementById('var1Correlation');
+            const var2CorrelationSelect = document.getElementById('var2Correlation');
+            const dependentVarSelect = document.getElementById('dependentVar');
+            const categoricalVarSelect = document.getElementById('categoricalVar');
+            const regressionDependentVarSelect = document.getElementById('regressionDependentVar');
+            const factorialDependentVarSelect = document.getElementById('factorialDependentVar');
+
+
+            variables.forEach(variable => {
+                const option = document.createElement('option');
+                option.value = variable.name;
+                // Use the helper function to get Polish type name
+                option.textContent = `${variable.name} (${getPolishTypeName(variable.type)})`;
+                option.dataset.type = variable.type;
+
+                // Dla korelacji/związku
+                var1CorrelationSelect.appendChild(option.cloneNode(true));
+                var2CorrelationSelect.appendChild(option.cloneNode(true));
+
+                // Dla porównania grup
+                if (variable.type === 'interval' || variable.type === 'ordinal') {
+                    dependentVarSelect.appendChild(option.cloneNode(true));
+                }
+                if (variable.type === 'ordinal' || variable.type === 'nominal') {
+                    categoricalVarSelect.appendChild(option.cloneNode(true));
+                }
+                // Dla regresji i Factorial ANOVA - zmienna zależna (interwałowa)
+                if (variable.type === 'interval') {
+                    regressionDependentVarSelect.appendChild(option.cloneNode(true));
+                    factorialDependentVarSelect.appendChild(option.cloneNode(true));
+                }
+            });
+
+            document.getElementById('analysis-options').classList.remove('hidden');
+            // Po pokazaniu opcji analizy, upewniamy się, że inne sekcje są ukryte
+            document.getElementById('distribution-test-instruction').classList.add('hidden');
+            document.getElementById('distribution-test-choice').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('help-step2').classList.add('hidden'); // Hide help if user proceeds
+            document.getElementById('help-distribution-test').classList.add('hidden'); // Hide help box
+            document.getElementById('help-all-tests-info').classList.add('hidden'); // Hide all tests info
+
+            document.getElementById('analysisType').removeEventListener('change', toggleAnalysisTypeOptions); // Prevent multiple listeners
+            document.getElementById('analysisType').addEventListener('change', toggleAnalysisTypeOptions);
+            
+            // Upewnij się, że opcja "Wybierz rodzaj analizy" jest wybrana na początku
+            document.getElementById('analysisType').value = "";
+            toggleAnalysisTypeOptions(); // Wywołaj, aby ukryć wszystkie opcje na początku
+        }
+
+        function clearAllAnalysisSelects() {
+            const selectsToClear = [
+                'var1Correlation', 'var2Correlation', 'dependentVar', 'categoricalVar',
+                'regressionDependentVar', 'factorialDependentVar'
+            ];
+            const predictorInputsContainer = document.getElementById('predictorInputsContainer');
+            const factorInputsContainer = document.getElementById('factorInputsContainer');
+            predictorInputsContainer.innerHTML = '';
+            factorInputsContainer.innerHTML = '';
+
+            selectsToClear.forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    select.innerHTML = '<option value="">-- Wybierz --</option>';
+                }
+            });
+        }
+
+
+        function toggleAnalysisTypeOptions() {
+            const analysisType = document.getElementById('analysisType').value;
+            document.getElementById('correlationOptions').classList.add('hidden');
+            document.getElementById('groupComparisonOptions').classList.add('hidden');
+            document.getElementById('regressionOptions').classList.add('hidden');
+            document.getElementById('factorialANOVAOptions').classList.add('hidden');
+
+            document.getElementById('predictorInputsContainer').innerHTML = ''; // Clear dynamic predictors
+            document.getElementById('factorInputsContainer').innerHTML = ''; // Clear dynamic factors
+
+            // Ukryj pytanie o zależność grup domyślnie
+            document.getElementById('groupDependencyQuestion').classList.add('hidden');
+
+
+            if (analysisType === 'correlation') {
+                document.getElementById('correlationOptions').classList.remove('hidden');
+            } else if (analysisType === 'groupComparison') {
+                document.getElementById('groupComparisonOptions').classList.remove('hidden');
+                // Pokaż pytanie o zależność grup tylko dla porównania grup
+                document.getElementById('groupDependencyQuestion').classList.remove('hidden');
+
+                // Dodaj listener do pola numGroups, aby pokazać/ukryć pytanie o zależność
+                document.getElementById('numGroups').removeEventListener('input', handleNumGroupsChange); // Prevent multiple listeners
+                document.getElementById('numGroups').addEventListener('input', handleNumGroupsChange);
+                // Wywołaj raz, aby ustawić początkową widoczność
+                handleNumGroupsChange();
+
+            } else if (analysisType === 'regression') {
+                document.getElementById('regressionOptions').classList.remove('hidden');
+                // Add event listener to numPredictors input for live update
+                document.getElementById('numPredictors').removeEventListener('change', handleNumPredictorsChange);
+                document.getElementById('numPredictors').addEventListener('change', handleNumPredictorsChange);
+                document.getElementById('regressionDependentVar').removeEventListener('change', updateRegressionPredictors);
+                document.getElementById('regressionDependentVar').addEventListener('change', updateRegressionPredictors);
+                
+                handleNumPredictorsChange(); // Initial call
+            } else if (analysisType === 'factorialANOVA') {
+                document.getElementById('factorialANOVAOptions').classList.remove('hidden');
+                // Add event listener to numFactors input for live update
+                document.getElementById('numFactors').removeEventListener('change', handleNumFactorsChange);
+                document.getElementById('numFactors').addEventListener('change', handleNumFactorsChange);
+                document.getElementById('factorialDependentVar').removeEventListener('change', updateFactorInputs);
+                document.getElementById('factorialDependentVar').addEventListener('change', updateFactorInputs);
+
+                handleNumFactorsChange(); // Initial call
+            }
+        }
+
+        function handleNumGroupsChange() {
+            const numGroups = parseInt(document.getElementById('numGroups').value);
+            if (numGroups === 2) {
+                document.getElementById('groupDependencyQuestion').classList.remove('hidden');
+                // Ensure selection buttons are initialized correctly for group dependency
+                initializeSelectionButtons('areGroupsDependent');
+            } else {
+                document.getElementById('groupDependencyQuestion').classList.add('hidden');
+                // Resetuj wybór, jeśli pytanie jest ukryte
+                document.getElementById('areGroupsDependent').value = 'no'; // Set hidden input value
+            }
+        }
+
+        function handleNumPredictorsChange() {
+            const numPredictors = parseInt(document.getElementById('numPredictors').value);
+            if (!isNaN(numPredictors) && numPredictors >= 1) {
+                updateRegressionPredictors();
+            }
+        }
+
+        function handleNumFactorsChange() {
+            const numFactors = parseInt(document.getElementById('numFactors').value);
+            if (!isNaN(numFactors) && numFactors >= 2) {
+                updateFactorInputs();
+            }
+        }
+
+        function updateRegressionPredictors() {
+            const numPredictors = parseInt(document.getElementById('numPredictors').value);
+            const predictorInputsContainer = document.getElementById('predictorInputsContainer');
+            predictorInputsContainer.innerHTML = ''; // Wyczyść poprzednie pola
+
+            const regressionDependentVarName = document.getElementById('regressionDependentVar').value;
+
+            for (let i = 0; i < numPredictors; i++) {
+                const label = document.createElement('label');
+                label.textContent = `Predyktor ${i + 1}:`;
+                predictorInputsContainer.appendChild(label);
+
+                const select = document.createElement('select');
+                select.id = `predictorVar${i}`;
+                select.name = `predictorVar`;
+                select.add(new Option('-- Wybierz --', ''));
+
+                variables.forEach(variable => {
+                    // Predyktor nie może być tą samą zmienną co zmienna zależna
+                    if (variable.name !== regressionDependentVarName) {
+                        const option = document.createElement('option');
+                        option.value = variable.name;
+                        // Use the helper function to get Polish type name
+                        option.textContent = `${variable.name} (${getPolishTypeName(variable.type)})`;
+                        option.dataset.type = variable.type;
+                        select.appendChild(option);
+                    }
+                });
+                predictorInputsContainer.appendChild(select);
+            }
+        }
+
+
+        function updateFactorInputs() {
+            const numFactors = parseInt(document.getElementById('numFactors').value);
+            const factorInputsContainer = document.getElementById('factorInputsContainer');
+            factorInputsContainer.innerHTML = ''; // Wyczyść poprzednie pola
+
+            const factorialDependentVarName = document.getElementById('factorialDependentVar').value;
+
+            for (let i = 0; i < numFactors; i++) {
+                const label = document.createElement('label');
+                label.textContent = `Czynnik ${i + 1}:`;
+                factorInputsContainer.appendChild(label);
+
+                const select = document.createElement('select');
+                select.id = `factorVar${i}`;
+                select.name = `factorVar`;
+                select.add(new Option('-- Wybierz --', ''));
+
+                variables.forEach(variable => {
+                    // Czynniki mogą być tylko kategorialne i nie mogą być zmienną zależną
+                    if ((variable.type === 'ordinal' || variable.type === 'nominal') && variable.name !== factorialDependentVarName) {
+                        const option = document.createElement('option');
+                        option.value = variable.name;
+                        // Use the helper function to get Polish type name
+                        option.textContent = `${variable.name} (${getPolishTypeName(variable.type)})`;
+                        option.dataset.type = variable.type;
+                        select.appendChild(option);
+                    }
+                });
+                factorInputsContainer.appendChild(select);
+            }
+        }
+
+
+        function handleNextFromAnalysisOptions() {
+            const analysisType = document.getElementById('analysisType').value;
+            let needsDistributionTest = false;
+            let numGroups = null;
+            // Get value from hidden input for group dependency
+            let areGroupsDependent = document.getElementById('areGroupsDependent').value === 'yes'; 
+            let selectedVars = new Set(); // Do sprawdzania duplikatów
+            let validationPassed = true;
+
+            if (analysisType === '') {
+                alert("Proszę wybrać rodzaj analizy.");
+                return;
+            }
+
+            // Variable types needed for `recommendTests` later
+            let selectedVar1Name, selectedVar2Name, selectedVar1Type, selectedVar2Type; // For correlation
+            let dependentVarName, categoricalVarName, dependentVarType, categoricalVarType; // For group comparison
+            let regressionDependentVarName, regressionDependentVarType, predictorNames = []; // For regression
+            let factorialDependentVarName, factorialDependentVarType, factorNames = []; // For factorial ANOVA
+
+
+            if (analysisType === 'correlation') {
+                const var1Select = document.getElementById('var1Correlation');
+                const var2Select = document.getElementById('var2Correlation');
+                selectedVar1Name = var1Select.value;
+                selectedVar2Name = var2Select.value;
+
+                if (!selectedVar1Name || !selectedVar2Name) {
+                    alert("Proszę wybrać dwie zmienne do korelacji/związku.");
+                    validationPassed = false;
+                } else if (selectedVar1Name === selectedVar2Name) {
+                    alert("Zmienne do korelacji/związku muszą być różne.");
+                    validationPassed = false;
+                } else {
+                    selectedVars.add(selectedVar1Name);
+                    selectedVars.add(selectedVar2Name);
+                    selectedVar1Type = var1Select.options[var1Select.selectedIndex]?.dataset.type;
+                    selectedVar2Type = var2Select.options[var2Select.selectedIndex]?.dataset.type;
+                    
+                    // Only need distribution test if BOTH are interval
+                    if (selectedVar1Type === 'interval' && selectedVar2Type === 'interval') {
+                        needsDistributionTest = true;
+                    } else {
+                        // If any is nominal/ordinal, directly go to recommendation
+                        needsDistributionTest = false;
+                    }
+                }
+            } else if (analysisType === 'groupComparison') {
+                const dependentVarSelect = document.getElementById('dependentVar');
+                const categoricalVarSelect = document.getElementById('categoricalVar');
+                dependentVarName = dependentVarSelect.value;
+                categoricalVarName = categoricalVarSelect.value;
+
+                if (!dependentVarName || !categoricalVarName) {
+                    alert("Proszę wybrać zmienną zależną i kategorialną do porównania grup.");
+                    validationPassed = false;
+                } else if (dependentVarName === categoricalVarName) {
+                    alert("Zmienna zależna i kategorialna muszą być różne.");
+                    validationPassed = false;
+                } else {
+                    selectedVars.add(dependentVarName);
+                    selectedVars.add(categoricalVarName);
+                    numGroups = parseInt(document.getElementById('numGroups').value);
+                    if (isNaN(numGroups) || numGroups < 2) {
+                        alert("Proszę podać prawidłową liczbę grup (minimum 2).");
+                        validationPassed = false;
+                    }
+
+                    if (numGroups === 2) {
+                        areGroupsDependent = document.getElementById('areGroupsDependent').value === 'yes';
+                    }
+
+                    dependentVarType = dependentVarSelect.options[dependentVarSelect.selectedIndex]?.dataset.type;
+                    categoricalVarType = categoricalVarSelect.options[categoricalVarSelect.selectedIndex]?.dataset.type;
+                    
+                    if (dependentVarType === 'interval') {
+                        needsDistributionTest = true;
+                    } else {
+                        needsDistributionTest = false; // Nominal or Ordinal dependent variable
+                    }
+                }
+            } else if (analysisType === 'regression') {
+                const regressionDependentVarSelect = document.getElementById('regressionDependentVar');
+                regressionDependentVarName = regressionDependentVarSelect.value;
+                if (!regressionDependentVarName) {
+                    alert("Proszę wybrać zmienną zależną do regresji.");
+                    validationPassed = false;
+                } else {
+                    selectedVars.add(regressionDependentVarName);
+                    regressionDependentVarType = regressionDependentVarSelect.options[regressionDependentVarSelect.selectedIndex]?.dataset.type;
+                    if (regressionDependentVarType !== 'interval') {
+                        alert("Zmienna zależna w regresji liniowej musi być typu interwałowego.");
+                        validationPassed = false;
+                    } else {
+                        needsDistributionTest = true; // Regression always needs normality check of residuals
+                    }
+                }
+
+                const predictorSelects = document.querySelectorAll('#predictorInputsContainer select');
+                if (predictorSelects.length === 0) {
+                    alert("Proszę wybrać liczbę predyktorów i upewnić się, że pola zostały wygenerowane.");
+                    validationPassed = false;
+                } else {
+                    for (const select of predictorSelects) {
+                        if (!select.value) {
+                            alert("Proszę wybrać wszystkie zmienne predykcyjne.");
+                            validationPassed = false;
+                            break;
+                        }
+                        if (selectedVars.has(select.value)) {
+                            alert(`Zmienne muszą być unikalne. Zmienna "${select.value}" jest już wybrana.`);
+                            validationPassed = false;
+                            break;
+                        }
+                        selectedVars.add(select.value);
+                        predictorNames.push(select.value);
+                    }
+                }
+            } else if (analysisType === 'factorialANOVA') {
+                const factorialDependentVarSelect = document.getElementById('factorialDependentVar');
+                factorialDependentVarName = factorialDependentVarSelect.value;
+                if (!factorialDependentVarName) {
+                    alert("Proszę wybrać zmienną zależną do Wieloczynnikowej ANOVA.");
+                    validationPassed = false;
+                } else {
+                    selectedVars.add(factorialDependentVarName);
+                    factorialDependentVarType = factorialDependentVarSelect.options[factorialDependentVarSelect.selectedIndex]?.dataset.type;
+                    if (factorialDependentVarType !== 'interval') {
+                        alert("Zmienna zależna w Wieloczynnikowej ANOVA musi być typu interwałowego.");
+                        validationPassed = false;
+                    } else {
+                        needsDistributionTest = true; // ANOVA always needs normality check of residuals
+                    }
+                }
+
+                const factorSelects = document.querySelectorAll('#factorInputsContainer select');
+                const numFactors = parseInt(document.getElementById('numFactors').value);
+                if (factorSelects.length < 2 || factorSelects.length !== numFactors) {
+                    alert("Proszę wybrać liczbę czynników (minimum 2) i upewnić się, że pola zostały wygenerowane i wybrano odpowiednie zmienne.");
+                    validationPassed = false;
+                } else {
+                    for (const select of factorSelects) {
+                        if (!select.value) {
+                            alert("Proszę wybrać wszystkie czynniki.");
+                            validationPassed = false;
+                            break;
+                        }
+                        const factorType = select.options[select.selectedIndex]?.dataset.type;
+                        if (factorType === 'interval') {
+                            alert(`Czynnik "${select.value}" jest zmienną interwałową. Czynniki w Wieloczynnikowej ANOVA muszą być zmiennymi kategorialnymi (nominalnymi lub porządkowymi).`);
+                            validationPassed = false;
+                            break;
+                        }
+                        if (selectedVars.has(select.value)) {
+                            alert(`Zmienne muszą być unikalne. Czynnik "${select.value}" jest już wybrany.`);
+                            validationPassed = false;
+                            break;
+                        }
+                        selectedVars.add(select.value);
+                        factorNames.push(select.value);
+                    }
+                }
+            }
+
+            if (!validationPassed) {
+                return;
+            }
+
+            // Store selected variable names, types and other relevant info for recommendTests
+            const analysisData = {
+                analysisType: analysisType,
+                selectedVar1Name: selectedVar1Name,
+                selectedVar2Name: selectedVar2Name,
+                selectedVar1Type: selectedVar1Type,
+                selectedVar2Type: selectedVar2Type,
+                dependentVarName: dependentVarName,
+                categoricalVarName: categoricalVarName,
+                dependentVarType: dependentVarType,
+                categoricalVarType: categoricalVarType,
+                regressionDependentVarName: regressionDependentVarName,
+                regressionDependentVarType: regressionDependentVarType,
+                predictorNames: predictorNames,
+                factorialDependentVarName: factorialDependentVarName,
+                factorialDependentVarType: factorialDependentVarType,
+                factorNames: factorNames,
+                numGroups: numGroups,
+                areGroupsDependent: areGroupsDependent,
+                needsDistributionTest: needsDistributionTest
+            };
+
+            if (needsDistributionTest) {
+                const numPeople = parseInt(document.getElementById('numPeople').value);
+                const suggestedTestElement = document.getElementById('suggestedDistributionTestType');
+                let suggestedDistributionTest = "";
+
+                if (numPeople <= 100) {
+                    suggestedDistributionTest = "Test Shapiro-Wilka";
+                } else {
+                    suggestedDistributionTest = "Test Kołmogorowa-Smirnowa";
+                }
+                suggestedTestElement.textContent = suggestedDistributionTest;
+
+                document.getElementById('distribution-test-instruction').classList.remove('hidden');
+                document.getElementById('distribution-test-choice').classList.remove('hidden');
+                document.getElementById('results').classList.add('hidden'); // Ensure results are hidden initially
+                
+                // Attach the analysisData to the recommendTests button or a global variable
+                document.getElementById('distribution-test-choice').querySelector('button').onclick = () => recommendTests(analysisData);
+                initializeSelectionButtons('distributionResult'); // Initialize distribution selection buttons
+
+            } else {
+                // If no distribution test needed, directly recommend tests
+                document.getElementById('distribution-test-instruction').classList.add('hidden');
+                document.getElementById('distribution-test-choice').classList.add('hidden');
+                document.getElementById('help-distribution-test').classList.add('hidden'); // Ensure help is hidden if not needed
+                recommendTests(analysisData);
+            }
+        }
+
+        // --- Nowa funkcja do rozwijania/zwijania informacji o teście ---
+        // Zmieniono, aby akceptowała bezpośrednio element
+        function toggleTestInfo(element) {
+            if (element) {
+                element.classList.toggle('hidden');
+            } else {
+                console.error("toggleTestInfo: Element do przełączania jest null lub undefined.");
+            }
+        }
+
+        // Nowa funkcja do wypełniania sekcji pomocy wszystkimi testami
+        function populateAllTestsHelp() {
+            const allTestsContainer = document.getElementById('allTestsContainer');
+            allTestsContainer.innerHTML = ''; // Wyczyść poprzednie treści
+
+            let testIndex = 0;
+            for (const testName in testData) {
+                if (testData.hasOwnProperty(testName)) {
+                    const testInfo = testData[testName];
+                    
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'test-card';
+
+                    const header = document.createElement('h3');
+                    header.textContent = testName;
+                    header.style.cursor = 'pointer';
+                    // header.onclick będzie przypisany PÓŹNIEJ, po stworzeniu infoContent
+
+                    const infoContent = document.createElement('div');
+                    // ID jest nadal przydatne, choć toggleTestInfo go już nie używa
+                    infoContent.id = `allTestInfo${testIndex}`; 
+                    infoContent.className = 'test-info-content hidden';
+
+                    const descriptionP = document.createElement('p');
+                    descriptionP.innerHTML = `<strong>Opis:</strong> ${testInfo.description}`;
+                    infoContent.appendChild(descriptionP);
+
+                    const assumptionsH4 = document.createElement('h4');
+                    assumptionsH4.textContent = 'Założenia:';
+                    infoContent.appendChild(assumptionsH4);
+                    const assumptionsUl = document.createElement('ul');
+                    testInfo.assumptions.forEach(assumption => {
+                        const li = document.createElement('li');
+                        li.textContent = assumption;
+                        assumptionsUl.appendChild(li);
+                    });
+                    infoContent.appendChild(assumptionsUl);
+
+                    const hypothesesH4 = document.createElement('h4');
+                    hypothesesH4.textContent = 'Przykładowe Hipotezy:';
+                    infoContent.appendChild(hypothesesH4);
+                    const hypothesesUl = document.createElement('ul');
+                    // Wywołaj funkcję hypotheses z domyślnymi nazwami zmiennych
+                    let hypotheses;
+                    if (testName.includes('Regresja')) {
+                        hypotheses = testInfo.hypotheses("Zmienna Zależna", "Predyktor A", "Predyktor B");
+                    } else if (testName.includes('ANOVA')) {
+                         hypotheses = testInfo.hypotheses("Zmienna Zależna", "Czynnik A", "Czynnik B");
+                    }
+                    else if (testName.includes('t-Studenta dla prób zależnych') || testName.includes('Wilcoxona')) {
+                        hypotheses = testInfo.hypotheses("Wynik");
+                    }
+                    else if (testName.includes('t-Studenta dla prób niezależnych') || testName.includes('Manna-Whitneya') || testName.includes('Kruskala-Wallisa') || testName.includes('chi-kwadrat') ){
+                        hypotheses = testInfo.hypotheses("Zmienna Zależna", "Zmienna Grupująca");
+                    }
+                    else {
+                        hypotheses = testInfo.hypotheses();
+                    }
+
+                    hypotheses.forEach(h => {
+                        const li = document.createElement('li');
+                        li.textContent = h; // LaTeX-like string will be rendered by MathJax if it's included, or just displayed as is.
+                        hypothesesUl.appendChild(li);
+                    });
+                    infoContent.appendChild(hypothesesUl);
+
+                    // Najpierw dodaj nagłówek, potem treść informacji
+                    cardDiv.appendChild(header);
+                    cardDiv.appendChild(infoContent);
+
+                    // TERAZ przypisz funkcję onclick, która ma dostęp do infoContent
+                    header.onclick = () => toggleTestInfo(infoContent);
+                    
+                    allTestsContainer.appendChild(cardDiv);
+                    testIndex++;
+                }
+            }
+            // Render MathJax after content is added
+            if (window.MathJax) {
+                window.MathJax.typesetPromise().then(() => {
+                    console.log('MathJax typeset complete in help section');
+                }).catch(err => console.error('MathJax typeset error in help section:', err));
+            }
+        }
+
+
+        function recommendTests(analysisData) {
+            const recommendedTestsContainer = document.getElementById('recommendedTestsContainer');
+            recommendedTestsContainer.innerHTML = ''; // Wyczyść poprzednie sugestie
+
+            const analysisType = analysisData.analysisType;
+            const needsDistributionTest = analysisData.needsDistributionTest;
+            const distributionResult = needsDistributionTest ? document.getElementById('distributionResult').value : 'N/A';
+            
+            let testsToSuggest = [];
+
+            // Logika wyboru testu
+            if (analysisType === 'correlation') {
+                const var1Type = analysisData.selectedVar1Type;
+                const var2Type = analysisData.selectedVar2Type;
+                const var1Name = analysisData.selectedVar1Name;
+                const var2Name = analysisData.selectedVar2Name;
+
+                if (var1Type === 'interval' && var2Type === 'interval') {
+                    if (distributionResult === 'normal') {
+                        testsToSuggest.push({ name: 'Korelacja Pearsona', vars: [var1Name, var2Name] });
+                    } else {
+                        testsToSuggest.push({ name: 'Korelacja Spearmana', vars: [var1Name, var2Name] });
+                        testsToSuggest.push({ name: 'Korelacja Kendalla Tau', vars: [var1Name, var2Name] });
+                    }
+                } else if (var1Type === 'ordinal' && var2Type === 'ordinal') {
+                    testsToSuggest.push({ name: 'Korelacja Spearmana', vars: [var1Name, var2Name] });
+                    testsToSuggest.push({ name: 'Korelacja Kendalla Tau', vars: [var1Name, var2Name] });
+                } else if ((var1Type === 'ordinal' && var2Type === 'interval') || (var1Type === 'interval' && var2Type === 'ordinal')) {
+                    // Mieszane ordinal/interval - Spearman/Kendall są bezpieczniejsze
+                    testsToSuggest.push({ name: 'Korelacja Spearmana', vars: [var1Name, var2Name] });
+                    testsToSuggest.push({ name: 'Korelacja Kendalla Tau', vars: [var1Name, var2Name] });
+                } else if (var1Type === 'nominal' || var2Type === 'nominal') {
+                    if (var1Type === 'nominal' && var2Type === 'nominal') {
+                         testsToSuggest.push({ name: 'Test chi-kwadrat', vars: [var1Name, var2Name] });
+                    } else if ( (var1Type === 'nominal' && (var2Type === 'ordinal' || var2Type === 'interval')) || ((var1Type === 'ordinal' || var1Type === 'interval') && var2Type === 'nominal') ) {
+                         // Jeśli jedna nominalna, a druga porządkowa/interwałowa, nominalna staje się grupującą
+                        const depVar = var1Type === 'interval' || var1Type === 'ordinal' ? var1Name : var2Name;
+                        const catVar = var1Type === 'nominal' ? var1Name : var2Name;
+                        const depType = var1Type === 'interval' || var1Type === 'ordinal' ? var1Type : var2Type;
+
+                        if (catVar && depType) { // Upewnij się, że są zmienne
+                            if (depType === 'interval') {
+                                if (distributionResult === 'normal') {
+                                    testsToSuggest.push({ name: 'Test t-Studenta dla prób niezależnych', vars: [depVar, catVar] }); // Dla 2 grup nominalnych
+                                    testsToSuggest.push({ name: 'ANOVA jednoczynnikowa', vars: [depVar, catVar] }); // Dla 3+ grup nominalnych
+                                } else {
+                                    testsToSuggest.push({ name: 'Test U Manna-Whitneya', vars: [depVar, catVar] });
+                                    testsToSuggest.push({ name: 'Test Kruskala-Wallisa', vars: [depVar, catVar] });
+                                }
+                            } else if (depType === 'ordinal') {
+                                testsToSuggest.push({ name: 'Test U Manna-Whitneya', vars: [depVar, catVar] });
+                                testsToSuggest.push({ name: 'Test Kruskala-Wallisa', vars: [depVar, catVar] });
+                            }
+                        }
+                        testsToSuggest.push({ name: 'Test chi-kwadrat', vars: [var1Name, var2Name] }); // Chi-kwadrat zawsze może być dla kategorialnych
+                    } else {
+                        // Catch-all for unusual nominal combinations
+                        testsToSuggest.push({ name: 'Brak standardowej korelacji', vars: [] });
+                    }
+                }
+
+            } else if (analysisType === 'groupComparison') {
+                const depVarName = analysisData.dependentVarName;
+                const catVarName = analysisData.categoricalVarName;
+                const depVarType = analysisData.dependentVarType;
+                const numGroups = analysisData.numGroups;
+                const areGroupsDependent = analysisData.areGroupsDependent;
+
+                if (depVarType === 'interval') {
+                    if (numGroups === 2) {
+                        if (distributionResult === 'normal') {
+                            if (areGroupsDependent) {
+                                testsToSuggest.push({ name: 'Test t-Studenta dla prób zależnych', vars: [depVarName] });
+                            } else {
+                                testsToSuggest.push({ name: 'Test t-Studenta dla prób niezależnych', vars: [depVarName, catVarName] });
+                            }
+                        } else { // non-normal
+                            if (areGroupsDependent) {
+                                testsToSuggest.push({ name: 'Test Wilcoxona', vars: [depVarName] });
+                            } else {
+                                testsToSuggest.push({ name: 'Test U Manna-Whitneya', vars: [depVarName, catVarName] });
+                            }
+                        }
+                    } else if (numGroups > 2) {
+                        if (distributionResult === 'normal') {
+                            testsToSuggest.push({ name: 'ANOVA jednoczynnikowa', vars: [depVarName, catVarName] });
+                        } else {
+                            testsToSuggest.push({ name: 'Test Kruskala-Wallisa', vars: [depVarName, catVarName] });
+                        }
+                    }
+                } else if (depVarType === 'ordinal') {
+                    if (numGroups === 2) {
+                        if (areGroupsDependent) {
+                            testsToSuggest.push({ name: 'Test Wilcoxona', vars: [depVarName] });
+                        } else {
+                            testsToSuggest.push({ name: 'Test U Manna-Whitneya', vars: [depVarName, catVarName] });
+                        }
+                    } else if (numGroups > 2) {
+                        testsToSuggest.push({ name: 'Test Kruskala-Wallisa', vars: [depVarName, catVarName] });
+                    }
+                } else if (depVarType === 'nominal') {
+                    testsToSuggest.push({ name: 'Test chi-kwadrat', vars: [depVarName, catVarName] });
+                }
+            } else if (analysisType === 'regression') {
+                const depVarName = analysisData.regressionDependentVarName;
+                const predictorNames = analysisData.predictorNames;
+                if (analysisData.regressionDependentVarType === 'interval') {
+                     if (distributionResult === 'normal') { // Normality of residuals
+                        testsToSuggest.push({ name: 'Regresja liniowa wielokrotna', vars: [depVarName, ...predictorNames] });
+                    } else {
+                        testsToSuggest.push({ name: 'Regresja liniowa wielokrotna', vars: [depVarName, ...predictorNames], note: " (może wymagać transformacji danych zależnych lub użycia uogólnionego modelu liniowego)" });
+                    }
+                }
+            } else if (analysisType === 'factorialANOVA') {
+                const depVarName = analysisData.factorialDependentVarName;
+                const factorNames = analysisData.factorNames;
+                if (analysisData.factorialDependentVarType === 'interval') {
+                    if (distributionResult === 'normal') { // Normality of residuals
+                        testsToSuggest.push({ name: 'Wieloczynnikowa ANOVA', vars: [depVarName, ...factorNames] });
+                    } else {
+                        testsToSuggest.push({ name: 'Wieloczynnikowa ANOVA', vars: [depVarName, ...factorNames], note: " (może wymagać transformacji danych zależnych lub użycia nieparametrycznej ANOVA)" });
+                    }
+                }
+            }
+            
+            if (testsToSuggest.length === 0) {
+                const noSuggestionDiv = document.createElement('div');
+                noSuggestionDiv.className = 'test-card';
+                noSuggestionDiv.innerHTML = `
+                    <h3>Brak sugestii testu</h3>
+                    <p>Upewnij się, że wszystkie zmienne są wybrane poprawnie i założenia spełnione. Zawsze konsultuj się ze statystykiem.</p>
+                `;
+                recommendedTestsContainer.appendChild(noSuggestionDiv);
+            } else {
+                testsToSuggest.forEach((test, index) => {
+                    const testName = test.name;
+                    const testInfo = testData[testName];
+                    if (testInfo) {
+                        const cardDiv = document.createElement('div');
+                        cardDiv.className = 'test-card';
+
+                        const header = document.createElement('h3');
+                        header.textContent = testName + (test.note || '');
+                        header.style.cursor = 'pointer';
+                        // header.onclick będzie przypisany PÓŹNIEJ, po stworzeniu infoContent
+
+                        const infoContent = document.createElement('div');
+                        infoContent.id = `testInfo${index}`; // ID jest nadal przydatne
+                        infoContent.className = 'test-info-content hidden';
+
+                        const descriptionP = document.createElement('p');
+                        descriptionP.innerHTML = `<strong>Opis:</strong> ${testInfo.description}`;
+                        infoContent.appendChild(descriptionP);
+
+                        const assumptionsH4 = document.createElement('h4');
+                        assumptionsH4.textContent = 'Założenia:';
+                        infoContent.appendChild(assumptionsH4);
+                        const assumptionsUl = document.createElement('ul');
+                        testInfo.assumptions.forEach(assumption => {
+                            const li = document.createElement('li');
+                            li.textContent = assumption;
+                            assumptionsUl.appendChild(li);
+                        });
+                        infoContent.appendChild(assumptionsUl);
+
+                        const hypothesesH4 = document.createElement('h4');
+                        hypothesesH4.textContent = 'Przykładowe Hipotezy:';
+                        hypothesesH4.style.marginTop = '10px'; // Add some margin for better spacing
+                        infoContent.appendChild(hypothesesH4);
+                        const hypothesesUl = document.createElement('ul');
+                        const hypotheses = testInfo.hypotheses(...test.vars);
+                        hypotheses.forEach(h => {
+                            const li = document.createElement('li');
+                            li.textContent = h; // LaTeX-like string will be rendered by MathJax if it's included, or just displayed as is.
+                            hypothesesUl.appendChild(li);
+                        });
+                        infoContent.appendChild(hypothesesUl);
+
+                        // Najpierw dodaj nagłówek, potem treść informacji
+                        cardDiv.appendChild(header);
+                        cardDiv.appendChild(infoContent);
+
+                        // TERAZ przypisz funkcję onclick, która ma dostęp do infoContent
+                        header.onclick = () => toggleTestInfo(infoContent);
+
+                        recommendedTestsContainer.appendChild(cardDiv);
+                    }
+                });
+            }
+
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('analysis-options').classList.remove('hidden');
+            if(needsDistributionTest){
+                document.getElementById('distribution-test-instruction').classList.remove('hidden');
+                document.getElementById('distribution-test-choice').classList.remove('hidden');
+            } else {
+                document.getElementById('distribution-test-instruction').classList.add('hidden');
+                document.getElementById('distribution-test-choice').classList.add('hidden');
+            }
+            document.getElementById('help-distribution-test').classList.add('hidden');
+            document.getElementById('help-all-tests-info').classList.add('hidden'); // Hide all tests info
+
+            // Render MathJax after content is added
+            if (window.MathJax) {
+                window.MathJax.typesetPromise().then(() => {
+                    console.log('MathJax typeset complete in recommended section');
+                }).catch(err => console.error('MathJax typeset error in recommended section:', err));
+            }
+        }
+
+        function resetCalculator() {
+            // Resetuj wszystkie pola do wartości początkowych
+            document.getElementById('numVariables').value = 2; // Zmienione na 2
+            document.getElementById('numPeople').value = 100; // Zmienione na 100
+            
+            // Ukryj wszystkie sekcje poza początkową
+            document.getElementById('variable-names').classList.add('hidden');
+            document.getElementById('analysis-options').classList.add('hidden');
+            document.getElementById('distribution-test-instruction').classList.add('hidden');
+            document.getElementById('distribution-test-choice').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('help-step1').classList.add('hidden');
+            document.getElementById('help-step2').classList.add('hidden');
+            document.getElementById('help-distribution-test').classList.add('hidden'); // Ukryj nową pomoc
+            document.getElementById('help-all-tests-info').classList.add('hidden'); // Ukryj nową pomoc
+
+            // Wyczyść dynamiczne kontenery
+            document.getElementById('variableInputsContainer').innerHTML = '';
+            document.getElementById('predictorInputsContainer').innerHTML = '';
+            document.getElementById('factorInputsContainer').innerHTML = '';
+            document.getElementById('recommendedTestsContainer').innerHTML = ''; // Wyczyść karty testów
+            document.getElementById('allTestsContainer').innerHTML = ''; // Wyczyść karty testów w pomocy
+
+            // Wyczyść zmienne przechowywane w JS
+            variables = [];
+
+            // Resetuj selecty do ich domyślnych wartości
+            document.getElementById('analysisType').value = "";
+            clearAllAnalysisSelects(); // Ensure all select elements are reset
+            toggleAnalysisTypeOptions(); // Hide analysis options again
+
+            // Reset selection buttons
+            const allSelectionButtons = document.querySelectorAll('.selection-button');
+            allSelectionButtons.forEach(button => {
+                button.classList.remove('selected-button');
+            });
+            document.getElementById('areGroupsDependent').value = 'no';
+            document.getElementById('distributionResult').value = 'normal';
+            // Set initial selected state for default choices
+            document.querySelector('.selection-button[data-target="areGroupsDependent"][data-value="no"]').classList.add('selected-button');
+            document.querySelector('.selection-button[data-target="distributionResult"][data-value="normal"]').classList.add('selected-button');
+        }
+
+        // --- Selection Button Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.selection-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const value = this.dataset.value;
+                    const hiddenInput = document.getElementById(targetId);
+
+                    // Remove 'selected-button' from all buttons in the same group
+                    document.querySelectorAll(`.selection-button[data-target="${targetId}"]`).forEach(btn => {
+                        btn.classList.remove('selected-button');
+                    });
+
+                    // Add 'selected-button' to the clicked button
+                    this.classList.add('selected-button');
+                    
+                    // Update the hidden input value
+                    hiddenInput.value = value;
+                });
+            });
+
+            // Initialize default selected states when the page loads
+            initializeSelectionButtons('areGroupsDependent');
+            initializeSelectionButtons('distributionResult');
+        });
+
+        function initializeSelectionButtons(targetId) {
+            const hiddenInput = document.getElementById(targetId);
+            const defaultValue = hiddenInput.value;
+            // Ensure no button is selected initially
+            document.querySelectorAll(`.selection-button[data-target="${targetId}"]`).forEach(btn => {
+                btn.classList.remove('selected-button');
+            });
+            // Select the button corresponding to the default value
+            const defaultButton = document.querySelector(`.selection-button[data-target="${targetId}"][data-value="${defaultValue}"]`);
+            if (defaultButton) {
+                defaultButton.classList.add('selected-button');
+            }
+        }
 </script>
 </html>
