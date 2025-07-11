@@ -52,6 +52,7 @@ body::before {
     padding: 10px 20px; /* Dodano padding po bokach */
     gap: 20px; /* Zwiększono gap dla lepszego odstępu */
     flex-wrap: wrap; /* Pozwól na zawijanie w razie potrzeby */
+    margin-bottom: 10px;
 }
 
 .logo img {
@@ -820,3 +821,167 @@ em, i {
     padding: 15px;
     padding-top: 0;
 }
+
+/* Stylizacja tabeli danych */
+        #dataTableContainer {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        #dataTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        #dataTable th, #dataTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        #dataTable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        #dataTable td[contenteditable="true"] {
+            background-color: #fff;
+            cursor: text;
+        }
+        #dataTable td[contenteditable="true"]:focus {
+            outline: 1px solid #007bff;
+            background-color: #e6f7ff;
+        }
+
+        .column-type-selector {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .column-type-selector select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        /* Stylizacja sekcji wyników */
+        #results {
+            margin-top: 0; /* Usunięcie górnego marginesu, bo jest już w container */
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+        .results-section h3 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            color: #0056b3;
+            border-bottom: 1px solid #a8d6ff;
+            padding-bottom: 5px;
+        }
+        .result-item {
+            margin-bottom: 5px;
+        }
+        .result-item strong {
+            color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Stylizacja tabeli podsumowującej statystyki */
+        #summaryResultsTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        #summaryResultsTable th, #summaryResultsTable td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        #summaryResultsTable th {
+            background-color: #dbe9f6;
+        }
+        #summaryResultsTable tbody tr:nth-child(odd) {
+            background-color: #f8fafd;
+        }
+
+        /* Stylizacja sekcji częstości */
+        #frequencyTables {
+            margin-top: 30px;
+        }
+        .frequency-table-container {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #cceeff;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+        }
+        .frequency-table-container h4 {
+            color: #0056b3;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #a8d6ff;
+            padding-bottom: 5px;
+        }
+        .frequency-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .frequency-table th, .frequency-table td {
+            border: 1px solid #bbddee;
+            padding: 6px;
+            text-align: center;
+            font-size: 0.85em;
+        }
+        .frequency-table th {
+            background-color: #e0f0ff;
+        }
+        .frequency-table tbody tr:nth-child(odd) {
+            background-color: #f5faff;
+        }
+
+        /* Stylizacja sekcji wykresów */
+        #chartsSection {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+        #chartsSection h2 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+        #chartsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .chart-box {
+            width: 100%; /* Wykresy będą zajmować całą dostępną szerokość prawej kolumny */
+            min-width: 300px;
+            min-height: 400px; /* Zwiększona minimalna wysokość wykresu */
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        .chart-box canvas {
+            max-width: 100%;
+            height: 100%; /* Canvas wypełni całą wysokość swojego kontenera */
+        }
+
+        /* Responsywność */
+        @media (max-width: 850px) {
+            .main-wrapper {
+                flex-direction: column; /* Na małych ekranach kolumny układają się jedna pod drugą */
+            }
+            .left-column, .right-column {
+                min-width: unset; /* Usuwamy minimalną szerokość, aby zajmowały całą szerokość */
+                width: 100%;
+            }
+        }
