@@ -595,7 +595,7 @@ footer {
 
 /* Ensure the main content can grow to accommodate the calculator */
 main.intro {
-    align-items: flex-start; /* Align to start to prevent calculator from being vertically centered too much */
+    align-items: center; /* Align to start to prevent calculator from being vertically centered too much */
     padding-top: 20px; /* Add some top padding */
     padding-bottom: 20px; /* Add some bottom padding */
     overflow-y: auto; /* Allow vertical scrolling if content is too long */
