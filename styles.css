@@ -602,7 +602,7 @@ main.intro {
 }
 
 .main_content {
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: row; /* Stack elements vertically */
     gap: 20px; /* Space between calculator and other potential content */
     width: 100%; /* Ensure it takes full width */
 }
