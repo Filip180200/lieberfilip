@@ -118,7 +118,7 @@ main.intro {
 .main_content {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: row;
     justify-content: center;
 }
 
