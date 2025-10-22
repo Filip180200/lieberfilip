@@ -33,9 +33,9 @@
     <main class="intro">
         <div class="main_content">
             <div class="calculator-container">
-                <h1>Prosty Analizator Statystyczny (Szkielet)</h1>
+                <h1>Prosty Analizator Statystyczny</h1>
 
-                <p>Ten program to uproszczony przykład, żeby pokazać koncepcję. Do pełnej analizy statystycznej potrzebujesz zaawansowanych bibliotek i bardziej złożonej logiki.</p>
+                <p>Ten program to uproszczony przykład, żeby pokazać jak wybierać testy. Może zawierać błędy!</p>
 
                 <label for="numVariables">Ile masz zmiennych? (max 10)</label>
                 <input type="number" id="numVariables" min="1" max="10" value="2">
@@ -180,10 +180,10 @@
                         <li><strong>Rozkład normalny:</strong> jeśli <em>p</em> > 0.05</li>
                         <li><strong>Rozkład nienormalny:</strong> jeśli <em>p</em> &le; 0.05</li>
                     </ul>
-                    <p>Wartość <em>p</em> (istotność) wskazuje na prawdopodobieństwo uzyskania zaobserwowanych danych (lub bardziej ekstremalnych), jeśli hipoteza zerowa jest prawdziwa. W przypadku testów normalności, hipoteza zerowa ($H_0$) zakłada, że dane pochodzą z rozkładu normalnego.</p>
+                    <p>Wartość <em>p</em> (istotność) wskazuje na prawdopodobieństwo uzyskania zaobserwowanych danych (lub bardziej ekstremalnych), jeśli hipoteza zerowa jest prawdziwa. W przypadku testów normalności, hipoteza zerowa (H0) zakłada, że dane pochodzą z rozkładu normalnego.</p>
                     <ul>
-                        <li>Jeśli $p > 0.05$, nie ma podstaw do odrzucenia $H_0$, co sugeruje, że rozkład jest normalny (lub nie ma dowodów na to, że nim nie jest).</li>
-                        <li>Jeśli $p \le 0.05$, odrzucamy $H_0$, co sugeruje, że rozkład danych jest istotnie różny od normalnego.</li>
+                        <li>Jeśli $p > 0.05$, nie ma podstaw do odrzucenia H0, co sugeruje, że rozkład jest normalny (lub nie ma dowodów na to, że nim nie jest).</li>
+                        <li>Jeśli $p \le 0.05$, odrzucamy H0, co sugeruje, że rozkład danych jest istotnie różny od normalnego.</li>
                     </ul>
                 </div>
 
@@ -263,8 +263,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Brak znaczących wartości odstających.'
                 ],
                 hypotheses: (v1 = "Czynnik 1", v2 = "Czynnik 2") => [ // Dodano domyślne wartości
-                    `$H_0$: Nie ma liniowego związku między ${v1} a ${v2}$ (współczynnik korelacji r = 0).`,
-                    `$H_1$: Istnieje liniowy związek między ${v1} a ${v2}$ (współczynnik korelacji r \\neq 0).`
+                    `H0: Nie ma liniowego związku między ${v1} a ${v2}.`,
+                    `H1: Istnieje liniowy związek między ${v1} a ${v2}.`
                 ]
             },
             'Korelacja Spearmana': {
@@ -274,19 +274,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Związek między zmiennymi jest monotoniczny (rosnący lub malejący, ale niekoniecznie liniowy).'
                 ],
                 hypotheses: (v1 = "Czynnik 1", v2 = "Czynnik 2") => [
-                    `$H_0$: Nie ma monotonicznego związku między ${v1} a ${v2}$ (współczynnik korelacji \\rho = 0).`,
-                    `$H_1$: Istnieje monotoniczny związek między ${v1} a ${v2}$ (współczynnik korelacji \\rho \\neq 0).`
-                ]
-            },
-            'Korelacja Kendalla Tau': {
-                description: 'Mierzy siłę i kierunek monotonicznego związku między dwiema zmiennymi porządkowymi. Często preferowany dla mniejszych prób lub gdy jest dużo wartości powiązanych.',
-                assumptions: [
-                    'Zmienne są co najmniej na skali porządkowej.',
-                    'Związek między zmiennymi jest monotoniczny.'
-                ],
-                hypotheses: (v1 = "Czynnik 1", v2 = "Czynnik 2") => [
-                    `$H_0$: Nie ma monotonicznego związku między ${v1} a ${v2}$ (współczynnik korelacji \\tau = 0).`,
-                    `$H_1$: Istnieje monotoniczny związek między ${v1} a ${v2}$ (współczynnik korelacji \\tau \\neq 0).`
+                    `H0: Nie ma monotonicznego związku między ${v1} a ${v2}.`,
+                    `H1: Istnieje monotoniczny związek między ${v1} a ${v2}.`
                 ]
             },
             'Test chi-kwadrat': {
@@ -297,8 +286,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Oczekiwane częstości w większości komórek tabeli kontyngencji są większe niż 5.'
                 ],
                 hypotheses: (v1 = "Zmienna A", v2 = "Zmienna B") => [
-                    `$H_0$: Zmienne ${v1}$ i ${v2}$ są niezależne (nie ma związku).`,
-                    `$H_1$: Zmienne ${v1}$ i ${v2}$ są zależne (istnieje związek).`
+                    `H0: Zmienne ${v1} i ${v2} są niezależne (nie ma związku).`,
+                    `H1: Zmienne ${v1} i ${v2} są zależne (istnieje związek).`
                 ]
             },
             'Test t-Studenta dla prób niezależnych': {
@@ -310,8 +299,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Jednorodność wariancji (równość wariancji w grupach, sprawdzana testem Levene\'a).'
                 ],
                 hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
-                    `$H_0$: Średnia ${depVar}$ jest taka sama w obu grupach zmiennej ${catVar}$.`,
-                    `$H_1$: Średnia ${depVar}$ różni się między grupami zmiennej ${catVar}$.`
+                    `H0: Średnia ${depVar} jest taka sama w obu grupach zmiennej ${catVar}.`,
+                    `H1: Średnia ${depVar} różni się między grupami zmiennej ${catVar}.`
                 ]
             },
             'Test t-Studenta dla prób zależnych': {
@@ -322,8 +311,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Pomiary są zależne (sparowane).'
                 ],
                 hypotheses: (depVar = "Wynik") => [
-                    `$H_0$: Nie ma różnicy między średnimi dla dwóch pomiarów zmiennej ${depVar}$.`,
-                    `$H_1$: Istnieje różnica między średnimi dla dwóch pomiarów zmiennej ${depVar}$.`
+                    `H0: Nie ma różnicy między średnimi dla dwóch pomiarów zmiennej ${depVar}.`,
+                    `H1: Istnieje różnica między średnimi dla dwóch pomiarów zmiennej ${depVar}.`
                 ]
             },
             'Test U Manna-Whitneya': {
@@ -334,8 +323,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Kształt rozkładów jest podobny w obu grupach (dla porównania median).'
                 ],
                 hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
-                    `$H_0$: Rozkład ${depVar}$ jest taki sam w obu grupach zmiennej ${catVar}$.`,
-                    `$H_1$: Rozkład ${depVar}$ różni się między grupami zmiennej ${catVar}$.`
+                    `H0: Rozkład ${depVar} jest taki sam w obu grupach zmiennej ${catVar}.`,
+                    `H1: Rozkład ${depVar} różni się między grupami zmiennej ${catVar}.`
                 ]
             },
             'Test Wilcoxona': {
@@ -346,8 +335,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Symetryczny rozkład różnic (mniej rygorystyczne niż normalność).'
                 ],
                 hypotheses: (depVar = "Wynik") => [
-                    `$H_0$: Medianowa różnica między pomiarami zmiennej ${depVar}$ wynosi zero.`,
-                    `$H_1$: Medianowa różnica między pomiarami zmiennej ${depVar}$ jest różna od zera.`
+                    `H0: Medianowa różnica między pomiarami zmiennej ${depVar} wynosi zero.`,
+                    `H1: Medianowa różnica między pomiarami zmiennej ${depVar} jest różna od zera.`
                 ]
             },
             'ANOVA jednoczynnikowa': {
@@ -359,8 +348,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Jednorodność wariancji (równość wariancji w grupach, sprawdzana testem Levene\'a).'
                 ],
                 hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
-                    `$H_0$: Średnia ${depVar}$ jest taka sama we wszystkich grupach zmiennej ${catVar}$.`,
-                    `$H_1$: Przynajmniej jedna średnia ${depVar}$ różni się od pozostałych w grupach zmiennej ${catVar}$.`
+                    `H0: Średnia ${depVar} jest taka sama we wszystkich grupach zmiennej ${catVar}.`,
+                    `H1: Przynajmniej jedna średnia ${depVar} różni się od pozostałych w grupach zmiennej ${catVar}.`
                 ]
             },
             'Test Kruskala-Wallisa': {
@@ -371,8 +360,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                     'Kształt rozkładów jest podobny w każdej grupie (dla porównania median).'
                 ],
                 hypotheses: (depVar = "Wynik", catVar = "Grupa") => [
-                    `$H_0$: Rozkład ${depVar}$ jest taki sam we wszystkich grupach zmiennej ${catVar}$.`,
-                    `$H_1$: Rozkład ${depVar}$ różni się między grupami zmiennej ${catVar}$.`
+                    `H0: Rozkład ${depVar} jest taki sam we wszystkich grupach zmiennej ${catVar}.`,
+                    `H1: Rozkład ${depVar} różni się między grupami zmiennej ${catVar}.`
                 ]
             },
             'Regresja liniowa wielokrotna': {
@@ -387,8 +376,8 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                 hypotheses: (depVar = "Zmienna Zależna", ...predictors) => {
                     const predList = predictors.length > 0 ? predictors.join(', ') : 'predyktorach';
                     return [
-                        `$H_0$: Predyktory (${predList}) nie wyjaśniają zmienności w ${depVar}$ (współczynniki regresji = 0).`,
-                        `$H_1$: Przynajmniej jeden predyktor (${predList}) wyjaśnia zmienność w ${depVar}$ (przynajmniej jeden współczynnik regresji \\neq 0).`
+                        `H0: Predyktory (${predList}) nie wyjaśniają zmienności w ${depVar}.`,
+                        `H1: Przynajmniej jeden predyktor (${predList}) wyjaśnia zmienność w ${depVar}.`
                     ];
                 }
             },
@@ -402,13 +391,13 @@ document.querySelectorAll('.nav-links li a').forEach(link => {
                 ],
                 hypotheses: (depVar = "Zmienna Zależna", ...factors) => {
                     const factorList = factors.length > 1 ? factors.slice(0, -1).join(', ') + ' i ' + factors[factors.length - 1] : factors[0];
-                    let h = factors.map(factor => `$H_0$: Nie ma głównego efektu czynnika ${factor}$ na ${depVar}$.`);
+                    let h = factors.map(factor => `H0: Nie ma głównego efektu czynnika ${factor} na ${depVar}.`);
                     if (factors.length > 1) {
-                        h.push(`$H_0$: Nie ma efektu interakcji między ${factorList}$ na ${depVar}$.`);
+                        h.push(`H0: Nie ma efektu interakcji między ${factorList} na ${depVar}.`);
                         // For H1, we generally state that at least one effect is significant.
-                        h.push(`$H_1$: Przynajmniej jeden z efektów głównych lub interakcji jest istotny dla zmiennej ${depVar}$.`);
+                        h.push(`H1: Przynajmniej jeden z efektów głównych lub interakcji jest istotny dla zmiennej ${depVar}.`);
                     } else {
-                         h.push(`$H_1$: Istnieje główny efekt czynnika ${factors[0]}$ na ${depVar}$.`);
+                         h.push(`H1: Istnieje główny efekt czynnika ${factors[0]} na ${depVar}.`);
                     }
                     return h;
                 }

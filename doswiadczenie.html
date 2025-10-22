@@ -93,24 +93,27 @@
                 </div>
                 <i class="fas fa-plus toggle-icon"></i>
             </div>
-
-            <div class="experience-item" data-category="dydaktyczne" data-date="2024-10">
+            <div class="experience-item" data-category="dydaktyczne" data-date="2024-10" data-ongoing="true">
                 <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
                 <div class="content">
-                    <p><b>ASYSTENT DYDAKTYCZNY</b> - Uniwersytet SWPS Filia we Wrocławiu (październik 2024 - obecnie)</p>
+                    <p><b>ASYSTENT DYDAKTYCZNY</b> – Uniwersytet SWPS, Filia we Wrocławiu (październik 2024 – obecnie)</p>
                     <div class="details">
-                        <p>prowadzenie zajęć z podstaw programowania w Python.</p>
+                        <p>W roku akademickim 2024/2025 prowadzenie zajęć z <b>podstaw programowania w Pythonie</b>.</p>
+                        <p>Od października 2025 roku prowadzenie zajęć z zakresu <b>umiejętności akademickich</b>.</p>
                     </div>
                 </div>
                 <i class="fas fa-plus toggle-icon"></i>
             </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2024-10">
+            <div class="experience-item" data-category="dydaktyczne" data-date="2024-10" data-ongoing="true">
                 <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
                 <div class="content">
-                    <p><b>ASYSTENT DYDAKTYCZNY</b> - Uniwersytet Dolnośląski DSW Wrocław (październik 2024 - obecnie)
-                    </p>
+                    <p><b>ASYSTENT DYDAKTYCZNY</b> – Uniwersytet Dolnośląski DSW Wrocław (październik 2024 – obecnie)</p>
                     <div class="details">
-                        <p>prowadzenie zajęć: psychologia i fizjologia widzenia, trening kompetencji menedżerskich.</p>
+                        <p>
+                            Od października 2024 roku prowadzę zajęcia z psychologii i fizjologii widzenia oraz treningu kompetencji menedżerskich. 
+                            </br>Od października 2025 roku zatrudniony na pełen etat dydaktyczny, z rozszerzonym zakresem obowiązków o prowadzenie zajęć ze statystyki i psychologii społecznej. 
+                            </br>Pełnię także funkcję opiekuna praktyk studenckich, wspierając rozwój kompetencji zawodowych studentów oraz organizację procesu dydaktycznego.
+                        </p>
                     </div>
                 </div>
                 <i class="fas fa-plus toggle-icon"></i>
@@ -138,7 +141,7 @@
                  </div>
                  <i class="fas fa-plus toggle-icon"></i>
              </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2020-10">
+            <div class="experience-item" data-category="dydaktyczne" data-date="2020-10" data-ongoing="true" data-ongoing="true">
                 <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
                 <div class="content">
                     <p><b>KOREPETYTOR</b> - (październik 2020 - obecnie)</p>
@@ -153,7 +156,7 @@
                 <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
                 <div class="content">
                     <p><b>PSYCHOLOG SZKOLNY</b> - Zespół Szkół Specjalnych FECDIE (III etap edukacji) (wrzesień 2024 -
-                        obecnie)</p>
+                        sierpień 2025)</p>
                     <div class="details">
                         <p>pomoc psychologiczna, prowadzenie zajęć z profilaktyki i zachowań zdrowotnych, współpraca
                             z rodzicami i nauczycielami.</p>
@@ -186,7 +189,7 @@
                 <i class="fas fa-plus toggle-icon"></i>
             </div>
 
-            <div class="experience-item" data-category="inne" data-date="2022-03">
+            <div class="experience-item" data-category="inne" data-date="2021-03">
                 <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
                 <div class="content">
                     <p><b>POMOC TERAPEUTY</b> - Promotis - Przedszkole specjalne
@@ -262,72 +265,105 @@
                 btn.classList.remove('active');
             });
 
-            button.classList.add('active');
+            if (button) {
+                button.classList.add('active');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            filterExperience('wszystkie', document.querySelector('.experience-navigation button:first-child'));
+            // Uruchomienie domyślnego filtra "wszystkie"
+            const firstFilterButton = document.querySelector('.experience-navigation button:first-child');
+            if (firstFilterButton) {
+                filterExperience('wszystkie', firstFilterButton);
+            }
 
             const experienceItems = document.querySelectorAll('.experience-item');
-
-            // Sortowanie po dacie
-            const sortedItems = Array.from(experienceItems).sort((a, b) => {
-                const dateA = new Date(a.dataset.date);
-                const dateB = new Date(b.dataset.date);
-                return dateB - dateA; // Sortowanie od najnowszego
-            });
-
             const experienceList = document.querySelector('.experience-list');
-            experienceList.innerHTML = ''; // Czyszczenie listy
 
-            sortedItems.forEach(item => {
-                experienceList.appendChild(item); // Dodawanie posortowanych elementów
-            });
+            // --- SORTOWANIE ---
+            if (experienceList) {
+                const sortedItems = Array.from(experienceItems).sort((a, b) => {
+                    // Sprawdź, czy praca jest w toku (oznaczona data-ongoing="true")
+                    const isOngoingA = a.dataset.ongoing === 'true';
+                    const isOngoingB = b.dataset.ongoing === 'true';
 
+                    // 1. Priorytet: Obecne prace na górze
+                    if (isOngoingA && !isOngoingB) {
+                        return -1; // A (obecna) idzie przed B
+                    }
+                    if (!isOngoingA && isOngoingB) {
+                        return 1; // B (obecna) idzie przed A
+                    }
 
+                    // 2. Jeśli ten sam status, sortuj po dacie (od najnowszej)
+                    const dateA = new Date(a.dataset.date);
+                    const dateB = new Date(b.dataset.date);
+                    
+                    // Sortowanie malejące (najnowsza data rozpoczęcia na górze)
+                    return dateB - dateA;
+                });
+
+                experienceList.innerHTML = ''; // Czyszczenie listy
+
+                sortedItems.forEach(item => {
+                    experienceList.appendChild(item); // Dodawanie posortowanych elementów
+                });
+            }
+            // ------------------
+
+            // Obsługa kliknięcia (rozwijanie/zwijanie szczegółów)
             experienceItems.forEach(item => {
                 item.addEventListener('click', function() {
                     this.classList.toggle('active-details');
                     const icon = this.querySelector('.toggle-icon');
-                    if (this.classList.contains('active-details')) {
-                        icon.classList.remove('fa-plus');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-plus');
+                    if (icon) {
+                        if (this.classList.contains('active-details')) {
+                            icon.classList.remove('fa-plus');
+                            icon.classList.add('fa-times');
+                        } else {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-plus');
+                        }
                     }
                 });
             });
         });
     </script>
-        <script>
-            document.addEventListener('mousemove', function(e) {
-                const speedX = -0.02;
-                const speedY = -0.02;
-                const x = (window.innerWidth - e.clientX) * speedX;
-                const y = (window.innerHeight - e.clientY) * speedY;
-    
-                document.body.style.setProperty('--parallax-x', `${x}px`);
-                document.body.style.setProperty('--parallax-y', `${y}px`);
-            });
-            
+
+    <script>
+        // --- SKRYPT PARALLAX ---
+        document.addEventListener('mousemove', function(e) {
+            const speedX = -0.02;
+            const speedY = -0.02;
+            const x = (window.innerWidth - e.clientX) * speedX;
+            const y = (window.innerHeight - e.clientY) * speedY;
+
+            document.body.style.setProperty('--parallax-x', `${x}px`);
+            document.body.style.setProperty('--parallax-y', `${y}px`);
+        });
+        // -------------------------
+
+        // --- SKRYPT HAMBURGER ---
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
 
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
-
-        // Opcjonalnie: Zamknij menu po kliknięciu linku
-        document.querySelectorAll('.nav-links li a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                hamburger.classList.remove('active');
+        // Sprawdzenie, czy elementy istnieją, zanim dodamy nasłuchiwacze
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
             });
-        });
 
-        </script>
+            // Opcjonalnie: Zamknij menu po kliknięciu linku
+            document.querySelectorAll('.nav-links li a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                });
+            });
+        }
+        // -------------------------
+    </script>
 </body>
 
 </html>
