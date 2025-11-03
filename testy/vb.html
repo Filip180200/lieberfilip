@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberball vDynamic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 { color: #333; }
+        
+        /* --- Nowy CSS dla planszy gry --- */
+        #game-board {
+            display: grid;
+            grid-template-areas: "a . b" ". you .";
+            width: 100%;
+            height: 250px;
+            margin: 20px 0;
+        }
+        .player-box {
+            border: 3px solid #ccc;
+            background-color: #eee;
+            border-radius: 8px;
+            padding: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        /* To jest klasa, która podświetla gracza */
+        .player-box.has-ball {
+            border-color: #007bff;
+            background-color: #e0f0ff;
+            box-shadow: 0 0 10px rgba(0,123,255,0.5);
+        }
+        #player-a { grid-area: a; }
+        #player-b { grid-area: b; }
+        #player-you { grid-area: you; }
+        /* --- Koniec CSS planszy --- */
+
+        #controls {
+            margin-top: 15px;
+            /* Ukryte na starcie */
+            display: none; 
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            margin: 0 10px;
+        }
+        #btn-throw-a { background-color: #007bff; }
+        #btn-throw-b { background-color: #28a745; }
+        
+        #game-message {
+            font-size: 1.1em;
+            color: #555;
+            height: 30px; /* Stała wysokość, by nie skakało */
+        }
+
+        #finish-container {
+            margin-top: 20px;
+            display: none; /* Ukryty na starcie */
+        }
+        #btn-finish {
+            background-color: #dc3545;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Gra w rzucanie piłką</h2>
+        
+        <div id="game-board">
+            <div id="player-a" class="player-box">Gracz A</div>
+            <div id="player-b" class="player-box">Gracz B</div>
+            <div id="player-you" class="player-box">TY (Gracz C)</div>
+        </div>
+        
+        <div id="game-message">Gra się rozpoczyna...</div>
+
+        <div id="controls">
+            <p>Masz piłkę! Do kogo rzucasz?</p>
+            <button id="btn-throw-a">Rzuć do Gracza A</button>
+            <button id="btn-throw-b">Rzuć do Gracza B</button>
+        </div>
+        
+        <div id="finish-container">
+            <p>Dziękujemy! Naciśnij przycisk poniżej, aby kontynuować ankietę.</p>
+            <button id="btn-finish">Zakończ grę</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. USTAWIENIA GRY ---
+        let throwsA_by_player = 0;    // Ile razy TY rzuciłeś do A
+        let throwsB_by_player = 0;    // Ile razy TY rzuciłeś do B
+        let throws_received_by_player = 0; // Ile razy TY dostałeś piłkę
+        
+        let totalGameThrows = 0;
+        const MAX_GAME_THROWS = 25; // Całkowita liczba rzutów w grze (Ty + Boty)
+        const THROW_DELAY_MS = 1800; // Jak "szybko" rzucają boty (w milisekundach)
+
+        // Domena Qualtrics (dla bezpieczeństwa)
+        const qualtricsDomain = 'https://*.qualtrics.com';
+
+        // --- 2. ODCZYTANIE WARUNKU BADANIA Z LINKU URL ---
+        const urlParams = new URLSearchParams(window.location.search);
+        // Szukamy 'cond' w linku. Jeśli nie ma, domyślnie jest 'inclusion'
+        // Będziesz w Qualtrics ustawiać link: .../index.html?cond=exclusion
+        const gameCondition = urlParams.get('cond') || 'inclusion'; // 'inclusion' lub 'exclusion'
+
+        // --- 3. REFERENCJE DO ELEMENTÓW HTML ---
+        const playerA_El = document.getElementById('player-a');
+        const playerB_El = document.getElementById('player-b');
+        const playerYou_El = document.getElementById('player-you');
+        
+        const controlsDiv = document.getElementById('controls');
+        const btnThrowA = document.getElementById('btn-throw-a');
+        const btnThrowB = document.getElementById('btn-throw-b');
+        
+        const messageEl = document.getElementById('game-message');
+        
+        const finishContainer = document.getElementById('finish-container');
+        const btnFinish = document.getElementById('btn-finish');
+
+        // Słownik (mapa) do łatwego zarządzania elementami
+        const playerElements = {
+            'A': playerA_El,
+            'B': playerB_El,
+            'YOU': playerYou_El
+        };
+
+        // --- 4. GŁÓWNA LOGIKA GRY ---
+
+        // Funkcja do podświetlania, kto ma piłkę
+        function updateBallHolder(activePlayerName) {
+            // Zdejmij podświetlenie ze wszystkich
+            Object.values(playerElements).forEach(el => el.classList.remove('has-ball'));
+            // Dodaj podświetlenie aktywnemu graczowi
+            if (playerElements[activePlayerName]) {
+                playerElements[activePlayerName].classList.add('has-ball');
+            }
+        }
+
+        // Sprawdza, czy gra powinna się zakończyć
+        function checkEndGame() {
+            if (totalGameThrows >= MAX_GAME_THROWS) {
+                endGame();
+                return true; // Tak, zakończ
+            }
+            return false; // Nie, graj dalej
+        }
+
+        // Tura gracza (Twoja tura)
+        function playerTurn() {
+            if (checkEndGame()) return;
+
+            updateBallHolder('YOU');
+            messageEl.innerText = ""; // Wyczyść wiadomość, bo przyciski mówią co robić
+            controlsDiv.style.display = 'block'; // Pokaż przyciski "Rzuć do..."
+        }
+
+        // Tura bota (A lub B)
+        function botTurn(botName) {
+            if (checkEndGame()) return;
+            
+            updateBallHolder(botName);
+            controlsDiv.style.display = 'none'; // Ukryj Twoje przyciski
+            messageEl.innerText = `Gracz ${botName} myśli...`;
+
+            // Symulujemy "myślenie" bota
+            setTimeout(() => {
+                // Oblicz, do kogo bot rzuci
+                let receiver;
+                
+                if (gameCondition === 'exclusion') {
+                    // W WARUNKU WYKLUCZENIA: Boty rzucają TYLKO do siebie
+                    receiver = (botName === 'A') ? 'B' : 'A';
+                } else {
+                    // W WARUNKU WŁĄCZENIA ('inclusion'): Losowo (50% do Ciebie, 50% do drugiego bota)
+                    let rand = Math.random();
+                    if (rand < 0.5) {
+                        receiver = 'YOU'; // Rzut do gracza
+                    } else {
+                        receiver = (botName === 'A') ? 'B' : 'A'; // Rzut do drugiego bota
+                    }
+                }
+                
+                // Wykonaj rzut
+                handleThrow(botName, receiver);
+
+            }, THROW_DELAY_MS);
+        }
+
+        // Funkcja obsługująca rzut (od kogo, do kogo)
+        function handleThrow(thrower, receiver) {
+            totalGameThrows++;
+            messageEl.innerText = `Gracz ${thrower} rzuca do Gracza ${receiver}...`;
+            
+            // Symulujemy czas lotu piłki
+            setTimeout(() => {
+                // Piłka dotarła. Czyja jest następna tura?
+                if (receiver === 'YOU') {
+                    throws_received_by_player++; // ZLICZAMY OTRZYMANIE
+                    playerTurn();
+                } else {
+                    botTurn(receiver); // Tura bota A lub B
+                }
+            }, 800); // Krótszy czas na "lot piłki"
+        }
+
+        // Co się dzieje po kliknięciu przycisków przez gracza
+        btnThrowA.onclick = function() {
+            throwsA_by_player++; // ZLICZAMY RZUT DO A
+            controlsDiv.style.display = 'none'; // Ukryj przyciski
+            handleThrow('YOU', 'A'); // Przekaż piłkę do A
+        };
+
+        btnThrowB.onclick = function() {
+            throwsB_by_player++; // ZLICZAMY RZUT DO B
+            controlsDiv.style.display = 'none'; // Ukryj przyciski
+            handleThrow('YOU', 'B'); // Przekaż piłkę do B
+        };
+
+        // --- 5. ZAKOŃCZENIE GRY I WYSŁANIE DANYCH ---
+
+        function endGame() {
+            updateBallHolder(null); // Nikt nie ma piłki
+            controlsDiv.style.display = 'none';
+            messageEl.innerText = "Gra zakończona!";
+            finishContainer.style.display = 'block';
+        }
+
+        btnFinish.onclick = function() {
+            // Przygotuj "kod zwrotny" (nasze dane)
+            const results = {
+                throws_A: throwsA_by_player,
+                throws_B: throwsB_by_player,
+                received: throws_received_by_player,
+                condition: gameCondition // Wysyłamy też warunek, dla pewności
+            };
+
+            // Wyślij dane do "rodzica" (czyli do okna Qualtrics)
+            window.parent.postMessage(results, qualtricsDomain);
+            
+            btnFinish.innerText = "Zapisano! Przechodzenie dalej...";
+            btnFinish.disabled = true;
+        };
+
+        // --- 6. START GRY ---
+        // Rozpoczynamy grę po krótkiej chwili. Niech zacznie Gracz A.
+        setTimeout(() => {
+            botTurn('A');
+        }, 1000);
+
+    </script>
+</body>
+</html>
