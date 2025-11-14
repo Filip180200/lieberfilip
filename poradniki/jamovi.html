@@ -64,17 +64,52 @@
     </nav>
     </header>
 
-    <div class="main-wrapper">
-        <main>
-            <div class="main-buttons-container">
-                <p>Ucz się ze mną! Będą się tutaj pojawiać materiały!</p>
+    <main class="experience-container">
+        <h1 class="name_title">Jamovi</h1>
+        
+        <div class="experience-list">
 
+            <div class="experience-item">
+                <div class="content">
+                    <p style="text-align: center;"><b>0. Bazy Danych</b></p>
+                    <div class="details">
+                        <ul class="nav-links" style="padding-bottom: 20px; justify-content: center;">
+                            <li><a href="bazy danych/CSV/Dane1.csv" download="Dane1.csv">Dane 1 (CSV)</a></li> 
+                            <li><a href="bazy danych/CSV/Dane2.csv" download="Dane2.csv">Dane 2 (CSV)</a></li>
+                            <li><a href="bazy danych/CSV/Dane3.csv" download="Dane3.csv">Dane 3 (CSV)</a></li>
+                            <li><a href="bazy danych/CSV/Dane3po.csv" download="Dane3po.csv">Dane 3 po (CSV)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <i class="fas fa-plus toggle-icon"></i>
             </div>
-        </main>
-    </div>
+            <div class="experience-item">
+                <div class="content">
+                    <p style="text-align: center;"><b>1. Statystyki Opisowe</b></p>
+                    <div class="details">
+                        <ul class="nav-links" style="padding-bottom: 20px; justify-content: center;">
+                            <li><a href="prezentacje/1. Statystyki Opisowe.pdf" download="1. Statystyki Opisowe.pdf">Prezentacja</a></li>
+                            <li><a href="bazy danych/CSV/Dane1.csv" download="Dane1.csv">Dane 1 (CSV)</a></li> 
+                        </ul>
+                        <iframe class="centered-iframe" 
+        width="560" height="315" 
+        src="https://www.youtube.com/embed/KUuTfn8AySE?si=a-bozjwan5quWgLy" 
+        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+                    </div>
+                </div>
+                <i class="fas fa-plus toggle-icon"></i>
+            </div>
+
+        </div>
+    </main>
+
     <footer>
         <div class="footer-content">
             <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
+                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
+                </a>                
                 <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
                     <i class="fab fa-linkedin" style="font-size: 24px;"></i>
                 </a>
@@ -93,5 +128,94 @@
             &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const experienceItems = document.querySelectorAll('.experience-item');
+            const experienceList = document.querySelector('.experience-list');
+
+            // --- SORTOWANIE (pozostawione, choć przy 1 elemencie nie ma znaczenia) ---
+            if (experienceList) {
+                const sortedItems = Array.from(experienceItems).sort((a, b) => {
+                    const isOngoingA = a.dataset.ongoing === 'true';
+                    const isOngoingB = b.dataset.ongoing === 'true';
+
+                    // 1. Priorytet: Obecne prace na górze
+                    if (isOngoingA && !isOngoingB) {
+                        return -1; 
+                    }
+                    if (!isOngoingA && isOngoingB) {
+                        return 1; 
+                    }
+
+                    // 2. Jeśli ten sam status, sortuj po dacie (od najnowszej)
+                    const dateA = new Date(a.dataset.date);
+                    const dateB = new Date(b.dataset.date);
+                    
+                    // Sortowanie malejące (najnowsza data rozpoczęcia na górze)
+                    return dateB - dateA;
+                });
+
+                experienceList.innerHTML = ''; // Czyszczenie listy
+
+                sortedItems.forEach(item => {
+                    experienceList.appendChild(item); // Dodawanie posortowanych elementów
+                });
+            }
+            // --------------------------------------------------------------------------
+
+            // Obsługa kliknięcia (rozwijanie/zwijanie szczegółów)
+            const sortedExperienceItems = document.querySelectorAll('.experience-item'); 
+            sortedExperienceItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('active-details');
+                    const icon = this.querySelector('.toggle-icon');
+                    if (icon) {
+                        if (this.classList.contains('active-details')) {
+                            icon.classList.remove('fa-plus');
+                            icon.classList.add('fa-times');
+                        } else {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-plus');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // --- SKRYPTY DODATKOWE (Parallax i Hamburger) ---
+        
+        // SKRYPT PARALLAX
+        document.addEventListener('mousemove', function(e) {
+            const speedX = -0.02;
+            const speedY = -0.02;
+            const x = (window.innerWidth - e.clientX) * speedX;
+            const y = (window.innerHeight - e.clientY) * speedY;
+
+            document.body.style.setProperty('--parallax-x', `${x}px`);
+            document.body.style.setProperty('--parallax-y', `${y}px`);
+        });
+
+        // SKRYPT HAMBURGER
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+
+            document.querySelectorAll('.nav-links li a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                });
+            });
+        }
+        // ------------------------------------------------
+    </script>
 </body>
 </html>
