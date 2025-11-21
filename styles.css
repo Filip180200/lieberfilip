@@ -1,4 +1,7 @@
-/* Reset i bazowe style */
+/* ========================================= */
+/* --- 1. RESET I STYLE BAZOWE --- */
+/* ========================================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +10,7 @@
 
 html, body {
     height: auto;
-    overflow-x: hidden;c
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -20,12 +23,10 @@ body {
     position: relative;
     font-family: 'Montserrat', sans-serif;
     color: #333;
-    display: flex;
-    flex-direction: column;
     margin: 0;
-    overflow: hidden; /* Domyślnie wyłączone przewijanie - możesz usunąć, jeśli nie chcesz tego globalnie */
 }
 
+/* Tło Parallax */
 body::before {
     content: '';
     position: fixed;
@@ -43,113 +44,355 @@ body::before {
     will-change: transform;
 }
 
-/* Nawigacja */
-.navbar {
-    background: linear-gradient(135deg, rgba(217, 217, 217, 0.7) 0%, rgba(230, 230, 230, 0.7) 100%);
+/* ========================================= */
+/* --- 2. NAWIGACJA (GLASS JS READY) --- */
+/* ========================================= */
+
+:root {
+    --nav-base: #000000;       
+    --nav-pill-text: #ffffff;  
+    --nav-hover-text: #ffffff; 
+    --nav-h: 50px;
+}
+
+.pill-nav-container {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
     display: flex;
-    justify-content: center; 
+    justify-content: center;
+    z-index: 100;
+    pointer-events: none; 
+}
+
+.pill-nav {
+    pointer-events: auto;
+    display: flex;
     align-items: center;
-    padding: 10px 20px; /* Dodano padding po bokach */
-    gap: 20px; /* Zwiększono gap dla lepszego odstępu */
-    flex-wrap: wrap; /* Pozwól na zawijanie w razie potrzeby */
-    margin-bottom: 10px;
+    gap: 15px;
 }
 
-.logo img {
-    height: 40px;
-    width: auto;
+/* LOGO */
+.pill-logo {
+    width: var(--nav-h);
+    height: var(--nav-h);
     border-radius: 50%;
-    object-fit: cover;
+    
+    /* Reset tła (JS wstawi SVG) */
+    background: transparent; 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Ważne dla JS */
+    text-decoration: none;
+    transition: transform 0.3s ease;
 }
 
-.nav-links {
+.pill-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2; /* Nad szkłem */
+}
+
+.pill-logo:hover {
+    transform: scale(1.1);
+}
+
+/* KONTENER MENU */
+.pill-nav-items {
+    background: transparent;
+    border-radius: 9999px;
+    padding: 0;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+}
+
+.pill-list {
     list-style: none;
     display: flex;
-    gap: 15px; /* Zwiększono gap */
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 
-.nav-links li a {
+.pill-list li {
+    height: 100%;
+}
+
+/* GUZIK (PILL) */
+.pill {
+    position: relative; /* Ważne dla JS */
     display: inline-flex;
-    justify-content: center;
     align-items: center;
-    width: auto;
-    padding: 8px 15px;
-    height: auto;
+    justify-content: center;
+    height: 100%;
+    padding: 0 30px;
+    
+    /* Reset tła (JS wstawi SVG) */
+    background: transparent; 
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    
+    color: var(--nav-pill-text);
     text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-    background-color: transparent;
-    border: 1px solid #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.nav-links li a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.hamburger {
-    display: none; /* Ukryj ikonę na większych ekranach */
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-    margin-left: 20px; /* Dodano margines z lewej strony ikony */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Żeby SVG nie wystawało */
 }
 
-.hamburger .line {
-    width: 25px;
-    height: 3px;
-    background-color: #fff; /* Zmieniono kolor na biały, pasujący do linków */
-    margin: 5px auto;
-    transition: all 0.3s ease-in-out;
+.pill:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* Sekcja główna */
-main.intro {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-    padding-bottom: 0px;
-    flex-grow: 1;
-    overflow: hidden;
+/* Tekst w guziku - musi być nad szkłem */
+.label-stack {
+    position: relative;
+    z-index: 5;
 }
 
-.main_content {
-    display: flex;
-    align-items: center;
-    flex-wrap: row;
-    justify-content: center;
+/* Czarne kółko (animacja nav.js) */
+.hover-circle {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    border-radius: 50%;
+    background: var(--nav-base);
+    z-index: 3; /* Pomiędzy szkłem a tekstem */
+    pointer-events: none;
+    transform: translate(-50%, 0) scale(0);
 }
 
-.profile-photo img {
-    width: auto;
-    max-width: 440px;
-    height: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    margin-bottom: 20px;
-}
-
-.intro-text {
-    padding: 20px;
-    max-width: 600px;
-    background: linear-gradient(135deg, rgba(217, 217, 217, 0.7) 0%, rgba(230, 230, 230, 0.7) 100%);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.pill-label, .pill-label-hover {
+    display: block;
+    line-height: 14px;
     text-align: center;
 }
 
+.pill-label-hover {
+    color: var(--nav-hover-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(20px);
+    opacity: 0;
+}
+
+/* HAMBURGER */
+.mobile-menu-button {
+    width: var(--nav-h);
+    height: var(--nav-h);
+    border-radius: 50%;
+    background: transparent; /* Reset */
+    border: none;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 0;
+    position: relative; /* Ważne dla JS */
+    z-index: 101;
+}
+
+.hamburger-line {
+    width: 18px;
+    height: 2px;
+    background: #fff;
+    border-radius: 1px;
+    position: relative;
+    z-index: 2;
+}
+
+/* MENU MOBILE POPUP */
+.mobile-menu-popover {
+    display: none;
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: rgba(10, 10, 10, 0.95); /* Tu zostawiamy zwykłe tło dla czytelności */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: top right;
+    z-index: 999;
+}
+.mobile-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.mobile-menu-link {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+    background: transparent;
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.2s;
+}
+.mobile-menu-link:hover { background: rgba(255, 255, 255, 0.1); }
+
+@media (max-width: 768px) {
+    .pill-nav-items { display: none; }
+    .mobile-menu-button { display: flex; }
+    .pill-nav-container { justify-content: space-between; padding: 0 20px; }
+}
+
+/* ========================================= */
+/* --- 3. SEKCJA INTRO (GLASS JS READY) --- */
+/* ========================================= */
+
+.intro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 140px 20px 60px;
+    box-sizing: border-box;
+    flex-grow: 1;
+}
+
+/* KARTA GŁÓWNA */
+.main_content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    position: relative; /* Ważne dla JS */
+    
+    border-radius: 60px;
+    padding: 70px;
+    max-width: 1100px;
+    width: 100%;
+    
+    /* Reset tła - JS wstawi szkło */
+    background: transparent; 
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+/* ZDJĘCIE - AVATAR */
+.profile-photo {
+    flex-shrink: 0;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 6px solid rgba(255, 255, 255, 0.05); 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+}
+
+.profile-photo:hover {
+    transform: scale(1.03);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* TEKST */
+.intro-text {
+    flex: 1;
+    text-align: left;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2; /* Nad szkłem */
+}
+
 .intro-text h1 {
-    font-size: 2.5em;
-    margin-bottom: 0.5em;
-    color: #333;
+    font-size: 4rem;
+    margin: 0 0 15px 0;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #ffffff;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.intro-text p b {
+    color: #cccccc;
+    font-size: 1.4rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
 }
 
 .intro-text p {
-    font-size: 1.2em;
-    color: #333;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #bbbbbb;
+    margin: 0 0 15px 0;
+    max-width: 600px;
 }
 
-/* Stopka */
+/* Mobile Intro */
+@media (max-width: 900px) {
+    .intro { 
+        padding-top: 100px; 
+        padding-bottom: 40px;
+    }
+    .main_content {
+        flex-direction: column;
+        padding: 40px 20px;
+        gap: 30px;
+        text-align: center;
+    }
+    .profile-photo {
+        width: 240px;
+        height: 240px;
+        margin: 0 auto;
+    }
+    .intro-text { 
+        text-align: center; 
+        align-items: center;
+    }
+    .intro-text h1 { font-size: 2.5rem; }
+    .intro-text p b { 
+        font-size: 1.1rem;
+        margin: 0 auto 20px auto;
+    }
+    .intro-text p { font-size: 1rem; }
+}
+
+/* --- STOPKA I RESZTA --- */
 footer {
     color: white;
     text-align: center;
@@ -199,14 +442,28 @@ footer {
     color: #ddd;
 }
 
-/* Style dla strony doswiadczenie.html */
+/* Kalkulator i inne style zostają bez zmian */
+.calculator-container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 700px;
+    margin: 20px auto; 
+    color: #333; 
+}
+
+/* ========================================= */
+/* --- 5. PODSTRONY (DOŚWIADCZENIE, KALKULATOR) --- */
+/* ========================================= */
+
+/* Doświadczenie */
 .experience-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     flex-grow: 1;
-    overflow-y: auto;
 }
 
 .experience-navigation {
@@ -230,9 +487,6 @@ footer {
     justify-content: center;
     align-items: center;
     gap: 5px;
-    width: auto;
-    height: auto;
-    margin-bottom: 5px;
     font-size: 0.9em;
 }
 
@@ -262,7 +516,6 @@ footer {
     transition: background-color 0.3s ease;
     position: relative;
     flex-direction: row;
-    align-items: center;
 }
 
 .experience-item:hover {
@@ -277,7 +530,6 @@ footer {
     justify-content: center;
     align-items: center;
     font-size: 1.2em;
-    margin-bottom: 0;
 }
 
 .experience-item .content {
@@ -300,7 +552,7 @@ footer {
     display: block;
 }
 
-.book-images{
+.book-images {
     padding: 10px;
     align-self: center;
 }
@@ -312,168 +564,19 @@ footer {
     text-align: center;
 }
 
-/* Media Queries dla responsywności */
-
-/* Dla ekranów o szerokości do 992px (większe tablety i mniejsze laptopy) */
-@media (max-width: 992px) {
-    main.intro {
-        padding: 30px;
-    }
-
-    .profile-photo img {
-        max-width: 400px;
-    }
-
-    .intro-text h1 {
-        font-size: 2.2em;
-    }
-
-    .intro-text p {
-        font-size: 1.1em;
-    }
-}
-
-/* Dla ekranów o szerokości do 768px (tablety i telefony w poziomie) */
-@media (max-width: 768px) {
-    .navbar {
-        justify-content: space-between; /* Logo po lewej, ikona po prawej */
-        padding: 10px 15px;
-    }
-
-    .nav-links {
-        display: none; /* Ukryj menu domyślnie */
-        flex-direction: column;
-        position: absolute;
-        top: 60px; /* Wysokość navbar */
-        left: 0;
-        background-color: rgba(255, 255, 255, 0.9); /* Białe tło dla menu */
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-        z-index: 10; /* Upewnij się, że jest nad innymi elementami */
-        margin-left: 0; /* Resetuj margines */
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-links li {
-        width: 100%;
-    }
-
-    .nav-links li a {
-        color: #333; /* Ciemniejszy kolor linków w menu mobilnym */
-        width: 100%;
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        border: none; /* Usuń obramowanie linków */
-    }
-
-    .nav-links li a:hover {
-        background-color: #f9f9f9;
-        box-shadow: none;
-    }
-
-    .hamburger {
-        display: block; /* Pokaż ikonę hamburgera */
-        color: #fff; /* Kolor ikony hamburgera */
-    }
-
-    main.intro {
-        padding: 20px;
-    }
-
-    .main_content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .profile-photo img {
-        max-width: 300px;
-        margin-bottom: 20px;
-    }
-
-    .intro-text {
-        text-align: center;
-        max-width: 90%;
-    }
-
-    .experience-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .experience-item .icon-container {
-        margin-bottom: 10px;
-        margin-right: 0;
-    }
-
-    .name_title {
-        font-size: 2em;
-    }
-}
-
-/* Dla ekranów o szerokości do 480px (telefony w pionie) */
-@media (max-width: 480px) {
-    main.intro {
-        padding: 15px;
-    }
-
-    .profile-photo img {
-        max-width: 200px;
-    }
-
-    .intro-text h1 {
-        font-size: 1.7em;
-    }
-
-    .intro-text p {
-        font-size: 0.9em;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .contact-info {
-        white-space: normal;
-        text-align: center;
-    }
-
-    .experience-navigation button {
-        font-size: 0.8em;
-        padding: 5px 10px;
-    }
-}
-
-/* Style dla animacji ikony hamburgera */
-.hamburger.active .line:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-}
-
-.hamburger.active .line:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger.active .line:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-}
-
-/* Styles for the calculator */
+/* Kalkulator */
 .calculator-container {
     background-color: #fff;
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     max-width: 700px;
-    margin: 20px auto; /* Adjust margin for overall centering */
-    color: #333; /* Ensure text color matches overall style */
+    margin: 20px auto; 
+    color: #333; 
 }
 
 .calculator-container h1 {
-    font-size: 2em; /* Adjusted to fit the general style */
+    font-size: 2em; 
     color: #333;
     margin-bottom: 1em;
     text-align: center;
@@ -499,15 +602,15 @@ footer {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box; /* Include padding in the element's total width and height */
+    box-sizing: border-box; 
 }
 
 .calculator-container button {
-    background-color: #433F3F; /* Matched to button style in existing CSS */
+    background-color: #433F3F; 
     color: white;
     padding: 12px 20px;
     border: none;
-    border-radius: 8px; /* Slightly more rounded */
+    border-radius: 8px; 
     cursor: pointer;
     font-size: 16px;
     margin-top: 15px;
@@ -515,7 +618,7 @@ footer {
 }
 
 .calculator-container button:hover {
-    background-color: #2a2828; /* Darker on hover */
+    background-color: #2a2828; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -540,7 +643,7 @@ footer {
     padding: 15px;
     border-radius: 5px;
     margin-top: 10px;
-    background-color: #f9f9f9; /* Light background for groups */
+    background-color: #f9f9f9; 
 }
 
 #analysis-options,
@@ -554,8 +657,8 @@ footer {
 .result {
     margin-top: 30px;
     padding: 15px;
-    border: 1px dashed #433F3F; /* Matched to button color */
-    background-color: #e6e6e6b3; /* Lighter background for results */
+    border: 1px dashed #433F3F; 
+    background-color: #e6e6e6b3; 
     border-radius: 5px;
 }
 
@@ -593,44 +696,9 @@ footer {
     margin-top: 10px;
 }
 
-/* Ensure the main content can grow to accommodate the calculator */
-main.intro {
-    align-items: center; /* Align to start to prevent calculator from being vertically centered too much */
-    padding-top: 20px; /* Add some top padding */
-    padding-bottom: 20px; /* Add some bottom padding */
-    overflow-y: auto; /* Allow vertical scrolling if content is too long */
-}
-
-.main_content {
-    flex-direction: row; /* Stack elements vertically */
-    gap: 20px; /* Space between calculator and other potential content */
-    width: 100%; /* Ensure it takes full width */
-}
-
-/* Responsive adjustments for calculator */
-@media (max-width: 768px) {
-    .calculator-container {
-        padding: 15px;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    .calculator-container input[type="number"],
-    .calculator-container input[type="text"],
-    .calculator-container select,
-    .calculator-container button {
-        width: 100%; /* Full width on smaller screens */
-    }
-
-    .variable-input-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-/* Styling for help buttons */
 .help-button {
-    background-color: #6c757d; /* Grey color for help button */
-    margin-left: 10px; /* Space between "Dalej" and "Pomoc" */
+    background-color: #6c757d; 
+    margin-left: 10px; 
 }
 
 .help-button:hover {
@@ -641,12 +709,11 @@ main.intro {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    gap: 10px; /* Space between buttons */
+    gap: 10px; 
 }
 
-/* Styling for help boxes */
 .help-box {
-    background-color: #e2f0d9; /* Light green */
+    background-color: #e2f0d9; 
     border: 1px solid #b7e0aa;
     padding: 20px;
     border-radius: 8px;
@@ -656,7 +723,7 @@ main.intro {
 }
 
 .help-box h3 {
-    color: #4CAF50; /* Green heading */
+    color: #4CAF50; 
     margin-bottom: 10px;
     text-align: center;
 }
@@ -673,141 +740,80 @@ main.intro {
     padding-left: 0;
 }
 
-/* Ensure italics render correctly */
 em, i {
     font-style: italic;
 }
 
-/* Styling for custom selection buttons (replacing radio/checkboxes) */
 .button-group {
-    /* Upewnij się, że te style są obecne, jeśli ich nie masz */
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 15px;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap; 
 }
 
 .selection-button {
     padding: 10px 15px;
-    border: 1px solid #dcdcdc; /* Zmieniony z #ccc */
+    border: 1px solid #dcdcdc; 
     border-radius: 5px;
-    background-color: #f8f8f8; /* Zmieniony z #f0f0f0 */
+    background-color: #f8f8f8; 
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    user-select: none; /* Prevent text selection */
-    min-width: 120px; /* Ensure buttons have a minimum width */
+    user-select: none; 
+    min-width: 120px; 
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Dodany subtelny początkowy cień */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
 }
 
 .selection-button:hover {
-    background-color: #eef0f2; /* Zmieniony z #e0e0e0 */
-    border-color: #c9c9c9; /* Zmieniony z #bbb */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtelny cień przy najechaniu */
-    transform: translateY(-0.5px); /* Delikatniejsze uniesienie przy najechaniu dla niezaznaczonych */
+    background-color: #eef0f2; 
+    border-color: #c9c9c9; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+    transform: translateY(-0.5px); 
 }
 
 .selection-button.selected-button {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4); /* Wyraźniejszy cień po zaznaczeniu */
-    transform: translateY(-1px); /* Delikatne uniesienie */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4); 
+    transform: translateY(-1px); 
 }
 
 .selection-button.selected-button:hover {
     background-color: #0056b3;
     border-color: #0056b3;
-    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.5); /* Mocniejszy cień przy najechaniu na zaznaczony */
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.5); 
 }
 
-/* Style dla nagłówków testów, aby wyglądały jak guziki */
 .test-card h3 {
-    background-color: #007bff; /* Kolor tła, np. niebieski */
-    color: white; /* Kolor tekstu */
-    padding: 10px 15px; /* Wewnętrzny margines */
-    margin-bottom: 10px; /* Margines pod nagłówkiem */
-    border-radius: 5px; /* Zaokrąglone rogi */
-    cursor: pointer; /* Kursor wskazujący, że można kliknąć */
-    transition: background-color 0.3s ease, transform 0.1s ease; /* Płynne przejście przy najechaniu */
-    text-align: left; /* Wyrównanie tekstu do lewej */
-    border: none; /* Brak ramki */
-    font-size: 1.1em; /* Rozmiar czcionki */
-    display: block; /* Upewnij się, że element zachowuje się jak blok */
-    width: 100%; /* Rozciągnij na całą szerokość karty */
-    box-sizing: border-box; /* Uwzględnij padding w szerokości */
-}
-
-.test-card h3:hover {
-    background-color: #0056b3; /* Ciemniejszy kolor przy najechaniu */
-}
-
-.test-card h3:active {
-    transform: translateY(1px); /* Efekt wciśnięcia */
-}
-
-/* Style dla nagłówków testów, aby wyglądały jak guziki nawigacyjne */
-.test-card h3 {
-    background-color: transparent; /* Przezroczyste tło */
-    color: #333; /* Kolor tekstu, podobny do standardowego tekstu na stronie */
-    padding: 10px 15px; /* Wewnętrzny margines */
-    margin-bottom: 10px; /* Margines pod nagłówkiem */
-    border-radius: 5px; /* Zaokrąglone rogi */
-    cursor: pointer; /* Kursor wskazujący, że można kliknąć */
-    /* Płynne przejście przy najechaniu dla koloru tła, ramki i tekstu */
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease; 
-    text-align: left; /* Wyrównanie tekstu do lewej */
-    border: 1px solid #ccc; /* Delikatna, jasnoszara ramka */
-    font-size: 1.1em; /* Rozmiar czcionki */
-    display: block; /* Upewnij się, że element zachowuje się jak blok */
-    width: 100%; /* Rozciągnij na całą szerokość karty */
-    box-sizing: border-box; /* Uwzględnij padding w szerokości */
-}
-
-.test-card h3:hover {
-    background-color: rgba(217, 217, 217, 0.7); /* Lekko szare, półprzezroczyste tło przy najechaniu, nawiązujące do tła nawigacji */
-    color: #333; /* Kolor tekstu pozostaje taki sam */
-    border-color: #aaa; /* Nieco ciemniejsza ramka przy najechaniu */
-}
-
-.test-card h3:active {
-    transform: translateY(1px); /* Efekt wciśnięcia */
-}
-
-/* Style dla nagłówków testów, aby wyglądały nowocześniej i były bardziej przezroczyste */
-.test-card h3 {
-    background-color: transparent; /* W pełni przezroczyste tło */
-    color: #333; /* Kolor tekstu */
-    padding: 10px 15px; /* Wewnętrzny margines */
-    margin-bottom: 10px; /* Margines pod nagłówkiem */
-    border-radius: 5px; /* Zaokrąglone rogi */
-    cursor: pointer; /* Kursor wskazujący, że można kliknąć */
-    /* Płynne przejścia dla tła, cienia i transformacji */
+    background-color: transparent; 
+    color: #333; 
+    padding: 10px 15px; 
+    margin-bottom: 10px; 
+    border-radius: 5px; 
+    cursor: pointer; 
     transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-    text-align: left; /* Wyrównanie tekstu do lewej */
-    border: none; /* Brak ramki dla czystszego, nowoczesnego wyglądu */
-    font-size: 1.1em; /* Rozmiar czcionki */
-    display: block; /* Upewnij się, że element zachowuje się jak blok */
-    width: 100%; /* Rozciągnij na całą szerokość karty */
-    box-sizing: border-box; /* Uwzględnij padding w szerokości */
+    text-align: left; 
+    border: none; 
+    font-size: 1.1em; 
+    display: block; 
+    width: 100%; 
+    box-sizing: border-box; 
 }
 
 .test-card h3:hover {
-    /* Bardzo subtelne, półprzezroczyste tło przy najechaniu */
     background-color: rgba(240, 240, 240, 0.8); 
-    /* Nowoczesny efekt uniesienia (box-shadow i transform) */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Delikatny, ale widoczny cień */
-    transform: translateY(-2px); /* Lekkie uniesienie elementu */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    transform: translateY(-2px); 
 }
 
 .test-card h3:active {
-    transform: translateY(0); /* Powrót do pierwotnej pozycji po kliknięciu */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Bardziej miękki cień podczas kliknięcia */
-    background-color: rgba(230, 230, 230, 0.9); /* Nieznacznie ciemniejsze tło podczas kliknięcia */
+    transform: translateY(0); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
+    background-color: rgba(230, 230, 230, 0.9); 
 }
 
-/* Pozostałe style karty testu i zawartości informacji - bez zmian */
 .test-card {
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
@@ -822,166 +828,184 @@ em, i {
     padding-top: 0;
 }
 
-/* Stylizacja tabeli danych */
-        #dataTableContainer {
-            margin-top: 20px;
-            overflow-x: auto;
-        }
-        #dataTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        #dataTable th, #dataTable td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        #dataTable th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        #dataTable td[contenteditable="true"] {
-            background-color: #fff;
-            cursor: text;
-        }
-        #dataTable td[contenteditable="true"]:focus {
-            outline: 1px solid #007bff;
-            background-color: #e6f7ff;
-        }
+/* Tabela i Wykresy */
+#dataTableContainer {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+#dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+#dataTable th, #dataTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+#dataTable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+#dataTable td[contenteditable="true"] {
+    background-color: #fff;
+    cursor: text;
+}
+#dataTable td[contenteditable="true"]:focus {
+    outline: 1px solid #007bff;
+    background-color: #e6f7ff;
+}
 
-        .column-type-selector {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .column-type-selector select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
+.column-type-selector {
+    margin-bottom: 15px;
+    text-align: center;
+}
+.column-type-selector select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
 
-        /* Stylizacja sekcji wyników */
-        #results {
-            margin-top: 0; /* Usunięcie górnego marginesu, bo jest już w container */
-            padding: 15px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            border: 1px solid #ced4da;
-        }
-        .results-section h3 {
-            margin-top: 15px;
-            margin-bottom: 10px;
-            color: #0056b3;
-            border-bottom: 1px solid #a8d6ff;
-            padding-bottom: 5px;
-        }
-        .result-item {
-            margin-bottom: 5px;
-        }
-        .result-item strong {
-            color: #0056b3;
-        }
-        .error-message {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+#results {
+    margin-top: 0; 
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+.results-section h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #0056b3;
+    border-bottom: 1px solid #a8d6ff;
+    padding-bottom: 5px;
+}
+.result-item {
+    margin-bottom: 5px;
+}
+.result-item strong {
+    color: #0056b3;
+}
 
-        /* Stylizacja tabeli podsumowującej statystyki */
-        #summaryResultsTable {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        #summaryResultsTable th, #summaryResultsTable td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-            font-size: 0.9em;
-        }
-        #summaryResultsTable th {
-            background-color: #dbe9f6;
-        }
-        #summaryResultsTable tbody tr:nth-child(odd) {
-            background-color: #f8fafd;
-        }
+#summaryResultsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+#summaryResultsTable th, #summaryResultsTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.9em;
+}
+#summaryResultsTable th {
+    background-color: #dbe9f6;
+}
+#summaryResultsTable tbody tr:nth-child(odd) {
+    background-color: #f8fafd;
+}
 
-        /* Stylizacja sekcji częstości */
-        #frequencyTables {
-            margin-top: 30px;
-        }
-        .frequency-table-container {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #cceeff;
-            background-color: #f0f8ff;
-            border-radius: 5px;
-        }
-        .frequency-table-container h4 {
-            color: #0056b3;
-            margin-top: 0;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #a8d6ff;
-            padding-bottom: 5px;
-        }
-        .frequency-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .frequency-table th, .frequency-table td {
-            border: 1px solid #bbddee;
-            padding: 6px;
-            text-align: center;
-            font-size: 0.85em;
-        }
-        .frequency-table th {
-            background-color: #e0f0ff;
-        }
-        .frequency-table tbody tr:nth-child(odd) {
-            background-color: #f5faff;
-        }
+#frequencyTables {
+    margin-top: 30px;
+}
+.frequency-table-container {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #cceeff;
+    background-color: #f0f8ff;
+    border-radius: 5px;
+}
+.frequency-table-container h4 {
+    color: #0056b3;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #a8d6ff;
+    padding-bottom: 5px;
+}
+.frequency-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.frequency-table th, .frequency-table td {
+    border: 1px solid #bbddee;
+    padding: 6px;
+    text-align: center;
+    font-size: 0.85em;
+}
+.frequency-table th {
+    background-color: #e0f0ff;
+}
+.frequency-table tbody tr:nth-child(odd) {
+    background-color: #f5faff;
+}
 
-        /* Stylizacja sekcji wykresów */
-        #chartsSection {
-            margin-top: 30px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            border: 1px solid #ced4da;
-        }
-        #chartsSection h2 {
-            text-align: center;
-            color: #0056b3;
-            margin-bottom: 20px;
-        }
-        #chartsContainer {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .chart-box {
-            width: 100%; /* Wykresy będą zajmować całą dostępną szerokość prawej kolumny */
-            min-width: 300px;
-            min-height: 400px; /* Zwiększona minimalna wysokość wykresu */
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            box-sizing: border-box;
-        }
-        .chart-box canvas {
-            max-width: 100%;
-            height: 100%; /* Canvas wypełni całą wysokość swojego kontenera */
-        }
+#chartsSection {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+#chartsSection h2 {
+    text-align: center;
+    color: #0056b3;
+    margin-bottom: 20px;
+}
+#chartsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.chart-box {
+    width: 100%; 
+    min-width: 300px;
+    min-height: 400px; 
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+.chart-box canvas {
+    max-width: 100%;
+    height: 100%; 
+}
 
-        /* Responsywność */
-        @media (max-width: 850px) {
-            .main-wrapper {
-                flex-direction: column; /* Na małych ekranach kolumny układają się jedna pod drugą */
-            }
-            .left-column, .right-column {
-                min-width: unset; /* Usuwamy minimalną szerokość, aby zajmowały całą szerokość */
-                width: 100%;
-            }
-        }
+/* RWD dla starszych elementów */
+@media (max-width: 850px) {
+    .main-wrapper {
+        flex-direction: column; 
+    }
+    .left-column, .right-column {
+        min-width: unset; 
+        width: 100%;
+    }
+}
+@media (max-width: 768px) {
+    .experience-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .experience-item .icon-container {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    .name_title {
+        font-size: 2em;
+    }
+}
+@media (max-width: 480px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    .contact-info {
+        white-space: normal;
+        text-align: center;
+    }
+    .experience-navigation button {
+        font-size: 0.8em;
+        padding: 5px 10px;
+    }
+}
