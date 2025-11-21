@@ -1,371 +1,179 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doświadczenie</title>
+    <title>Doświadczenie - Filip Liebersbach</title>
+    
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
     <style>
-        .experience-list {
-            width: 95%;
-            max-width: 900px;
-        }
-
-        .name_title {
-        font-size: 2.5em;
-        margin-bottom: 0.2em;
-        color: #d9d9d9;
-        text-align: center;
-        }
-
+        #squares-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: #111; pointer-events: none; }
+        body { background: transparent; overflow: hidden; }
+        @media (max-width: 900px) { body { overflow: auto; } }
     </style>
 </head>
-
 <body>
+    <canvas id="squares-canvas"></canvas>
+
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect"><img src="images/logo.png" alt="Logo" /></a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="doswiadczenie.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="doswiadczenie.html">Doświadczenie</a></li>
-            <li><a href="projekty.html">Projekty</a></li>
-            <li><a href="publikacje.html">Publikacje</a></li>
-            <li><a href="rekomendacje.html">Rekomendacje</a></li>
-            <li><a href="statystyka.html">Statystyka</a></li>
-        </ul>
-    </nav>
     </header>
 
-    <main class="experience-container">
-        <h1 class="name_title">DOŚWIADCZENIE</h1>
-        <div class="experience-navigation">
-            <button onclick="filterExperience('wszystkie', this)" class="active">Wszystkie</button>
-            <button onclick="filterExperience('naukowe', this)"><i class="fa-solid fa-microscope"></i> Naukowe</button>
-            <button onclick="filterExperience('dydaktyczne', this)"><i class="fa-solid fa-paste"></i> Dydaktyczne</button>
-            <button onclick="filterExperience('inne', this)"><i class="fa-solid fa-user-group"></i> Inne</button>
-        </div>
-
-        <div class="experience-list">
-
-            <div class="experience-item" data-category="naukowe" data-date="2024-05">
-                <div class="icon-container"><i class="fa-solid fa-microscope"></i></div>
-                <div class="content">
-                    <p><b>STAŻ: GAMES USER RESEARCH</b> - TryEvidence (maj 2024 - lipiec 2024)</p>
-                    <div class="details">
-                        <p>projektowanie i przeprowadzanie badań ilościowych.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="naukowe" data-date="2024-03">
-                <div class="icon-container"><i class="fa-solid fa-microscope"></i></div>
-                <div class="content">
-                    <p><b>BADACZ</b> - Uniwersytet SWPS Filia we Wrocławiu (maj 2023 - sierpień 2023; marzec 2024 -
-                        kwiecień 2024)</p>
-                    <div class="details">
-                        <p>współpraca w ramach projektu nr BNP/GIN/2022/1/00035 (kierownik: prof. Tomasz
-                            Grzyb), realizacja badań terenowych i eksperymentalnych.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="naukowe" data-date="2022-01">
-                <div class="icon-container"><i class="fa-solid fa-microscope"></i></div>
-                <div class="content">
-                    <p><b>STAŻ: NAUKOWO-BADAWCZY</b> - Uniwersytet SWPS Filia we Wrocławiu (styczeń 2022 - październik
-                        2022)</p>
-                    <div class="details">
-                        <p>planowanie i prowadzenie badań terenowych pod opieką prof.
-                            Dariusza Dolińskiego, analiza danych i współpraca przy publikacjach naukowych.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2024-10" data-ongoing="true">
-                <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
-                <div class="content">
-                    <p><b>ASYSTENT DYDAKTYCZNY</b> – Uniwersytet SWPS, Filia we Wrocławiu (październik 2024 – obecnie)</p>
-                    <div class="details">
-                        <p>W roku akademickim 2024/2025 prowadzenie zajęć z <b>podstaw programowania w Pythonie</b>.</p>
-                        <p>Od października 2025 roku prowadzenie zajęć z zakresu <b>umiejętności akademickich</b>.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2024-10" data-ongoing="true">
-                <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
-                <div class="content">
-                    <p><b>ASYSTENT DYDAKTYCZNY</b> – Uniwersytet Dolnośląski DSW Wrocław (październik 2024 – obecnie)</p>
-                    <div class="details">
-                        <p>
-                            Od października 2024 roku prowadzę zajęcia z psychologii i fizjologii widzenia oraz treningu kompetencji menedżerskich. 
-                            </br>Od października 2025 roku zatrudniony na pełen etat dydaktyczny, z rozszerzonym zakresem obowiązków o prowadzenie zajęć ze statystyki i psychologii społecznej. 
-                            </br>Pełnię także funkcję opiekuna praktyk studenckich, wspierając rozwój kompetencji zawodowych studentów oraz organizację procesu dydaktycznego.
-                        </p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2023-12">
-                <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
-                <div class="content">
-                    <p><b>TRENER PROGRAMOWANIA</b> - Giganci Programowania sp. z 0.0. (grudzień 2023 - grudzień 2024)
-                    </p>
-                    <div class="details">
-                        <p>prowadzenie zajęć z programowania dla dzieci w wieku 7-12 lat.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2023-10">
-                 <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
-                 <div class="content">
-                     <p><b>ASYSTENT DYDAKTYCZNY</b> - Uniwersytet SWPS Filia we Wrocławiu (październik 2023 - grudzień
-                         2023;
-                         październik 2021 - grudzień 2021)</p>
-                     <div class="details">
-                         <p>pomoc w prowadzeniu zajęć z projektu empirycznego.</p>
-                     </div>
-                 </div>
-                 <i class="fas fa-plus toggle-icon"></i>
-             </div>
-            <div class="experience-item" data-category="dydaktyczne" data-date="2020-10" data-ongoing="true" data-ongoing="true">
-                <div class="icon-container"><i class="fa-solid fa-paste"></i></div>
-                <div class="content">
-                    <p><b>KOREPETYTOR</b> - (październik 2020 - obecnie)</p>
-                    <div class="details">
-                        <p>pomoc studentom w nauce statystyki i analizy danych.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
+    <main class="intro">
+        <div class="main_content glass-effect list-layout">
+            
+            <div class="content-header">
+                <h1>Doświadczenie</h1>
             </div>
 
-            <div class="experience-item" data-category="inne" data-date="2024-09">
-                <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
-                <div class="content">
-                    <p><b>PSYCHOLOG SZKOLNY</b> - Zespół Szkół Specjalnych FECDIE (III etap edukacji) (wrzesień 2024 -
-                        sierpień 2025)</p>
-                    <div class="details">
-                        <p>pomoc psychologiczna, prowadzenie zajęć z profilaktyki i zachowań zdrowotnych, współpraca
-                            z rodzicami i nauczycielami.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="inne" data-date="2024-01">
-                <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
-                <div class="content">
-                    <p><b>KOORDYNATOR SEKCJI TRENERSKIEJ</b> - Polskie Stowarzyszenie Studentów i Absolwentów Psychologii
-                        (styczeń 2024 - grudzień 2024)</p>
-                    <div class="details">
-                        <p>zarządzanie sekcją trenerską i szkolenie trenerów, organizacja
-                            warsztatów promujących zdrowie psychiczne w społeczeństwie.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item" data-category="inne" data-date="2022-03">
-                <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
-                <div class="content">
-                    <p><b>PROWADZĄCY WARSZTATY DLA MŁODZIEŻY</b> - Uniwersytet SWPS Filia we Wrocławiu
-                        (marzec 2022 - marzec 2023)</p>
-                    <div class="details">
-                        <p>prowadzenie warsztatów z zakresu radzenia sobie ze stresem i
-                            autoprezentacji.</p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">Wszystkie</button>
+                <button class="filter-btn" data-filter="naukowe"><i class="fa-solid fa-microscope"></i> Naukowe</button>
+                <button class="filter-btn" data-filter="dydaktyczne"><i class="fa-solid fa-paste"></i> Dydaktyczne</button>
+                <button class="filter-btn" data-filter="inne"><i class="fa-solid fa-user-group"></i> Inne</button>
             </div>
 
-            <div class="experience-item" data-category="inne" data-date="2021-03">
-                <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
-                <div class="content">
-                    <p><b>POMOC TERAPEUTY</b> - Promotis - Przedszkole specjalne
-                        (październik 2021 - kwiecień 2022)</p>
-                    <div class="details">
-                        <p>wsparcie w prowadzeniu zajęć indywidualnych i grupowych
-                        </p>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
+            <div class="scroll-list-container">
+                <div class="scroll-list">
 
-                        <div class="experience-item" data-category="inne" data-date="2022-03">
-                <div class="icon-container"><i class="fa-solid fa-user-group"></i></div>
-                <div class="content">
-                    <p><b>ASYSTENT DS. REKRUTACJI</b> - Uniwersytet SWPS Filia we Wrocławiu
-                        (marzec 2022 - luty 2023)</p>
-                    <div class="details">
-                        <p>prowadzenie rekrutacji na studia wyższe
-                        </p>
+                    <div class="list-item" data-category="dydaktyczne">
+                        <span class="date">Październik 2024 – Obecnie</span>
+                        <h3>Uniwersytet Dolnośląski DSW Wrocław</h3>
+                        <div class="role">Asystent Dydaktyczny</div>
+                        <p>Od października 2024 roku prowadzę zajęcia z psychologii i fizjologii widzenia oraz treningu kompetencji menedżerskich. </br>Od października 2025 roku zatrudniony na pełen etat dydaktyczny (statystyka, psychologia społeczna). </br>Opiekun praktyk studenckich.</p>
                     </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
 
+                    <div class="list-item" data-category="dydaktyczne">
+                        <span class="date">Październik 2024 – Obecnie</span>
+                        <h3>Uniwersytet SWPS, Filia we Wrocławiu</h3>
+                        <div class="role">Asystent Dydaktyczny</div>
+                        <p>W roku akademickim 2024/2025 prowadzenie zajęć z podstaw programowania w Pythonie. </br>Od października 2025 roku prowadzenie zajęć z zakresu umiejętności akademickich (technologie informacyjne).</p>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <span class="date">Wrzesień 2024 - Sierpień 2025</span>
+                        <h3>Zespół Szkół Specjalnych FECDIE</h3>
+                        <div class="role">Psycholog Szkolny</div>
+                        <p>Pomoc psychologiczna uczniom, prowadzenie zajęć z zakresu profilaktyki i promocji zdrowia, współpraca z rodzicami i nauczycielami, diagnoza potrzeb uczniów.</p>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <span class="date">Maj 2024 - Lipiec 2024</span>
+                        <h3>TryEvidence</h3>
+                        <div class="role">Staż: Games User Research</div>
+                        <p>Udział w projektowaniu i przeprowadzaniu badań user experience w grach wideo. Analiza danych ilościowych i jakościowych, przygotowywanie raportów z badań.</p>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <span class="date">Maj 2023 - Sierpień 2023; Marzec - Kwiecień 2024</span>
+                        <h3>Uniwersytet SWPS Filia we Wrocławiu</h3>
+                        <div class="role">Badacz</div>
+                        <p>Współpraca w ramach projektu nr BNP/GIN/2022/1/00035 (kierownik: prof. Tomasz Grzyb), realizacja badań terenowych i eksperymentalnych, rekrutacja osób badanych, dbałość o procedury badawcze.</p>
+                    </div>
+                    
+                    <div class="list-item" data-category="inne">
+                        <span class="date">Styczeń 2024 - Grudzień 2024</span>
+                        <h3>Polskie Stowarzyszenie Studentów i Absolwentów Psychologii</h3>
+                        <div class="role">Koordynator Sekcji Trenerskiej</div>
+                        <p>Zarządzanie sekcją trenerską, rekrutacja i szkolenie nowych trenerów, koordynacja projektów warsztatowych, organizacja wydarzeń promujących wiedzę psychologiczną.</p>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <span class="date">Grudzień 2023 - Grudzień 2024</span>
+                        <h3>Giganci Programowania sp. z o.o.</h3>
+                        <div class="role">Trener Programowania</div>
+                        <p>Prowadzenie zajęć z programowania (Scratch, Minecraft, Python) dla dzieci i młodzieży w wieku 7-12 lat. Rozwijanie logicznego myślenia i kreatywności u kursantów.</p>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <span class="date">Październik 2023 - Grudzień 2023; 2021</span>
+                        <h3>Uniwersytet SWPS Filia we Wrocławiu</h3>
+                        <div class="role">Asystent Dydaktyczny (Pomoc)</div>
+                        <p>Pomoc w prowadzeniu zajęć z projektu empirycznego oraz statystyki. Wsparcie studentów w obsłudze oprogramowania statystycznego (SPSS/Jamovi).</p>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <span class="date">Marzec 2022 - Marzec 2023</span>
+                        <h3>Uniwersytet SWPS Filia we Wrocławiu</h3>
+                        <div class="role">Prowadzący warsztaty dla młodzieży</div>
+                        <p>Projektowanie i prowadzenie warsztatów psychologicznych dla uczniów szkół średnich. Tematyka: radzenie sobie ze stresem, autoprezentacja, efektywna nauka.</p>
+                    </div>
+                    
+                    <div class="list-item" data-category="inne">
+                        <span class="date">Marzec 2022 - Luty 2023</span>
+                        <h3>Uniwersytet SWPS Filia we Wrocławiu</h3>
+                        <div class="role">Asystent ds. Rekrutacji</div>
+                        <p>Obsługa kandydatów na studia, udzielanie informacji o ofercie edukacyjnej, weryfikacja dokumentów rekrutacyjnych, wsparcie w procesie administracyjnym.</p>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <span class="date">Styczeń 2022 - Październik 2022</span>
+                        <h3>Uniwersytet SWPS Filia we Wrocławiu</h3>
+                        <div class="role">Staż: Naukowo-Badawczy</div>
+                        <p>Planowanie i prowadzenie badań terenowych pod opieką prof. Dariusza Dolińskiego. Analiza danych statystycznych, przegląd literatury przedmiotu, współudział w przygotowaniu publikacji.</p>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <span class="date">Październik 2021 - Kwiecień 2022</span>
+                        <h3>Promotis - Przedszkole specjalne</h3>
+                        <div class="role">Pomoc Terapeuty</div>
+                        <p>Wsparcie terapeutów w prowadzeniu zajęć indywidualnych i grupowych dla dzieci ze spektrum autyzmu. Pomoc w czynnościach samoobsługowych.</p>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <span class="date">Październik 2020 - Obecnie</span>
+                        <h3>Działalność własna</h3>
+                        <div class="role">Korepetytor</div>
+                        <p>Udzielanie korepetycji studentom z zakresu statystyki, metodologii badań oraz obsługi programów statystycznych (SPSS, Jamovi, Python). Pomoc w analizie danych do prac dyplomowych.</p>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-content">
+    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+        <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
-                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
-                </a>                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fab fa-linkedin" style="font-size: 24px;"></i>
-                </a>
-                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
-                </a>
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
             </div>
-            <div class="contact-info">
-                Możesz się ze mną skontaktować:
-                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
-                    kontakt@lieberfilip.pl
-                </a>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
-        </div>
-        <div class="copyright">
-            &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
         </div>
     </footer>
 
-    <script>
-        function filterExperience(category, button) {
-            const items = document.querySelectorAll('.experience-item');
-
-            items.forEach(item => {
-                item.style.display = 'none';
-            });
-
-            if (category === 'wszystkie') {
-                items.forEach(item => {
-                    item.style.display = 'flex';
-                });
-            } else {
-                items.forEach(item => {
-                    if (item.dataset.category === category) {
-                        item.style.display = 'flex';
-                    }
-                });
-            }
-
-            const buttons = document.querySelectorAll('.experience-navigation button');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            if (button) {
-                button.classList.add('active');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Uruchomienie domyślnego filtra "wszystkie"
-            const firstFilterButton = document.querySelector('.experience-navigation button:first-child');
-            if (firstFilterButton) {
-                filterExperience('wszystkie', firstFilterButton);
-            }
-
-            const experienceItems = document.querySelectorAll('.experience-item');
-            const experienceList = document.querySelector('.experience-list');
-
-            // --- SORTOWANIE ---
-            if (experienceList) {
-                const sortedItems = Array.from(experienceItems).sort((a, b) => {
-                    // Sprawdź, czy praca jest w toku (oznaczona data-ongoing="true")
-                    const isOngoingA = a.dataset.ongoing === 'true';
-                    const isOngoingB = b.dataset.ongoing === 'true';
-
-                    // 1. Priorytet: Obecne prace na górze
-                    if (isOngoingA && !isOngoingB) {
-                        return -1; // A (obecna) idzie przed B
-                    }
-                    if (!isOngoingA && isOngoingB) {
-                        return 1; // B (obecna) idzie przed A
-                    }
-
-                    // 2. Jeśli ten sam status, sortuj po dacie (od najnowszej)
-                    const dateA = new Date(a.dataset.date);
-                    const dateB = new Date(b.dataset.date);
-                    
-                    // Sortowanie malejące (najnowsza data rozpoczęcia na górze)
-                    return dateB - dateA;
-                });
-
-                experienceList.innerHTML = ''; // Czyszczenie listy
-
-                sortedItems.forEach(item => {
-                    experienceList.appendChild(item); // Dodawanie posortowanych elementów
-                });
-            }
-            // ------------------
-
-            // Obsługa kliknięcia (rozwijanie/zwijanie szczegółów)
-            experienceItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    this.classList.toggle('active-details');
-                    const icon = this.querySelector('.toggle-icon');
-                    if (icon) {
-                        if (this.classList.contains('active-details')) {
-                            icon.classList.remove('fa-plus');
-                            icon.classList.add('fa-times');
-                        } else {
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-plus');
-                        }
-                    }
-                });
-            });
-        });
-    </script>
-
-    <script>
-        // --- SKRYPT PARALLAX ---
-        document.addEventListener('mousemove', function(e) {
-            const speedX = -0.02;
-            const speedY = -0.02;
-            const x = (window.innerWidth - e.clientX) * speedX;
-            const y = (window.innerHeight - e.clientY) * speedY;
-
-            document.body.style.setProperty('--parallax-x', `${x}px`);
-            document.body.style.setProperty('--parallax-y', `${y}px`);
-        });
-        // -------------------------
-
-        // --- SKRYPT HAMBURGER ---
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
-
-        // Sprawdzenie, czy elementy istnieją, zanim dodamy nasłuchiwacze
-        if (hamburger && navLinks) {
-            hamburger.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            });
-
-            // Opcjonalnie: Zamknij menu po kliknięciu linku
-            document.querySelectorAll('.nav-links li a').forEach(link => {
-                link.addEventListener('click', () => {
-                    navLinks.classList.remove('active');
-                    hamburger.classList.remove('active');
-                });
-            });
-        }
-        // -------------------------
-    </script>
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
+    <script src="list.js"></script> 
 </body>
-
 </html>

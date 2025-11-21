@@ -1,211 +1,134 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Publikacje</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publikacje - Filip Liebersbach</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+        body { background: transparent; overflow: hidden; }
+        @media (max-width: 900px) { body { overflow: auto; } }
+    </style>
 </head>
 <body>
+    <canvas id="squares-canvas"></canvas>
 
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="doswiadczenie.html">Doświadczenie</a></li>
-            <li><a href="projekty.html">Projekty</a></li>
-            <li><a href="publikacje.html">Publikacje</a></li>
-            <li><a href="rekomendacje.html">Rekomendacje</a></li>
-            <li><a href="statystyka.html">Statystyka</a></li>
-        </ul>
-    </nav>
     </header>
 
-  <!-- Sekcja publikacji -->
-  <main class="experience-container">
-    <h1 class="name_title">PUBLIKACJE</h1>
-        <div class="experience-navigation">
-            <button onclick="filterExperience('wszystkie', this)" class="active">Wszystkie</button>
-            <button onclick="filterExperience('artykuł', this)"><i class="fa-solid fa-microscope"></i> Artykuł</button>
-            <button onclick="filterExperience('prezentacje', this)"><i class="fa-solid fa-user-group"></i> Prezentacje</button>
-            <button onclick="filterExperience('plakaty', this)"><i class="fa-solid fa-user-group"></i> Plakaty</button>
-        </div>
-    <div class="experience-list">
+    <main class="intro">
+        <div class="main_content glass-effect list-layout">
+            
+            <div class="content-header">
+                <h1>Publikacje</h1>
+            </div>
 
-      <!-- Publikacja 1 -->
-      <div class="experience-item" data-category="prezentacje" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_publikacje/PSPS.png" alt="PSPS Logo" width="200px" />
-        </div>
-        <div class="content">
-          <strong>
-            Kamil Izydorczak, Filip Liebersbach, Kamil Kornacki, Tadeusz Berkowski, Paweł Garduła, Bartosz Stolarski</strong> – Interakcje online i ich potencjał do wzmacniania polaryzacji społecznej
-            <p>
-              <br>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI. Zakładano, że lęk społeczny i narcyzm będą miały pozytywny związek z medialną wielozadaniowością.  
-            </p>
-        </div>
-      </div>
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">Wszystkie</button>
+                <button class="filter-btn" data-filter="artykul"><i class="fa-solid fa-file-pen"></i> Artykuł</button>
+                <button class="filter-btn" data-filter="prezentacje"><i class="fa-solid fa-microphone-lines"></i> Prezentacje</button>
+                <button class="filter-btn" data-filter="plakaty"><i class="fa-solid fa-image"></i> Plakaty</button>
+            </div>
 
-      <!-- Publikacja 2 -->
-      <div class="experience-item" data-category="artykuł" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_publikacje/social influence.jpg" alt="social influence" width="200px" />
-        </div>
-        <div class="content">
-          <strong>
-            Dariusz Dolinski, Tomasz Grzyb, Wojciech Kulesza, Piotr Błaszczyk, Dominik Laska, Filip Liebersbach, Diana Redkiewicz, Łukasz Strzelczyk</strong> – ‘We are looking for people like you’ – new technique of social influence as a tool of improving response rate in surveys
-            <p>
-              <br>A low response rate in surveys makes the research more expensive and time consuming, but it also, or even more importantly, constitutes a major methodological problem. Therefore, researchers use all kinds of measures in order to increase the response rate. This article describes four experiments (three field studies and one on-line experiment) designed to test a specific technique intended for this purpose. The technique consists in suggesting, to a respondent, that the study requires individuals with a certain rare quality that they have. 
-              <br><br>https://doi.org/10.1080/15534510.2024.2316348
-            </p>
-        </div>
-      </div>
+            <div class="scroll-list-container">
+                <div class="scroll-list">
 
-      <!-- Publikacja 3 -->
-      <div class="experience-item" data-category="prezentacje" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_publikacje/PSPS.png" alt="PSPS Logo" width="200px" />
-        </div>
-        <div class="content">
-          <strong>
-            Filip Liebersbach, Julita Koszur</strong> – Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym wśród studentek i studentów
-            <p>
-              <br>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI. Zakładano, że lęk społeczny i narcyzm będą miały pozytywny związek z medialną wielozadaniowością.  
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="artykul">
+                        <span class="date">2024</span>
+                        <h3>‘We are looking for people like you’ – new technique of social influence</h3>
+                        <div class="role">Autorzy: Dariusz Doliński, Tomasz Grzyb, Wojciech Kulesza, Piotr Błaszczyk, Dominik Laska, Filip Liebersbach, Diana Redkiewicz, Łukasz Strzelczyk</div>
+                        <p>A low response rate in surveys makes the research more expensive and time consuming, but it also, or even more importantly, constitutes a major methodological problem. Therefore, researchers use all kinds of measures in order to increase the response rate. This article describes four experiments (three field studies and one on-line experiment) designed to test a specific technique intended for this purpose. The technique consists in suggesting, to a respondent, that the study requires individuals with a certain rare quality that they have.</p>
+                        <p style="margin-top: 10px;">
+                            <a href="https://doi.org/10.1080/15534510.2024.2316348" target="_blank" style="color: #8ecae6; text-decoration: underline;">
+                                <i class="fa-solid fa-link"></i> https://doi.org/10.1080/15534510.2024.2316348
+                            </a>
+                        </p>
+                    </div>
 
-      <!-- Publikacja 4 -->
-      <div class="experience-item" data-category="plakaty" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_publikacje/U SWPS.png" alt="U SWPS" width="200px" />
-        </div>
-        <div class="content">
-          <strong>
-            Filip Liebersbach</strong> – Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym wśród studentek i studentów
-            <p>
-              <br>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI. Zakładano, że lęk społeczny i narcyzm będą miały pozytywny związek z medialną wielozadaniowością.  
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="artykul">
+                        <span class="date">2025</span>
+                        <h3>Interakcje online i ich potencjał do wzmacniania polaryzacji społecznej</h3>
+                        <div class="role">Autorzy: Kamil Izydorczak, Filip Liebersbach, Kamil Kornacki, Tadeusz Berkowski, Paweł Garduła, Bartosz Stolarski</div>
+                        <p>Celem pracy było sprawdzenie potencjału interackji online w wzacnianiu polaryzacji społecznej</p>
+                    </div>
 
-        <!-- Publikacja 4 -->
-      <div class="experience-item" data-category="prezentacje" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_publikacje/pssiap_12_dni_psychologii.jpg" alt="PSPS Logo" width="200px" />
-        </div>
-        <div class="content">
-          <strong>
-            Filip Liebersbach, Krzysztof Wiatr</strong> – Technoromans - jak technologia wpływa na nasze relacje
-            <p>
-              <br>Podczas Konferencji Dnii Psychologii 2023 Romanse, Zbrodnie i Uzależnienia, przedstawiłem przegląd badań na temat wpływu technologii na relacje między ludzkie.
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="prezentacje">
+                        <span class="date">2024</span>
+                        <h3>Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym</h3>
+                        <div class="role">Autorzy: Filip Liebersbach, Julita Koszur</div>
+                        <p>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI. Zakładano, że lęk społeczny i narcyzm będą miały pozytywny związek z medialną wielozadaniowością.</p>
+                    </div>
 
-      <!-- Dodaj więcej wg potrzeb -->
-    </div>
-  </main>
+                    <div class="list-item" data-category="plakaty">
+                        <span class="date">2024</span>
+                        <h3>Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym wśród studentek i studentów</h3>
+                        <div class="role">Autor: Filip Liebersbach</div>
+                        <p>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI.</p>
+                    </div>
 
-  <!-- Stopka -->
-    <footer>
-        <div class="footer-content">
+                    <div class="list-item" data-category="prezentacje">
+                        <span class="date">2023</span>
+                        <h3>Technoromans - jak technologia wpływa na nasze relacje</h3>
+                        <div class="role">Autorzy: Filip Liebersbach, Krzysztof Wiatr</div>
+                        <p>Podczas Konferencji Dni Psychologii 2023 "Romanse, Zbrodnie i Uzależnienia", przedstawiłem przegląd badań na temat wpływu technologii na relacje międzyludzkie.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+        <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
-                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
-                </a>                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fab fa-linkedin" style="font-size: 24px;"></i>
-                </a>
-                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
-                </a>
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
             </div>
-            <div class="contact-info">
-                Możesz się ze mną skontaktować:
-                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
-                    kontakt@lieberfilip.pl
-                </a>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
-        </div>
-        <div class="copyright">
-            &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
         </div>
     </footer>
 
-    <script>
-        function filterExperience(category, button) {
-            const items = document.querySelectorAll('.experience-item');
-
-            items.forEach(item => {
-                item.style.display = 'none';
-            });
-
-            if (category === 'wszystkie') {
-                items.forEach(item => {
-                    item.style.display = 'flex';
-                });
-            } else {
-                items.forEach(item => {
-                    if (item.dataset.category === category) {
-                        item.style.display = 'flex';
-                    }
-                });
-            }
-
-            const buttons = document.querySelectorAll('.experience-navigation button');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            button.classList.add('active');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            filterExperience('wszystkie', document.querySelector('.experience-navigation button:first-child'));
-
-            const experienceItems = document.querySelectorAll('.experience-item');
-
-            // Sortowanie po dacie
-            const sortedItems = Array.from(experienceItems).sort((a, b) => {
-                const dateA = new Date(a.dataset.date);
-                const dateB = new Date(b.dataset.date);
-                return dateB - dateA; // Sortowanie od najnowszego
-            });
-
-            const experienceList = document.querySelector('.experience-list');
-            experienceList.innerHTML = ''; // Czyszczenie listy
-
-            sortedItems.forEach(item => {
-                experienceList.appendChild(item); // Dodawanie posortowanych elementów
-            });
-
-        });
-
-    
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        hamburger.classList.toggle('active');
-    });
-
-    // Opcjonalnie: Zamknij menu po kliknięciu linku
-    document.querySelectorAll('.nav-links li a').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.classList.remove('active');
-        });
-    });
-
-    </script>
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
+    <script src="list.js"></script> 
 </body>
 </html>

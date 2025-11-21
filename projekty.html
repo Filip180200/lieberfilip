@@ -1,206 +1,183 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Projekty</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekty - Filip Liebersbach</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="images/logo.png" type="image/x-icon">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
     <style>
-    .content ul {
-        list-style-position: inside; /* To sprawia, że kropki są wewnątrz obszaru elementu li */
-        padding-left: 0;             /* Resetuje domyślny padding listy */
-        margin-left: 1.5em;          /* Dodaje lewy margines, aby tekst był wcięty, ale kropki nadal widoczne */
-    }
-
-    .content ul li {
-        /* Opcjonalnie: dostosuj marginesy lub padding dla poszczególnych elementów listy */
-        margin-bottom: 0.5em; /* Odstęp między elementami listy */
-    }
-</style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+        /* Blokada scrolla całej strony na PC */
+        body { background: transparent; overflow: hidden; }
+        /* Odblokowanie na telefonach */
+        @media (max-width: 900px) { body { overflow: auto; } }
+    </style>
 </head>
 <body>
+    <canvas id="squares-canvas"></canvas>
+
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="projekty.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="doswiadczenie.html">Doświadczenie</a></li>
-            <li><a href="projekty.html">Projekty</a></li>
-            <li><a href="publikacje.html">Publikacje</a></li>
-            <li><a href="rekomendacje.html">Rekomendacje</a></li>
-            <li><a href="statystyka.html">Statystyka</a></li>
-        </ul>
-    </nav>
     </header>
 
-      <!-- Sekcja rekomendacji -->
-  <main class="experience-container">
-    <h1 class="name_title">PROJEKTY</h1>
-    <div class="experience-list">
+    <main class="intro">
+        <div class="main_content glass-effect list-layout">
+            
+            <div class="content-header">
+                <h1>Projekty</h1>
+                <p>Realizowane inicjatywy i badania</p>
+            </div>
 
-          <!-- Wydarzenie 1 -->
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">Wszystkie</button>
+                <button class="filter-btn" data-filter="spoleczne"><i class="fa-solid fa-users"></i> Społeczne</button>
+                <button class="filter-btn" data-filter="analityczne"><i class="fa-solid fa-chart-line"></i> Analityczne</button>
+                <button class="filter-btn" data-filter="badawcze"><i class="fa-solid fa-flask"></i> Badawcze</button>
+            </div>
 
-<div class="experience-item">
-    <div class="book-images">
-        <img src="images_projekty/EU_Project_Icon.png" alt="EU Project Icon" width="200px" />
-    </div>
-    <div class="content">
-        <strong>Opiekun w projekcie "2023-1-IT01-KA121-VET-000123204"</strong> – Projekt współfinansowany przez Unię Europejską
-        <p>
-            <br>Uczestnictwo w projekcie jako opiekun osób towarzyszących w okresie 09/03/2025 - 23/03/2025. 
-            <br>Zakres obowiązków obejmował:
-            <ul>
-                <li>Podejmowanie działań niezbędnych do przygotowania i efektywnego przebiegu stażu. </li>
-                <li>Zapewnienie, że wiedza i umiejętności beneficjentów były wykorzystywane, a zadania i obowiązki adekwatne do ich kwalifikacji i doświadczenia, pod nadzorem wyznaczonego mentora. </li>
-                <li>Monitorowanie firm, w których uczestnicy odbywali staże, we współpracy z każdym uczestnikiem, mentorem i Asociación Mundus. </li>
-                <li>Monitorowanie i ocenianie wyników nauczania uczestników podczas projektu. </li>
-                <li>Organizowanie zajęć kulturalnych dla uczestników. </li>
-                <li>Pomoc uczestnikom w przypadku wypadku lub problemu podczas stażu, we współpracy z Asociación Mundus. </li>
-                <li>Pełnienie funkcji lokalnego przedstawiciela w Hiszpanii dla szkoły wysyłającej beneficjentów. </li>
-            </ul>
-        </p>
-        <p>
-            <a href="images_projekty/Certificado profes Filip firmados.pdf" target="_blank">Zobacz certyfikat (PDF)</a>
-        </p>
-    </div>
-</div>
+            <div class="scroll-list-container">
+                <div class="scroll-list">
 
-  
-        <div class="experience-item">
-        <div class="book-images">
-            <img src="images_projekty/Python Logo.png" alt="Python Logo" width="200px" />
-        </div>
-        <div class="content">
-          <strong>Kurs Programowania Python</strong> – Prowadzący
-            <p>
-              <br>Ułożenie i prowadzenie kursu programowania z Pythona na Uniwerstetecie SWPS.
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="spoleczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">Marzec 2025</span>
+                                <h3>Opiekun w projekcie UE</h3>
+                                <div class="role">Projekt: 2023-1-IT01-KA121-VET-000123204</div>
+                            </div>
+                            <img src="images_projekty/EU_Project_Icon.png" alt="EU Project Icon" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Projekt współfinansowany przez Unię Europejską. Uczestnictwo jako opiekun osób towarzyszących (09/03/2025 - 23/03/2025). Monitorowanie staży, ocena wyników, organizacja zajęć kulturalnych, pomoc uczestnikom oraz pełnienie funkcji lokalnego przedstawiciela w Hiszpanii.</p>
+                        <p style="margin-top: 8px;"><a href="images_projekty/Certificado profes Filip firmados.pdf" target="_blank" style="color: #8ecae6; text-decoration: underline; font-size: 0.9em;"><i class="fa-solid fa-file-pdf"></i> Zobacz certyfikat (PDF)</a></p>
+                    </div>
 
+                    <div class="list-item" data-category="analityczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">2023 - 2024</span>
+                                <h3>Kurs Programowania Python</h3>
+                                <div class="role">Prowadzący</div>
+                            </div>
+                            <img src="images_projekty/Python Logo.png" alt="Python Logo" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Ułożenie i prowadzenie kursu programowania z Pythona na Uniwersytecie SWPS.</p>
+                    </div>
 
-          <div class="experience-item">
-        <div class="book-images">
-            <img src="images_projekty/13 Dni Psychologii.jpg" alt="13 Dni Psychologii" width="200px" />
-        </div>
-        <div class="content">
-          <strong>13 Dni Psychologii</strong> – Koordynator ds. Finansów
-            <p>
-              <br>Konferencja popoularno naukowa popoularyzująca wiedzę na temat psychologii.
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="spoleczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">2023</span>
+                                <h3>13 Dni Psychologii</h3>
+                                <div class="role">Koordynator ds. Finansów</div>
+                            </div>
+                            <img src="images_projekty/13 Dni Psychologii.jpg" alt="13 Dni Psychologii" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Konferencja popularnonaukowa popularyzująca wiedzę na temat psychologii.</p>
+                    </div>
 
-      <div class="experience-item">
-        <div class="book-images">
-            <img src="images_projekty/EFPSA.png" alt="EFPSA RSS" width="200px" />
-        </div>
-        <div class="content">
-          <strong>EFPSA Reaserch Summer School 2024</strong> – Asystent ds. Finansów
-            <p>
-              <br>Ośmiodniowe wydarzenie rozpoczyna roczny program badawczy EFPSA, który łączy studentów psychologii, doktorantów i naukowców z całej Europy.
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="badawcze">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">Lato 2024</span>
+                                <h3>EFPSA Research Summer School 2024</h3>
+                                <div class="role">Asystent ds. Finansów</div>
+                            </div>
+                            <img src="images_projekty/EFPSA.png" alt="EFPSA RSS" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Ośmiodniowe wydarzenie rozpoczynające roczny program badawczy EFPSA, który łączy studentów psychologii, doktorantów i naukowców z całej Europy.</p>
+                    </div>
 
-    <div class="experience-item">
-        <div class="book-images">
-            <img src="images_projekty/PSSIAP.png" alt="PSSIAP Logo" width="200px" />
-        </div>
-        <div class="content">
-          <strong>System Fakturowania PSSIAP</strong> – Wiceprzewodniczący ds. Finansów
-            <p>
-              <br>Wprowadzenie systemu elektronicznego rozliczania faktur, oraz automatycznej analizy przelewów członków, którzy opłacili składki członkowskie. <br><br>
-              Wprowadzanie regulaminów, w tym elektronicznego zgłaszania wydarzeń.
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="analityczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">2024</span>
+                                <h3>System Fakturowania PSSIAP</h3>
+                                <div class="role">Wiceprzewodniczący ds. Finansów</div>
+                            </div>
+                            <img src="images_projekty/PSSIAP.png" alt="PSSIAP Logo" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Wprowadzenie systemu elektronicznego rozliczania faktur oraz automatycznej analizy przelewów członkowskich. Wdrażanie regulaminów i elektronicznego zgłaszania wydarzeń.</p>
+                    </div>
 
-    <div class="experience-item">
-        <div class="book-images">
-            <img src="images_projekty/PSSIAP.png" alt="PSSIAP Logo" width="200px" />
-        </div>
-        <div class="content">
-          <strong>Prowadzenie sekcji trenerskiej</strong> – Koordynator sekcji trenerskiej
-            <p>
-              <br>Wprowadzenie nowego sposobu funkcjonowania sekcji, gdzie każdy konspekt był omawiany i ćwiczony. <br><br>
-              Nawiązywanie relacji i porwadzenie warsztatów na Uniwerstetecie Medycznym we Wrocławiu, Instytucie Psychologii Uniwersytetu Wrocławskiego oraz różnymi wrocławskimi szkołami. 
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="spoleczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">2024</span>
+                                <h3>Prowadzenie sekcji trenerskiej</h3>
+                                <div class="role">Koordynator sekcji</div>
+                            </div>
+                            <img src="images_projekty/PSSIAP.png" alt="PSSIAP Logo" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Wprowadzenie nowego sposobu funkcjonowania sekcji (omawianie i ćwiczenie konspektów). Nawiązywanie relacji i prowadzenie warsztatów na Uniwersytecie Medycznym, Uniwersytecie Wrocławskim oraz w szkołach.</p>
+                    </div>
 
-      <div class="experience-item">
-        <div class="book-images">
-            <img src="images_projekty/Studencki Wieczór.jpg" alt="Studencki Wieczór" width="200px" />
-        </div>
-        <div class="content">
-          <strong>Studencki Wieczór</strong> – Koordynator projektu
-            <p>
-              <br>Spotkania studentów online (podczas pandemii) mające na celu integracje i miłe spędzenie wspólnego czasu. (odbyły się dwie edycje). Organizowane z ramienia samorząd studenckiego Uniwersytetu SWPS
-            </p>
-        </div>
-      </div>
+                    <div class="list-item" data-category="spoleczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">2021 - 2022</span>
+                                <h3>Studencki Wieczór</h3>
+                                <div class="role">Koordynator projektu</div>
+                            </div>
+                            <img src="images_projekty/Studencki Wieczór.jpg" alt="Studencki Wieczór" style="width: 70px; border-radius: 10px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 5px;">
+                        </div>
+                        <p>Spotkania studentów online (podczas pandemii) mające na celu integrację. Organizowane z ramienia samorządu studenckiego Uniwersytetu SWPS.</p>
+                    </div>
 
+                </div>
+            </div>
+        </div>
     </main>
-    <footer>
-        <div class="footer-content">
+
+    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+        <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
-                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
-                </a>                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fab fa-linkedin" style="font-size: 24px;"></i>
-                </a>
-                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
-                </a>
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
             </div>
-            <div class="contact-info">
-                Możesz się ze mną skontaktować:
-                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
-                    kontakt@lieberfilip.pl
-                </a>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
         </div>
-        <div class="copyright">
-            &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
-        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
     </footer>
+
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
+    <script src="list.js"></script> 
 </body>
-<script>
-document.addEventListener('mousemove', function(e) {
-    const speedX = -0.02;
-    const speedY = -0.02;
-    const x = (window.innerWidth - e.clientX) * speedX;
-    const y = (window.innerHeight - e.clientY) * speedY;
-
-    document.body.style.setProperty('--parallax-x', `${x}px`);
-    document.body.style.setProperty('--parallax-y', `${y}px`);
-});
-
-
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-
-hamburger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    hamburger.classList.toggle('active');
-});
-
-// Opcjonalnie: Zamknij menu po kliknięciu linku
-document.querySelectorAll('.nav-links li a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        hamburger.classList.remove('active');
-    });
-});
-
-</script>
 </html>

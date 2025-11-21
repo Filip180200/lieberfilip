@@ -1,165 +1,121 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rekomendacje</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekomendacje - Filip Liebersbach</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+        /* Blokada scrolla strony na PC */
+        body { background: transparent; overflow: hidden; }
+        /* Odblokowanie na telefonach */
+        @media (max-width: 900px) { body { overflow: auto; } }
+    </style>
 </head>
 <body>
+    <canvas id="squares-canvas"></canvas>
 
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="doswiadczenie.html">Doświadczenie</a></li>
-            <li><a href="projekty.html">Projekty</a></li>
-            <li><a href="publikacje.html">Publikacje</a></li>
-            <li><a href="rekomendacje.html">Rekomendacje</a></li>
-            <li><a href="statystyka.html">Statystyka</a></li>
-        </ul>
-    </nav>
     </header>
 
-  <!-- Sekcja rekomendacji -->
-  <main class="experience-container">
-    <h1 class="name_title">REKOMENDACJE</h1>
-        <div class="experience-navigation">
-            <button onclick="filterExperience('wszystkie', this)" class="active">Wszystkie</button>
-            <button onclick="filterExperience('naukowe', this)"><i class="fa-solid fa-microscope"></i> Naukowe</button>
-            <button onclick="filterExperience('psychologiczne', this)"><i class="fa-solid fa-user-group"></i> Psychologiczne</button>
-        </div>
-    <div class="experience-list">
+    <main class="intro">
+        <div class="main_content glass-effect list-layout" style="height: calc(100vh - 240px); min-height: 400px;">
+            
+            <div class="content-header">
+                <h1>Rekomendacje</h1>
+                <p>Książki, które polecam</p>
+            </div>
 
-      <!-- Rekomendacja 1 -->
-      <div class="experience-item" data-category="naukowe" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_books/Yalom Irvin D. - Istoty ulotne. Opowieści psychoterapeutyczne.jpg" alt="images_books/Yalom Irvin D. - Istoty ulotne. Opowieści psychoterapeutyczne.jpg" width="200px" />
-        </div>
-        <div class="content">
-          <strong>Irvin Yalom</strong> – Istoty ulotne. Opowieści psychoterapeutyczne
-            <p>
-              Długo myślałem o tej książce, bo budzi we mnie różne emocje... Może dlatego, że mówi o tym, jak ulotne jest życie. 
-            </p>
-        </div>
-      </div>
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">Wszystkie</button>
+                <button class="filter-btn" data-filter="naukowe"><i class="fa-solid fa-book"></i> Naukowe</button>
+                <button class="filter-btn" data-filter="psychologiczne"><i class="fa-solid fa-brain"></i> Psychologiczne</button>
+            </div>
 
-      <!-- Rekomendacja 2 -->
-      <div class="experience-item" data-category="psychologiczne" data-date="2022-03">
-        <div class="book-images">
-            <img src="images_books/Jon Frederickson - Kłamstwa, którymi żyjemy. Jak zmierzyć się z prawdą, zaakceptować siebie i zmienić swoje życie.jpg" alt="Jon Frederickson - Kłamstwa, którymi żyjemy. Jak zmierzyć się z prawdą, zaakceptować siebie i zmienić swoje życie" width="200px" />
-        </div>
-        <div class="content">
-          <strong>Jon Frederickson</strong> – Kłamstwa, którymi żyjemy. Jak zmierzyć się z prawdą, zaakceptować siebie i zmienić swoje życie
-            <p>
-              Jedna z tych książek, przy których płaczesz – ale nie dlatego, że umiera bohater. Płaczesz, bo coś w Tobie umiera... i jednocześnie się odradza.
-            </p>
-        </div>
-      </div>
+            <div class="scroll-list-container">
+                <div class="scroll-list">
 
-      <!-- Dodaj więcej wg potrzeb -->
-    </div>
-  </main>
+                    <div class="list-item" data-category="naukowe">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">Irvin Yalom</span>
+                                <h3>Istoty ulotne. Opowieści psychoterapeutyczne</h3>
+                                <div class="role">Literatura Psychologiczna</div>
+                            </div>
+                            <img src="images_books/Yalom Irvin D. - Istoty ulotne. Opowieści psychoterapeutyczne.jpg" alt="Istoty Ulotne" style="width: 60px; border-radius: 5px; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        </div>
+                        <p>Długo myślałem o tej książce, bo budzi we mnie różne emocje... Może dlatego, że mówi o tym, jak ulotne jest życie.</p>
+                    </div>
 
-  <!-- Stopka -->
-  <footer>
-        <div class="footer-content">
+                    <div class="list-item" data-category="psychologiczne">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                            <div style="flex: 1;">
+                                <span class="date">Jon Frederickson</span>
+                                <h3>Kłamstwa, którymi żyjemy. Jak zmierzyć się z prawdą, zaakceptować siebie i zmienić swoje życie</h3>
+                                <div class="role">Psychologia / Rozwój</div>
+                            </div>
+                            <img src="images_books/Jon Frederickson - Kłamstwa, którymi żyjemy. Jak zmierzyć się z prawdą, zaakceptować siebie i zmienić swoje życie.jpg" alt="Kłamstwa którymi żyjemy" style="width: 60px; border-radius: 5px; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        </div>
+                        <p>Jedna z tych książek, przy których płaczesz – ale nie dlatego, że umiera bohater. Płaczesz, bo coś w Tobie umiera... i jednocześnie się odradza.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+        <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
-                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
-                </a>                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fab fa-linkedin" style="font-size: 24px;"></i>
-                </a>
-                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
-                </a>
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
             </div>
-            <div class="contact-info">
-                Możesz się ze mną skontaktować:
-                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
-                    kontakt@lieberfilip.pl
-                </a>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
         </div>
-        <div class="copyright">
-            &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
-        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
-    <script>
-        function filterExperience(category, button) {
-            const items = document.querySelectorAll('.experience-item');
-
-            items.forEach(item => {
-                item.style.display = 'none';
-            });
-
-            if (category === 'wszystkie') {
-                items.forEach(item => {
-                    item.style.display = 'flex';
-                });
-            } else {
-                items.forEach(item => {
-                    if (item.dataset.category === category) {
-                        item.style.display = 'flex';
-                    }
-                });
-            }
-
-            const buttons = document.querySelectorAll('.experience-navigation button');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            button.classList.add('active');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            filterExperience('wszystkie', document.querySelector('.experience-navigation button:first-child'));
-
-            const experienceItems = document.querySelectorAll('.experience-item');
-
-            // Sortowanie po dacie
-            const sortedItems = Array.from(experienceItems).sort((a, b) => {
-                const dateA = new Date(a.dataset.date);
-                const dateB = new Date(b.dataset.date);
-                return dateB - dateA; // Sortowanie od najnowszego
-            });
-
-            const experienceList = document.querySelector('.experience-list');
-            experienceList.innerHTML = ''; // Czyszczenie listy
-
-            sortedItems.forEach(item => {
-                experienceList.appendChild(item); // Dodawanie posortowanych elementów
-            });
-
-        });
-
-    
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        hamburger.classList.toggle('active');
-    });
-
-    // Opcjonalnie: Zamknij menu po kliknięciu linku
-    document.querySelectorAll('.nav-links li a').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.classList.remove('active');
-        });
-    });
-
-    </script>
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
+    <script src="list.js"></script> 
 </body>
 </html>

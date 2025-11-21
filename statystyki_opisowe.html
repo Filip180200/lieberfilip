@@ -3,160 +3,264 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Statystyka</title>
+    <title>Statystyki Opisowe - Filip Liebersbach</title>
+    
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="icon" href="images/logo.png" type="image/x-icon">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <style>      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
-        .main-wrapper {
-            display: flex; /* Używamy Flexbox do układu kolumnowego */
-            gap: 20px; /* Odstęp między kolumnami */
-            max-width: 1300px; /* Zwiększamy maksymalną szerokość całego kontenera */
-            margin: auto;
-            flex-wrap: wrap; /* Pozwala kolumnom "zawinąć się" na mniejszych ekranach */
+    <style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
         }
-        .container {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px; /* Margines na dole każdego wewnętrznego kontenera */
+        /* Odblokowany scroll dla tej podstrony */
+        body { background: transparent; overflow-y: auto; }
+
+        /* --- UKŁAD --- */
+        .stats-wrapper {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            align-items: flex-start;
         }
+
         .left-column {
-            flex: 1; /* Lewa kolumna zajmuje dostępną przestrzeń */
-            min-width: 400px; /* Minimalna szerokość lewej kolumny */
-        }
-        .right-column {
-            flex: 2; /* Prawa kolumna zajmuje więcej miejsca (np. 2x więcej niż lewa) */
-            min-width: 450px; /* Minimalna szerokość prawej kolumny */
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        h1, h2 {
-            color: #0056b3;
+        .right-column {
+            flex: 2;
+            min-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Kontenery wewnętrzne */
+        .glass-container-inner {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            color: #ddd;
+        }
+
+        /* --- POPRAWIONA CZYTELNOŚĆ TABELI --- */
+        #dataTableContainer {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-radius: 10px;
+            /* Ciemne tło pod tabelą dla kontrastu */
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #fff; /* Biały tekst */
+        }
+
+        th, td {
+            padding: 10px 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
+            font-size: 0.9rem;
         }
-        p {
-            line-height: 1.6;
+
+        th {
+            /* Ciemny, solidny nagłówek */
+            background: #1a1a1a; 
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-weight: 600;
         }
-    </style>  
+
+        /* Komórki do edycji - wyraźnie zaznaczone */
+        td[contenteditable="true"] {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: text;
+            transition: background 0.2s;
+        }
+        td[contenteditable="true"]:focus {
+            background: rgba(255, 255, 255, 0.25);
+            outline: 2px solid #8ecae6;
+            color: #fff;
+        }
+        td[contenteditable="true"]:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Select w nagłówku */
+        th select {
+            margin-top: 5px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 4px;
+            width: 95%;
+            font-size: 0.85rem;
+        }
+
+        /* --- POPRAWIONA CZYTELNOŚĆ WYKRESÓW --- */
+        .chart-box {
+            /* Jasne tło (prawie białe), żeby wykresy były czytelne */
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: #333; /* Ciemny tekst wewnątrz boxa wykresu */
+            min-height: 300px;
+        }
+
+        h1, h2, h3 { color: #fff; text-align: center; margin-top: 0; }
+        p { color: #ccc; font-size: 0.95rem; }
+
+        /* Tabele wyników (prawa kolumna) */
+        #summaryResultsTable {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #summaryResultsTable th { background: #252525; }
+        
+        /* Mobile RWD */
+        @media (max-width: 1000px) {
+            .stats-wrapper { flex-direction: column; }
+            .left-column, .right-column { width: 100%; }
+        }
+    </style>
 </head>
 <body>
+    <canvas id="squares-canvas"></canvas>
+
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html"><img src="images/logo.png" alt="Logo" /></a>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="doswiadczenie.html">Doświadczenie</a></li>
-            <li><a href="projekty.html">Projekty</a></li>
-            <li><a href="publikacje.html">Publikacje</a></li>
-            <li><a href="rekomendacje.html">Rekomendacje</a></li>
-            <li><a href="statystyka.html">Statystyka</a></li>
-        </ul>
-    </nav>
     </header>
 
-  <div class="main-wrapper">
-        <div class="left-column container">
-            <h1>Analizator Danych Statystycznych</h1>
-            <p>Edytuj dane bezpośrednio w tabeli. Statystyki i wykresy będą automatycznie aktualizowane.</p>
+    <main class="intro" style="height: auto; min-height: 100vh; padding-bottom: 40px;">
+        
+        <div class="main_content glass-effect" style="flex-direction: column; width: 95%; max-width: 1400px; height: auto; max-height: none;">
+            
+            <div class="content-header">
+                <h1>Analizator Danych Statystycznych</h1>
+                <p>Edytuj dane bezpośrednio w tabeli. Statystyki i wykresy będą automatycznie aktualizowane.</p>
+            </div>
 
-            <div id="dataTableContainer">
-                <table id="dataTable">
-                    <thead>
-                        <tr id="columnHeaders">
-                            </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        </tbody>
-                </table>
+            <div class="stats-wrapper">
+                
+                <div class="left-column glass-container-inner">
+                    <h3>Dane wejściowe</h3>
+                    <p style="font-size: 0.85rem; text-align: center;">Kliknij w komórkę, aby edytować wartość.</p>
+                    
+                    <div id="dataTableContainer">
+                        <table id="dataTable">
+                            <thead>
+                                <tr id="columnHeaders"></tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="right-column glass-container-inner">
+                    <h3>Statystyki Opisowe</h3>
+                    
+                    <div style="overflow-x: auto; margin-bottom: 20px;">
+                        <table id="summaryResultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Zmienna</th><th>Typ</th><th>N</th><th>M</th><th>Me</th><th>SD</th><th>Sk.</th><th>Kurt.</th><th>Min.</th><th>Maks.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryResultsBody"></tbody>
+                        </table>
+                    </div>
+                    <p class="error-message" id="generalDataError" style="color: #ff6b6b; font-weight: bold; text-align: center;"></p>
+
+                    <div id="frequencyTables">
+                        <h3>Tabele Częstości</h3>
+                    </div>
+
+                    <div id="chartsSection">
+                        <h3>Wizualizacja Danych</h3>
+                        <div id="chartsContainer"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
-
-        <div class="right-column">
-            <div class="container" id="results">
-                <h2>Podstawowe statystyki opisowe badanych zmiennych</h2>
-                <table id="summaryResultsTable">
-                    <thead>
-                        <tr>
-                            <th>Zmienna</th>
-                            <th>Typ</th>
-                            <th>N</th>
-                            <th>M</th>
-                            <th>Me</th>
-                            <th>SD</th>
-                            <th>Sk.</th>
-                            <th>Kurt.</th>
-                            <th>Min.</th>
-                            <th>Maks.</th>
-                        </tr>
-                    </thead>
-                    <tbody id="summaryResultsBody">
-                        </tbody>
-                </table>
-                <p class="error-message" id="generalDataError"></p>
-
-                <div id="frequencyTables">
-                    <h3>Tabele Częstości dla Zmiennych Kategorycznych:</h3>
-                    </div>
-            </div>
-
-            <div class="container" id="chartsSection">
-                <h2>Wizualizacja Danych</h2>
-                <div id="chartsContainer">
-                    </div>
-            </div>
-        </div>
-    </div>
     </main>
-    <footer>
+
+    <footer style="width: 100%; padding: 15px; background: transparent;">
         <div class="footer-content">
             <div class="social-icons">
-                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
-                </a>                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fab fa-linkedin" style="font-size: 24px;"></i>
-                </a>
-                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
-                </a>
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
             </div>
-            <div class="contact-info">
-                Możesz się ze mną skontaktować:
-                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
-                    kontakt@lieberfilip.pl
-                </a>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
         </div>
-        <div class="copyright">
-            &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
-        </div>
+        <div class="copyright" style="font-size: 0.6em;">&copy; 2025 Filip Liebersbach.</div>
     </footer>
-</body>
-<script>
+
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
+
+    <script>
         // --- Konfiguracja Tabeli ---
         const NUM_COLUMNS = 2; 
-        const NUM_ROWS = 40; // Zmieniono na 40 wierszy
-        // Ustawiono początkowe typy kolumn: nominalna, porządkowa
+        const NUM_ROWS = 40; 
         let columnTypes = ['nominal', 'ordinal']; 
 
-        // --- Mapowanie wewnętrznych typów na wyświetlane nazwy ---
         const typeLabels = {
             'nominal': 'nominalna',
             'ordinal': 'porządkowa',
-            'interval': 'interwałowa (przedziałowa)',
+            'interval': 'interwałowa',
             'ratio': 'ilorazowa'
         };
 
-        // --- Elementy DOM ---
         const dataTableBody = document.getElementById('tableBody');
         const columnHeadersRow = document.getElementById('columnHeaders');
         const summaryResultsBody = document.getElementById('summaryResultsBody');
@@ -164,69 +268,25 @@
         const generalDataErrorP = document.getElementById('generalDataError');
         const chartsContainer = document.getElementById('chartsContainer'); 
 
-        // Globalna tablica do przechowywania instancji wykresów Chart.js
         let charts = [];
 
-        // --- Funkcje pomocnicze dla statystyk ---
-
-        function sum(arr) {
-            return arr.reduce((a, b) => a + b, 0);
-        }
-
-        function mean(arr) {
-            if (arr.length === 0) return NaN;
-            return sum(arr) / arr.length;
-        }
-
+        // --- Funkcje statystyczne ---
+        function sum(arr) { return arr.reduce((a, b) => a + b, 0); }
+        function mean(arr) { return arr.length === 0 ? NaN : sum(arr) / arr.length; }
+        
         function median(arr) {
             if (arr.length === 0) return NaN;
-
             const isNumeric = typeof arr[0] === 'number' && !isNaN(arr[0]);
-
             const sortedArr = [...arr].sort((a, b) => {
-                // Zaktualizowana kolejność dla kategorii porządkowych
                 const ordinalOrder = { 'Zdecydowanie tak': 4, 'Tak': 3, 'Nie': 2, 'Zdecydowanie nie': 1 };
-                
                 if (!isNumeric) {
-                    if (ordinalOrder[a] !== undefined && ordinalOrder[b] !== undefined) {
-                        return ordinalOrder[a] - ordinalOrder[b];
-                    }
+                    if (ordinalOrder[a] !== undefined && ordinalOrder[b] !== undefined) return ordinalOrder[a] - ordinalOrder[b];
                     return String(a).localeCompare(String(b)); 
                 }
                 return a - b;
             });
-
             const mid = Math.floor(sortedArr.length / 2);
-
-            if (sortedArr.length % 2 === 0) {
-                if (isNumeric) {
-                    return (sortedArr[mid - 1] + sortedArr[mid]) / 2;
-                } else {
-                    return sortedArr[mid - 1]; 
-                }
-            } else {
-                return sortedArr[mid];
-            }
-        }
-
-
-        function mode(arr) {
-            if (arr.length === 0) return [];
-            const counts = {};
-            let maxCount = 0;
-            let modes = [];
-            arr.forEach(item => {
-                counts[item] = (counts[item] || 0) + 1;
-                if (counts[item] > maxCount) {
-                    maxCount = counts[item];
-                }
-            });
-            for (const item in counts) {
-                if (counts[item] === maxCount) {
-                    modes.push(isNaN(Number(item)) ? item : Number(item));
-                }
-            }
-            return modes;
+            return (sortedArr.length % 2 === 0 && isNumeric) ? (sortedArr[mid - 1] + sortedArr[mid]) / 2 : sortedArr[mid];
         }
 
         function variance(arr) {
@@ -234,10 +294,7 @@
             const m = mean(arr);
             return sum(arr.map(x => Math.pow(x - m, 2))) / (arr.length - 1);
         }
-
-        function stdDev(arr) {
-            return Math.sqrt(variance(arr));
-        }
+        function stdDev(arr) { return Math.sqrt(variance(arr)); }
 
         function skewness(arr) {
             if (arr.length < 3) return NaN;
@@ -259,21 +316,16 @@
             return ((n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3))) * sumQuads - (3 * Math.pow(n - 1, 2)) / ((n - 2) * (n - 3));
         }
 
-        // --- Funkcje do generowania i obsługi tabeli ---
-
+        // --- Generowanie danych ---
         function generateRandomData(type) {
-            if (type === 'interval') {
-                return (Math.random() * 80 + 20).toFixed(0); 
-            } else if (type === 'ratio') {
-                return (Math.random() * 150).toFixed(0); 
-            } else if (type === 'ordinal') {
+            if (type === 'interval') return (Math.random() * 80 + 20).toFixed(0); 
+            if (type === 'ratio') return (Math.random() * 150).toFixed(0); 
+            if (type === 'ordinal') {
                 const categories = ['Zdecydowanie tak', 'Tak', 'Nie', 'Zdecydowanie nie']; 
                 return categories[Math.floor(Math.random() * categories.length)];
             }
-            else { // nominal
-                const categories = ['Mężczyzna', 'Kobieta'];
-                return categories[Math.floor(Math.random() * categories.length)];
-            }
+            const categories = ['Mężczyzna', 'Kobieta'];
+            return categories[Math.floor(Math.random() * categories.length)];
         }
 
         function initializeTable() {
@@ -284,7 +336,7 @@
                     <select data-col-index="${colIndex}" onchange="changeColumnType(this)">
                         <option value="nominal" ${type === 'nominal' ? 'selected' : ''}>nominalna</option>
                         <option value="ordinal" ${type === 'ordinal' ? 'selected' : ''}>porządkowa</option>
-                        <option value="interval" ${type === 'interval' ? 'selected' : ''}>interwałowa (przedziałowa)</option>
+                        <option value="interval" ${type === 'interval' ? 'selected' : ''}>interwałowa</option>
                         <option value="ratio" ${type === 'ratio' ? 'selected' : ''}>ilorazowa</option>
                     </select>`;
                 columnHeadersRow.appendChild(th);
@@ -306,54 +358,24 @@
 
         function changeColumnType(selectElement) {
             const colIndex = parseInt(selectElement.dataset.colIndex);
-            const newType = selectElement.value;
-            const oldType = columnTypes[colIndex]; // Store the old type
-            columnTypes[colIndex] = newType;
-
+            columnTypes[colIndex] = selectElement.value;
             const rows = dataTableBody.children;
             for (let r = 0; r < rows.length; r++) {
-                const cell = rows[r].children[colIndex];
-                const currentCellValue = cell.textContent.trim();
-
-                const isOldTypeNumeric = (oldType === 'interval' || oldType === 'ratio');
-                const isNewTypeNumeric = (newType === 'interval' || newType === 'ratio');
-
-                // Regenerate data if:
-                // 1. We are switching from a numeric type to a non-numeric type
-                // 2. We are switching from a non-numeric type to a numeric type AND the current cell content is not a valid number
-                // 3. We are switching between nominal and ordinal (both non-numeric), so always regenerate to ensure valid data for the new type's categories
-                if ((isOldTypeNumeric && !isNewTypeNumeric) || // Case 1
-                    (!isOldTypeNumeric && isNewTypeNumeric && isNaN(Number(currentCellValue))) || // Case 2
-                    ((oldType === 'nominal' || oldType === 'ordinal') && (newType === 'nominal' || newType === 'ordinal')) // Case 3: Both are categorical, so always regenerate for consistency
-                ) {
-                    cell.textContent = generateRandomData(newType);
-                }
-                // Optional: If we switch from numeric to numeric, and the value is invalid, regenerate
-                else if (isNewTypeNumeric && isNaN(Number(currentCellValue))) {
-                    cell.textContent = generateRandomData(newType);
-                }
+                rows[r].children[colIndex].textContent = generateRandomData(columnTypes[colIndex]);
             }
             calculateAllStats();
         }
 
         function parseTableData() {
-            const data = [];
-            for (let c = 0; c < NUM_COLUMNS; c++) { 
-                data.push([]);
-            }
-
+            const data = Array.from({ length: NUM_COLUMNS }, () => []);
             const rows = dataTableBody.children;
             for (let r = 0; r < rows.length; r++) {
                 const cells = rows[r].children;
                 for (let c = 0; c < NUM_COLUMNS; c++) { 
                     const cellValue = cells[c].textContent.trim();
-                    if (columnTypes[c] === 'interval' || columnTypes[c] === 'ratio') {
+                    if (['interval', 'ratio'].includes(columnTypes[c])) {
                         const numValue = Number(cellValue);
-                        if (isNaN(numValue)) {
-                            data[c].push(NaN); 
-                        } else {
-                            data[c].push(numValue);
-                        }
+                        data[c].push(isNaN(numValue) ? NaN : numValue);
                     } else {
                         data[c].push(cellValue);
                     }
@@ -362,304 +384,126 @@
             return data;
         }
 
-        // --- Główna funkcja analityczna ---
-
         function calculateAllStats() {
             const data = parseTableData();
             summaryResultsBody.innerHTML = '';
-            frequencyTablesDiv.innerHTML = '<h3>Tabele Częstości dla Zmiennych Kategorycznych:</h3>';
-            generalDataErrorP.innerText = '';
-
-            // Niszczymy poprzednie instancje wykresów
+            frequencyTablesDiv.innerHTML = '<h3>Tabele Częstości</h3>';
             charts.forEach(chart => chart.destroy());
             charts = []; 
             chartsContainer.innerHTML = ''; 
 
             data.forEach((colData, colIndex) => { 
-                const currentColumnType = columnTypes[colIndex];
+                const currentType = columnTypes[colIndex];
                 const row = document.createElement('tr');
                 
-                const variableNameCell = document.createElement('td');
-                variableNameCell.textContent = `Kolumna ${colIndex + 1}`;
-                row.appendChild(variableNameCell);
+                row.innerHTML = `<td>Kolumna ${colIndex + 1}</td><td>${typeLabels[currentType]}</td>`;
 
-                const typeCell = document.createElement('td');
-                typeCell.textContent = typeLabels[currentColumnType];
-                row.appendChild(typeCell);
+                const isNumeric = ['interval', 'ratio'].includes(currentType);
+                const validData = colData.filter(item => isNumeric ? !isNaN(item) : item.trim() !== '');
+                const N = validData.length;
 
-                const N_val = colData.filter(item => (currentColumnType === 'interval' || currentColumnType === 'ratio' ? !isNaN(item) : item.trim() !== '')).length;
+                // Obliczenia
+                const M = (isNumeric && N > 0) ? mean(validData).toFixed(2) : '-';
+                const Me = (isNumeric || currentType === 'ordinal') && N > 0 ? median(validData) : '-';
+                const SD = (isNumeric && N > 1) ? stdDev(validData).toFixed(2) : '-';
+                const Sk = (isNumeric && N > 2) ? skewness(validData).toFixed(2) : '-';
+                const Kurt = (isNumeric && N > 3) ? kurtosis(validData).toFixed(2) : '-';
                 
-                const isNumericScale = (currentColumnType === 'interval' || currentColumnType === 'ratio');
-
-                const M_val = (isNumericScale && N_val > 0) ? mean(colData.filter(item => typeof item === 'number' && !isNaN(item))).toFixed(2) : '-';
-                
-                const validMedianData = colData.filter(item => (isNumericScale ? !isNaN(item) : item.trim() !== ''));
-                const Me_val = (isNumericScale || currentColumnType === 'ordinal') && N_val > 0 ? median(validMedianData) : '-';
-                const Me_display = (typeof Me_val === 'number' && !isNaN(Me_val)) ? Me_val.toFixed(2) : Me_val;
-
-
-                const SD_val = (isNumericScale && N_val > 1) ? stdDev(colData.filter(item => typeof item === 'number' && !isNaN(item))).toFixed(2) : '-';
-                const Sk_val = (isNumericScale && N_val > 2) ? skewness(colData.filter(item => typeof item === 'number' && !isNaN(item))).toFixed(2) : '-';
-                const Kurt_val = (isNumericScale && N_val > 3) ? kurtosis(colData.filter(item => typeof item === 'number' && !isNaN(item))).toFixed(2) : '-';
-                
-                const filterValidItems = arr => arr.filter(item => item !== null && item !== undefined && String(item).trim() !== '');
-
-                const Min_val = (() => {
-                    const validItems = filterValidItems(colData);
-                    if (validItems.length === 0) return '-';
-                    if (isNumericScale) {
-                        const numericItems = validItems.filter(item => typeof item === 'number' && !isNaN(item));
-                        return numericItems.length > 0 ? Math.min(...numericItems).toFixed(2) : '-';
-                    } else if (currentColumnType === 'ordinal') {
-                         const ordinalOrder = { 'Zdecydowanie tak': 4, 'Tak': 3, 'Nie': 2, 'Zdecydowanie nie': 1 };
-                         const sortedCategories = validItems.sort((a,b) => (ordinalOrder[a] || 0) - (ordinalOrder[b] || 0));
-                         return sortedCategories[0] || '-';
-                    } else { 
-                        return [...new Set(validItems)].sort()[0] || '-';
+                let Min = '-', Max = '-';
+                if(N > 0) {
+                    if(isNumeric) {
+                        Min = Math.min(...validData).toFixed(2);
+                        Max = Math.max(...validData).toFixed(2);
+                    } else {
+                        const sorted = [...validData].sort();
+                        Min = sorted[0];
+                        Max = sorted[sorted.length-1];
                     }
-                })();
+                }
 
-                const Maks_val = (() => {
-                    const validItems = filterValidItems(colData);
-                    if (validItems.length === 0) return '-';
-                    if (isNumericScale) {
-                        const numericItems = validItems.filter(item => typeof item === 'number' && !isNaN(item));
-                        return numericItems.length > 0 ? Math.max(...numericItems).toFixed(2) : '-';
-                    } else if (currentColumnType === 'ordinal') {
-                         const ordinalOrder = { 'Zdecydowanie tak': 4, 'Tak': 3, 'Nie': 2, 'Zdecydowanie nie': 1 };
-                         const sortedCategories = validItems.sort((a,b) => (ordinalOrder[a] || 0) - (ordinalOrder[b] || 0));
-                         return sortedCategories[sortedCategories.length - 1] || '-';
-                    } else { 
-                        return [...new Set(validItems)].sort().pop() || '-';
-                    }
-                })();
-                
-                const stats = {
-                    'N': N_val,
-                    'M': M_val,
-                    'Me': Me_display,
-                    'SD': SD_val,
-                    'Sk.': Sk_val,
-                    'Kurt.': Kurt_val,
-                    'Min.': Min_val,
-                    'Maks.': Maks_val
-                };
-
-                Object.values(stats).forEach(statVal => {
+                [N, M, Me, SD, Sk, Kurt, Min, Max].forEach(val => {
                     const cell = document.createElement('td');
-                    cell.textContent = statVal;
+                    cell.textContent = val;
                     row.appendChild(cell);
                 });
                 summaryResultsBody.appendChild(row);
 
-                // Generowanie tabel częstości dla zmiennych kategorycznych
-                if (currentColumnType === 'nominal' || currentColumnType === 'ordinal') {
-                    const categoryCounts = {};
-                    colData.forEach(item => {
-                        const trimmedItem = String(item).trim();
-                        if (trimmedItem !== '') {
-                            categoryCounts[trimmedItem] = (categoryCounts[trimmedItem] || 0) + 1;
-                        }
+                // Tabela częstości
+                if (['nominal', 'ordinal'].includes(currentType)) {
+                    const counts = {};
+                    validData.forEach(x => counts[x] = (counts[x] || 0) + 1);
+                    const categories = Object.keys(counts).sort();
+                    
+                    const freqTable = document.createElement('div');
+                    freqTable.className = 'glass-container-inner';
+                    freqTable.style.marginBottom = '15px';
+                    freqTable.style.background = 'rgba(0,0,0,0.2)'; // Ciemniejsze tło dla tabeli częstości
+                    
+                    let freqHTML = `<h4 style="text-align:center; color:#fff; margin-bottom:10px;">Kolumna ${colIndex+1}</h4><table style="width:100%"><thead><tr><th>Kategoria</th><th>N</th><th>%</th></tr></thead><tbody>`;
+                    
+                    categories.forEach(cat => {
+                        freqHTML += `<tr><td>${cat}</td><td>${counts[cat]}</td><td>${(counts[cat]/N*100).toFixed(1)}%</td></tr>`;
                     });
+                    freqHTML += `</tbody></table>`;
+                    freqTable.innerHTML = freqHTML;
+                    frequencyTablesDiv.appendChild(freqTable);
+
+                    // Wykres
+                    const chartBox = document.createElement('div');
+                    chartBox.className = 'chart-box';
+                    const canvas = document.createElement('canvas');
+                    chartBox.appendChild(canvas);
+                    chartsContainer.appendChild(chartBox);
                     
-                    const categories = Object.keys(categoryCounts);
-                    
-                    if (currentColumnType === 'ordinal') {
-                        const ordinalOrder = { 'Zdecydowanie tak': 4, 'Tak': 3, 'Nie': 2, 'Zdecydowanie nie': 1 };
-                        categories.sort((a, b) => {
-                            return (ordinalOrder[a] || 0) - (ordinalOrder[b] || 0);
-                        });
-                    } else { 
-                         categories.sort(); 
-                    }
-
-                    const totalCount = N_val;
-
-                    if (categories.length > 0) {
-                        const freqTableContainer = document.createElement('div');
-                        freqTableContainer.className = 'frequency-table-container';
-                        freqTableContainer.innerHTML = `<h4>Częstości dla Kolumny ${colIndex + 1} (${typeLabels[currentColumnType]})</h4>
-                                                        <table class="frequency-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Kategoria</th>
-                                                                    <th>Liczebność</th>
-                                                                    <th>Procent (%)</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody></tbody>
-                                                        </table>`;
-                        const freqTableBody = freqTableContainer.querySelector('tbody');
-
-                        categories.forEach(cat => {
-                            const count = categoryCounts[cat];
-                            const percentage = (count / totalCount * 100).toFixed(2);
-                            const freqRow = document.createElement('tr');
-                            freqRow.innerHTML = `<td>${cat}</td><td>${count}</td><td>${percentage}</td>`;
-                            freqTableBody.appendChild(freqRow);
-                        });
-
-                        const sumRow = document.createElement('tr');
-                        sumRow.innerHTML = `<td><strong>Razem</strong></td><td><strong>${totalCount}</strong></td><td><strong>100.00</strong></td>`;
-                        freqTableBody.appendChild(sumRow);
-
-                        frequencyTablesDiv.appendChild(freqTableContainer);
-                    } else {
-                         const noDataMessage = document.createElement('p');
-                         noDataMessage.className = 'error-message';
-                         noDataMessage.textContent = `Brak danych kategorycznych w kolumnie ${colIndex + 1} (${typeLabels[currentColumnType]}) do wygenerowania tabeli częstości.`;
-                         frequencyTablesDiv.appendChild(noDataMessage);
-                    }
+                    charts.push(new Chart(canvas, {
+                        type: 'bar',
+                        data: {
+                            labels: categories,
+                            datasets: [{
+                                label: `Liczebność`,
+                                data: categories.map(c => counts[c]),
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    }));
                 }
+                
+                // Histogram dla liczbowych
+                if (isNumeric && N > 0) {
+                    const chartBox = document.createElement('div');
+                    chartBox.className = 'chart-box';
+                    const canvas = document.createElement('canvas');
+                    chartBox.appendChild(canvas);
+                    chartsContainer.appendChild(chartBox);
 
-                // --- Generowanie wykresów ---
-                const chartBox = document.createElement('div');
-                chartBox.className = 'chart-box';
-                chartsContainer.appendChild(chartBox);
+                    const minVal = Math.min(...validData);
+                    const maxVal = Math.max(...validData);
+                    const bins = 10;
+                    const step = (maxVal - minVal) / bins;
+                    const labels = [], dataBins = new Array(bins).fill(0);
 
-                const canvas = document.createElement('canvas');
-                canvas.id = `chartCol${colIndex}`;
-                chartBox.appendChild(canvas);
-
-                const ctx = canvas.getContext('2d');
-                let chartConfig = {};
-
-                if (currentColumnType === 'nominal' || currentColumnType === 'ordinal') {
-                    const categoryCounts = {};
-                    colData.forEach(item => {
-                        const trimmedItem = String(item).trim();
-                        if (trimmedItem !== '') {
-                            categoryCounts[trimmedItem] = (categoryCounts[trimmedItem] || 0) + 1;
-                        }
-                    });
-
-                    const categories = Object.keys(categoryCounts);
-                    
-                    if (currentColumnType === 'ordinal') {
-                        const ordinalOrder = { 'Zdecydowanie tak': 4, 'Tak': 3, 'Nie': 2, 'Zdecydowanie nie': 1 };
-                        categories.sort((a, b) => (ordinalOrder[a] || 0) - (ordinalOrder[b] || 0));
-                    } else {
-                        categories.sort(); 
-                    }
-
-                    const counts = categories.map(cat => categoryCounts[cat] || 0);
-
-                    if (counts.length > 0 && N_val > 0) { 
-                        chartConfig = {
-                            type: 'bar',
-                            data: {
-                                labels: categories,
-                                datasets: [{
-                                    label: `Liczebność - Kolumna ${colIndex + 1}`,
-                                    data: counts,
-                                    backgroundColor: 'rgba(0, 123, 255, 0.7)',
-                                    borderColor: 'rgba(0, 123, 255, 1)',
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false, // Pozwala Chart.js na ignorowanie proporcji
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Liczebność'
-                                        }
-                                    },
-                                    x: {
-                                        title: {
-                                            display: true,
-                                            text: 'Kategoria'
-                                        }
-                                    }
-                                },
-                                plugins: {
-                                    title: {
-                                        display: true,
-                                        text: `Wykres Częstości - Kolumna ${colIndex + 1} (${typeLabels[currentColumnType]})`
-                                    }
-                                }
-                            }
-                        };
-                    } else {
-                        chartBox.innerHTML = `<p style="text-align: center; color: #888;">Brak danych kategorycznych do wygenerowania wykresu dla Kolumny ${colIndex + 1}</p>`;
-                    }
-                } else if (currentColumnType === 'interval' || currentColumnType === 'ratio') {
-                    const numericData = colData.filter(item => typeof item === 'number' && !isNaN(item));
-                    if (numericData.length === 0) {
-                        chartBox.innerHTML = `<p style="text-align: center; color: #888;">Brak danych liczbowych do wygenerowania wykresu dla Kolumny ${colIndex + 1}</p>`;
-                        return; 
-                    }
-
-                    const minVal = Math.min(...numericData);
-                    const maxVal = Math.max(...numericData);
-                    
-                    if (maxVal === minVal) { 
-                         chartBox.innerHTML = `<p style="text-align: center; color: #888;">Wszystkie wartości w Kolumnie ${colIndex + 1} są identyczne. Nie można stworzyć histogramu.</p>`;
-                         return;
-                    }
-                    
-                    const numBins = Math.max(5, Math.ceil(1 + Math.log2(N_val))); 
-                    const binWidth = (maxVal - minVal) / numBins;
-
-                    const bins = Array(numBins).fill(0);
-                    const labels = [];
-
-                    for(let i = 0; i < numBins; i++) {
-                        const lowerBound = minVal + i * binWidth;
-                        const upperBound = minVal + (i + 1) * binWidth;
-                        labels.push(`${lowerBound.toFixed(1)}-${upperBound.toFixed(1)}`);
-                        numericData.forEach(val => {
-                            if (val >= lowerBound && (i === numBins - 1 ? val <= upperBound : val < upperBound)) {
-                                bins[i]++;
-                            }
+                    for(let i=0; i<bins; i++) {
+                        const low = minVal + i*step;
+                        const high = low + step;
+                        labels.push(`${low.toFixed(0)}-${high.toFixed(0)}`);
+                        validData.forEach(v => {
+                            if(v >= low && (i===bins-1 ? v <= high : v < high)) dataBins[i]++;
                         });
                     }
 
-                    chartConfig = {
-                        type: 'bar', 
+                    charts.push(new Chart(canvas, {
+                        type: 'bar',
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: `Liczebność - Kolumna ${colIndex + 1}`,
-                                data: bins,
-                                backgroundColor: 'rgba(255, 159, 64, 0.7)',
-                                borderColor: 'rgba(255, 159, 64, 1)',
-                                borderWidth: 1
+                                label: 'Histogram',
+                                data: dataBins,
+                                backgroundColor: 'rgba(255, 159, 64, 0.6)'
                             }]
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false, // Pozwala Chart.js na ignorowanie proporcji
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: 'Liczebność'
-                                    }
-                                },
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Przedziały wartości'
-                                    }
-                                }
-                            },
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: `Histogram - Kolumna ${colIndex + 1} (${typeLabels[currentColumnType]})`
-                                }
-                            }
-                        }
-                    };
-                }
-
-                if (Object.keys(chartConfig).length > 0) {
-                    charts.push(new Chart(ctx, chartConfig));
+                        options: { responsive: true, maintainAspectRatio: false }
+                    }));
                 }
             });
         }
@@ -667,8 +511,7 @@
         function debounce(func, delay) {
             let timeout;
             return function() {
-                const context = this;
-                const args = arguments;
+                const context = this, args = arguments;
                 clearTimeout(timeout);
                 timeout = setTimeout(() => func.apply(context, args), delay);
             };
@@ -679,4 +522,5 @@
             calculateAllStats();
         });
     </script>
+</body>
 </html>

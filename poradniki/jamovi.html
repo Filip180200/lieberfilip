@@ -1,174 +1,233 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Statystyka</title>
-    <link rel="stylesheet" href="/styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="icon" href="/images/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poradniki Jamovi - Filip Liebersbach</title>
+    
+    <link rel="stylesheet" href="../styles.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
     <style>
-        /*
-        To jest propozycja stylów, które należy przenieść do Twojego pliku 'styles.css'.
-        Dostosuj te wartości, aby w pełni pasowały do stylów Twoich istniejących linków nawigacyjnych.
-        */
-        .main-buttons-container {
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+        /* Odblokowany scroll dla długiej listy poradników */
+        body { background: transparent; overflow-y: auto; }
+
+        /* --- STYLE LOKALNE DLA PORADNIKÓW (AKORDEON) --- */
+        .experience-list {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
-            flex-direction: column; /* Guziki jeden pod drugim */
-            justify-content: center;
-            align-items: center;
-            min-height: 300px; /* Dostosuj wysokość, aby dobrze wyśrodkować na stronie */
-            gap: 20px; /* Odstęp między guzikami */
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .experience-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
             padding: 20px;
-        }
-
-        .main-button {
-            display: inline-block; /* Ważne dla paddingu i marginesów */
-            padding: 10px 20px;
-            text-decoration: none;
-            color: white; /* Kolor tekstu, jak w nawigacji */
-            background-color: transparent; /* Zazwyczaj nawigacja ma przezroczyste tło, ale to zależy od Twojego styles.css */
-            border: 2px solid white; /* Jeśli nawigacja ma ramkę, dopasuj */
-            border-radius: 5px; /* Zaokrąglenie rogów */
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-size: 1.1em; /* Rozmiar czcionki */
             cursor: pointer;
-            text-align: center;
-            min-width: 200px; /* Minimalna szerokość guzików */
+            transition: all 0.3s ease;
+            position: relative;
+            color: #fff;
         }
 
-        .main-button:hover {
-            background-color: white; /* Efekt najechania, jak w nawigacji */
-            color: #333; /* Zmień kolor tekstu na ciemniejszy przy najechaniu */
+        .experience-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .experience-item p {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .experience-item.active-details .details {
+            max-height: 1000px; /* Wystarczająco dużo na zawartość */
+            opacity: 1;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toggle-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #8ecae6;
+            transition: transform 0.3s ease;
+        }
+
+        .experience-item.active-details .toggle-icon {
+            transform: rotate(45deg); /* Zmienia plus w krzyżyk */
+        }
+
+        /* Style dla linków wewnątrz szczegółów */
+        .details .nav-links {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .details .nav-links li a {
+            color: #8ecae6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid rgba(142, 202, 230, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .details .nav-links li a:hover {
+            background: rgba(142, 202, 230, 0.1);
+            border-color: #8ecae6;
+        }
+
+        .centered-iframe {
+            width: 100%;
+            max-width: 560px;
+            aspect-ratio: 16/9;
+            border-radius: 10px;
+            margin: 20px auto 0;
+            display: block;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
+    <canvas id="squares-canvas"></canvas>
+
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="/index.html"><img src="/images/logo.png" alt="Logo" /></a>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="../index.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="../doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="../projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="../publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="../rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="../statystyka.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="../doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="../projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="../publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="../rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="../statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div class="hamburger">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
-        </div>
-        <ul class="nav-links">
-            <li><a href="/doswiadczenie.html">Doświadczenie</a></li>
-            <li><a href="/projekty.html">Projekty</a></li>
-            <li><a href="/publikacje.html">Publikacje</a></li>
-            <li><a href="/rekomendacje.html">Rekomendacje</a></li>
-            <li><a href="/statystyka.html">Statystyka</a></li>
-        </ul>
-    </nav>
     </header>
 
-    <main class="experience-container">
-        <h1 class="name_title">Jamovi</h1>
+    <main class="intro" style="height: auto; min-height: 100vh; padding-bottom: 40px;">
         
-        <div class="experience-list">
-
-            <div class="experience-item">
-                <div class="content">
-                    <p style="text-align: center;"><b>0. Bazy Danych</b></p>
-                    <div class="details">
-                        <ul class="nav-links" style="padding-bottom: 20px; justify-content: center;">
-                            <li><a href="bazy danych/CSV/Dane1.csv" download="Dane1.csv">Dane 1 (CSV)</a></li> 
-                            <li><a href="bazy danych/CSV/Dane2.csv" download="Dane2.csv">Dane 2 (CSV)</a></li>
-                            <li><a href="bazy danych/CSV/Dane3.csv" download="Dane3.csv">Dane 3 (CSV)</a></li>
-                            <li><a href="bazy danych/CSV/Dane3po.csv" download="Dane3po.csv">Dane 3 po (CSV)</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
-            </div>
-            <div class="experience-item">
-                <div class="content">
-                    <p style="text-align: center;"><b>1. Statystyki Opisowe</b></p>
-                    <div class="details">
-                        <ul class="nav-links" style="padding-bottom: 20px; justify-content: center;">
-                            <li><a href="prezentacje/1. Statystyki Opisowe.pdf" download="1. Statystyki Opisowe.pdf">Prezentacja</a></li>
-                            <li><a href="bazy danych/CSV/Dane1.csv" download="Dane1.csv">Dane 1 (CSV)</a></li> 
-                        </ul>
-                        <iframe class="centered-iframe" 
-        width="560" height="315" 
-        src="https://www.youtube.com/embed/KUuTfn8AySE?si=a-bozjwan5quWgLy" 
-        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-</iframe>
-                    </div>
-                </div>
-                <i class="fas fa-plus toggle-icon"></i>
+        <div class="main_content glass-effect list-layout" style="height: auto; min-height: 600px; flex-direction: column; align-items: stretch;">
+            
+            <div class="content-header">
+                <h1>Jamovi</h1>
+                <p>Materiały szkoleniowe i bazy danych</p>
             </div>
 
+            <div class="experience-list" style="margin-top: 30px;">
+
+                <div class="experience-item">
+                    <div class="content">
+                        <p style="text-align: center;"><b>0. Bazy Danych</b></p>
+                        <div class="details">
+                            <ul class="nav-links" style="padding-bottom: 20px; justify-content: center;">
+                                <li><a href="bazy danych/CSV/Dane1.csv" download="Dane1.csv"><i class="fa-solid fa-file-csv"></i> Dane 1 (CSV)</a></li> 
+                                <li><a href="bazy danych/CSV/Dane2.csv" download="Dane2.csv"><i class="fa-solid fa-file-csv"></i> Dane 2 (CSV)</a></li>
+                                <li><a href="bazy danych/CSV/Dane3.csv" download="Dane3.csv"><i class="fa-solid fa-file-csv"></i> Dane 3 (CSV)</a></li>
+                                <li><a href="bazy danych/CSV/Dane3po.csv" download="Dane3po.csv"><i class="fa-solid fa-file-csv"></i> Dane 3 po (CSV)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <i class="fas fa-plus toggle-icon"></i>
+                </div>
+
+                <div class="experience-item">
+                    <div class="content">
+                        <p style="text-align: center;"><b>1. Statystyki Opisowe</b></p>
+                        <div class="details">
+                            <ul class="nav-links" style="padding-bottom: 20px; justify-content: center;">
+                                <li><a href="prezentacje/1. Statystyki Opisowe.pdf" download="1. Statystyki Opisowe.pdf"><i class="fa-solid fa-file-pdf"></i> Prezentacja</a></li>
+                                <li><a href="bazy danych/CSV/Dane1.csv" download="Dane1.csv"><i class="fa-solid fa-file-csv"></i> Dane 1 (CSV)</a></li> 
+                            </ul>
+                            <iframe class="centered-iframe" 
+                                src="https://www.youtube.com/embed/KUuTfn8AySE?si=a-bozjwan5quWgLy" 
+                                title="YouTube video player" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                    <i class="fas fa-plus toggle-icon"></i>
+                </div>
+
+                </div>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-content">
+    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+        <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
-                <a href="https://www.youtube.com/@lieberfilip" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-youtube" style="font-size: 24px;"></i>
-                </a>                
-                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fab fa-linkedin" style="font-size: 24px;"></i>
-                </a>
-                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank" style="text-decoration: none; color: white;">
-                    <i class="fa-brands fa-researchgate" style="font-size: 24px;"></i>
-                </a>
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
             </div>
-            <div class="contact-info">
-                Możesz się ze mną skontaktować:
-                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">
-                    kontakt@lieberfilip.pl
-                </a>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
         </div>
-        <div class="copyright">
-            &copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.
-        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
     </footer>
+
+    <script src="../background.js"></script>
+    <script src="../nav.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Obsługa akordeonu (rozwijanie szczegółów)
             const experienceItems = document.querySelectorAll('.experience-item');
-            const experienceList = document.querySelector('.experience-list');
+            
+            experienceItems.forEach(item => {
+                // Kliknięcie w nagłówek elementu (z wyłączeniem linków wewnątrz)
+                item.addEventListener('click', function(e) {
+                    // Ignoruj kliknięcia w linki i iframe
+                    if(e.target.tagName === 'A' || e.target.tagName === 'IFRAME') return;
 
-            // --- SORTOWANIE (pozostawione, choć przy 1 elemencie nie ma znaczenia) ---
-            if (experienceList) {
-                const sortedItems = Array.from(experienceItems).sort((a, b) => {
-                    const isOngoingA = a.dataset.ongoing === 'true';
-                    const isOngoingB = b.dataset.ongoing === 'true';
-
-                    // 1. Priorytet: Obecne prace na górze
-                    if (isOngoingA && !isOngoingB) {
-                        return -1; 
-                    }
-                    if (!isOngoingA && isOngoingB) {
-                        return 1; 
-                    }
-
-                    // 2. Jeśli ten sam status, sortuj po dacie (od najnowszej)
-                    const dateA = new Date(a.dataset.date);
-                    const dateB = new Date(b.dataset.date);
-                    
-                    // Sortowanie malejące (najnowsza data rozpoczęcia na górze)
-                    return dateB - dateA;
-                });
-
-                experienceList.innerHTML = ''; // Czyszczenie listy
-
-                sortedItems.forEach(item => {
-                    experienceList.appendChild(item); // Dodawanie posortowanych elementów
-                });
-            }
-            // --------------------------------------------------------------------------
-
-            // Obsługa kliknięcia (rozwijanie/zwijanie szczegółów)
-            const sortedExperienceItems = document.querySelectorAll('.experience-item'); 
-            sortedExperienceItems.forEach(item => {
-                item.addEventListener('click', function() {
                     this.classList.toggle('active-details');
+                    
+                    // Zmiana ikony
                     const icon = this.querySelector('.toggle-icon');
                     if (icon) {
                         if (this.classList.contains('active-details')) {
@@ -182,40 +241,6 @@
                 });
             });
         });
-    </script>
-
-    <script>
-        // --- SKRYPTY DODATKOWE (Parallax i Hamburger) ---
-        
-        // SKRYPT PARALLAX
-        document.addEventListener('mousemove', function(e) {
-            const speedX = -0.02;
-            const speedY = -0.02;
-            const x = (window.innerWidth - e.clientX) * speedX;
-            const y = (window.innerHeight - e.clientY) * speedY;
-
-            document.body.style.setProperty('--parallax-x', `${x}px`);
-            document.body.style.setProperty('--parallax-y', `${y}px`);
-        });
-
-        // SKRYPT HAMBURGER
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
-
-        if (hamburger && navLinks) {
-            hamburger.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            });
-
-            document.querySelectorAll('.nav-links li a').forEach(link => {
-                link.addEventListener('click', () => {
-                    navLinks.classList.remove('active');
-                    hamburger.classList.remove('active');
-                });
-            });
-        }
-        // ------------------------------------------------
     </script>
 </body>
 </html>
