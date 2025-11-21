@@ -49,10 +49,8 @@ body::before {
 
 .glass-effect {
     position: relative;
-    /* TŁO: Prawie całkowicie przezroczyste */
     background: rgba(255, 255, 255, 0.01); 
-    /* ROZMYCIE: Stabilne 8px */
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(8px);
     
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -267,7 +265,7 @@ body::before {
     transition: transform 0.4s ease;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
-.profile-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.profile-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; background: rgba(255, 255, 255, 0.075);}
 .profile-photo:hover { transform: scale(1.03); }
 
 /* TEKST */
