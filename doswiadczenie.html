@@ -11,8 +11,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     
     <style>
-        #squares-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-color: #111; pointer-events: none; }
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+        /* Blokada scrolla strony na PC */
         body { background: transparent; overflow: hidden; }
+        /* Odblokowanie na telefonach */
         @media (max-width: 900px) { body { overflow: auto; } }
     </style>
 </head>
@@ -170,6 +175,7 @@
                 <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
             </div>
         </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
     <script src="background.js"></script>

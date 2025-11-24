@@ -281,7 +281,7 @@ body::before {
     gap: 15px;
     padding: 30px 40px; /* Zmniejszony padding */
     height: 85vh; 
-    max-height: 850px;
+    max-height: 0px;
     min-height: 500px;
     border-radius: 40px;
 }
