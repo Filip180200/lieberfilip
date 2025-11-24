@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eksperyment Percepcji</title>
+    <!-- Biblioteki zewnętrzne -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -13,6 +15,9 @@
         .inkblot { filter: contrast(120%) brightness(95%); transition: opacity 0.5s; }
         .fade-in { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Animacja pulsującego tekstu */
+        .pulse-text { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
     </style>
 </head>
 <body>
@@ -21,9 +26,9 @@
     <script type="text/babel" data-type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, query, onSnapshot, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // --- TWOJA KONFIGURACJA (WKLEJONA) ---
+        // --- 1. TWOJA KONFIGURACJA ---
         const firebaseConfig = {
             apiKey: "AIzaSyBbqbrD-VJgLQw9HtXgXE6hccQNBfE7OhM",
             authDomain: "zajecia6.firebaseapp.com",
@@ -33,9 +38,10 @@
             appId: "1:464023535230:web:c147bde7dddd020d0d222f"
         };
 
-        const COLLECTION_NAME = 'zajecia_6_csv_export';
+        // --- 2. USTAWIENIA ---
+        const COLLECTION_NAME = 'zajecia_6_final';
+        const ADMIN_PASSWORD = "2000"; 
 
-        // Linki do obrazów Rorschacha
         const IMAGES = [
             { id: 1, src: "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Normalized_Rorschach_blot_01.jpg&width=800" },
             { id: 2, src: "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Normalized_Rorschach_blot_02.jpg&width=800" },
@@ -56,12 +62,215 @@
         Czasami bywasz ekstrawertyczny i towarzyski, a innym razem introwertyczny, ostrożny i zdystansowany."
         `;
 
+        // --- KOMPONENT: IKONA ADMINISTRATORA ---
+        const AdminGear = ({ onAdminLogin }) => (
+            <button 
+                onClick={onAdminLogin}
+                className="fixed bottom-4 left-4 text-slate-300 hover:text-slate-500 transition-colors p-2 z-50 opacity-50 hover:opacity-100"
+                title="Panel Administratora"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.35a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+        );
+
+        // --- LOGIKA CHMURY SŁÓW ---
+        const getWordFrequencies = (data, imageIndex) => {
+            const counts = {};
+            let maxCount = 0;
+
+            data.forEach(d => {
+                if (d.words && d.words[imageIndex]) {
+                    // Normalizacja: małe litery, usuwanie spacji
+                    const word = d.words[imageIndex].trim().toLowerCase();
+                    if (word) {
+                        counts[word] = (counts[word] || 0) + 1;
+                        if (counts[word] > maxCount) maxCount = counts[word];
+                    }
+                }
+            });
+
+            // Konwersja na tablicę i sortowanie
+            return {
+                words: Object.entries(counts).sort((a, b) => b[1] - a[1]), // Najczęstsze na początku
+                maxCount
+            };
+        };
+
+        // Paleta kolorów dla chmury
+        const CLOUD_COLORS = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#059669', '#0891b2', '#4b5563'];
+        
+        const getColorForWord = (word) => {
+            let hash = 0;
+            for (let i = 0; i < word.length; i++) {
+                hash = word.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return CLOUD_COLORS[Math.abs(hash) % CLOUD_COLORS.length];
+        };
+
+        // --- KOMPONENT: DASHBOARD ---
+        function Dashboard({ dbInstance }) {
+            const [data, setData] = React.useState([]);
+            const [loading, setLoading] = React.useState(true);
+            const canvasRef = React.useRef(null);
+            const chartRef = React.useRef(null);
+
+            React.useEffect(() => {
+                const q = query(collection(dbInstance, COLLECTION_NAME));
+                const unsubscribe = onSnapshot(q, (snapshot) => {
+                    const docs = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
+                    setData(docs);
+                    setLoading(false);
+                });
+                return () => unsubscribe();
+            }, [dbInstance]);
+
+            React.useEffect(() => {
+                if (!canvasRef.current || data.length === 0) return;
+                
+                const counts = [0, 0, 0, 0, 0];
+                data.forEach(d => {
+                    if (d.rating >= 1 && d.rating <= 5) counts[d.rating - 1]++;
+                });
+
+                if (chartRef.current) chartRef.current.destroy();
+                
+                chartRef.current = new Chart(canvasRef.current, {
+                    type: 'bar',
+                    data: {
+                        labels: ['1 (Porażka)', '2', '3', '4', '5 (Sukces)'],
+                        datasets: [{
+                            label: 'Liczba głosów',
+                            data: counts,
+                            backgroundColor: ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#22c55e'],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        plugins: { legend: { display: false } }, 
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } 
+                    }
+                });
+            }, [data]);
+
+            const downloadCSV = () => {
+                if (data.length === 0) { alert("Brak danych."); return; }
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += "ID,Data,Ocena,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10\n";
+                data.forEach(row => {
+                    const date = row.timestamp ? new Date(row.timestamp.seconds * 1000).toLocaleString() : 'N/A';
+                    const safeWords = (row.words || []).map(w => `"${w.replace(/"/g, '""')}"`); 
+                    while(safeWords.length < 10) safeWords.push('""');
+                    csvContent += `${row.uid},${date},${row.rating},${safeWords.join(",")}\n`;
+                });
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `wyniki_${new Date().toLocaleDateString()}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const clearDB = async () => {
+                const inputPass = prompt("Podaj hasło administratora, aby wyczyścić bazę:");
+                if (inputPass !== ADMIN_PASSWORD) {
+                    alert("Błędne hasło! Odmowa dostępu.");
+                    return;
+                }
+                if(!confirm("Ostatnie ostrzeżenie: Czy na pewno usunąć wszystkie wyniki studentów?")) return;
+
+                const q = query(collection(dbInstance, COLLECTION_NAME));
+                const snap = await getDocs(q);
+                snap.forEach(d => deleteDoc(d.ref));
+                alert("Baza wyczyszczona.");
+            };
+
+            if (loading) return <div className="text-center p-10 text-slate-500 animate-pulse">Ładowanie wyników...</div>;
+
+            return (
+                <div className="max-w-6xl mx-auto p-4 fade-in pb-20">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-xl shadow border border-slate-200">
+                        <div>
+                            <h2 className="text-2xl font-bold text-slate-800">Wyniki Grupy</h2>
+                            <p className="text-slate-500">Liczba odpowiedzi: <strong>{data.length}</strong></p>
+                        </div>
+                        <div className="flex gap-2 mt-4 md:mt-0">
+                            <button onClick={downloadCSV} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-medium transition">📥 Pobierz CSV</button>
+                            <button onClick={clearDB} className="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded hover:bg-red-100 font-medium transition">🗑️ Wyczyść</button>
+                        </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="bg-white p-6 rounded-xl shadow border border-slate-200">
+                            <h3 className="text-lg font-bold mb-4 text-slate-700">Rozkład Ocen (Efekt Forera)</h3>
+                            <canvas ref={canvasRef}></canvas>
+                            <p className="text-center text-xs text-gray-400 mt-2">Oś X: Ocena trafności opisu (1-5)</p>
+                        </div>
+                        
+                        <div className="bg-white p-6 rounded-xl shadow border border-slate-200 h-[600px] flex flex-col">
+                            <h3 className="text-lg font-bold mb-4 text-slate-700">Chmura Projekcji (Skojarzenia)</h3>
+                            <div className="flex-1 overflow-y-auto pr-2">
+                                {Array.from({length: 10}).map((_, i) => {
+                                    const { words, maxCount } = getWordFrequencies(data, i);
+                                    return (
+                                        <div key={i} className="mb-6 border-b border-slate-100 pb-4 last:border-0">
+                                            <div className="flex justify-between items-center mb-3">
+                                                <span className="text-xs font-bold text-blue-600 uppercase bg-blue-50 px-2 py-1 rounded">Tablica {i+1}</span>
+                                                <span className="text-xs text-slate-400">{data.length} odpowiedzi</span>
+                                            </div>
+                                            
+                                            {/* Kontener chmury słów */}
+                                            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 min-h-[60px]">
+                                                {words.length > 0 ? words.map(([word, count], idx) => {
+                                                    // Obliczanie wielkości: min 12px, max 32px
+                                                    const fontSize = Math.min(12 + (count / maxCount) * 20, 32);
+                                                    // Lżejsza waga dla rzadszych słów
+                                                    const fontWeight = count > 1 ? 'bold' : 'normal';
+                                                    
+                                                    return (
+                                                        <span 
+                                                            key={idx} 
+                                                            style={{ 
+                                                                fontSize: `${fontSize}px`, 
+                                                                color: getColorForWord(word),
+                                                                fontWeight: fontWeight,
+                                                                opacity: 0.8 + (count/maxCount * 0.2)
+                                                            }}
+                                                            className="transition hover:scale-110 cursor-default"
+                                                            title={`${count} głosów`}
+                                                        >
+                                                            {word}
+                                                        </span>
+                                                    );
+                                                }) : (
+                                                    <span className="text-xs text-gray-300 italic">Brak danych</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- GŁÓWNA APLIKACJA ---
         function App() {
             const [step, setStep] = React.useState('intro'); 
             const [imgIndex, setImgIndex] = React.useState(0);
             const [words, setWords] = React.useState([]);
             const [input, setInput] = React.useState('');
+            
+            // Nowe stany dla animacji
             const [progress, setProgress] = React.useState(0);
+            const [loadingText, setLoadingText] = React.useState("Inicjalizacja...");
+            
             const [dbInstance, setDbInstance] = React.useState(null);
             const [user, setUser] = React.useState(null);
             const [isSaving, setIsSaving] = React.useState(false);
@@ -73,15 +282,24 @@
                         const auth = getAuth(app);
                         const db = getFirestore(app);
                         setDbInstance(db);
-                        
                         const userCred = await signInAnonymously(auth);
                         setUser(userCred.user);
                     } catch (err) {
-                        alert("Błąd połączenia z bazą: " + err.message);
+                        alert("Błąd połączenia: " + err.message);
                     }
                 };
                 initFirebase();
             }, []);
+
+            // Funkcja do szybkiego logowania admina
+            const handleAdminLogin = () => {
+                const pass = prompt("Podaj hasło administratora:");
+                if (pass === ADMIN_PASSWORD) {
+                    setStep('dashboard');
+                } else if (pass) {
+                    alert("Błędne hasło.");
+                }
+            };
 
             const nextImage = () => {
                 if(!input.trim()) return;
@@ -91,27 +309,38 @@
                 if (imgIndex < IMAGES.length - 1) {
                     setImgIndex(imgIndex + 1);
                 } else {
-                    setStep('processing');
-                    let p = 0;
-                    const interval = setInterval(() => {
-                        p += 2;
-                        setProgress(p);
-                        if (p >= 100) {
-                            clearInterval(interval);
-                            setStep('result');
-                        }
-                    }, 40);
+                    startExtendedProcessing();
                 }
             };
 
+            const startExtendedProcessing = () => {
+                setStep('processing');
+                let p = 0;
+                // Zmieniamy prędkość: wolniej, aby trwało dłużej i zmieniały się napisy
+                const interval = setInterval(() => {
+                    p += 0.4; // Wolniejszy przyrost (ok. 8 sekund łącznie przy 30ms interwale)
+                    setProgress(p);
+
+                    // Dynamiczne napisy w zależności od postępu
+                    if (p < 15) setLoadingText("Szyfrowanie połączenia...");
+                    else if (p < 30) setLoadingText("Wysyłanie danych biometrycznych...");
+                    else if (p < 45) setLoadingText("Pobieranie wzorców semantycznych...");
+                    else if (p < 60) setLoadingText("Analiza podświadomych skojarzeń...");
+                    else if (p < 75) setLoadingText("Korelacja z bazą archetypów...");
+                    else if (p < 90) setLoadingText("Generowanie profilu osobowości...");
+                    else setLoadingText("Finalizowanie raportu...");
+
+                    if (p >= 100) {
+                        clearInterval(interval);
+                        setStep('result');
+                    }
+                }, 30);
+            };
+
             const submitRating = async (rating) => {
-                if (!dbInstance || !user) {
-                    alert("Nie można zapisać - brak połączenia z bazą.");
-                    return;
-                }
+                if (!dbInstance || !user) return;
                 setIsSaving(true);
                 try {
-                    // Zapisujemy bezpośrednio do kolekcji 'zajecia_6_csv_export'
                     await addDoc(collection(dbInstance, COLLECTION_NAME), {
                         words: words,
                         rating: rating,
@@ -120,25 +349,27 @@
                     });
                     setStep('thankyou');
                 } catch (e) {
-                    console.error(e);
-                    alert("Błąd zapisu: " + e.message + "\n\nSprawdź w Firebase Console, czy w zakładce 'Firestore Database -> Rules' masz ustawiony tryb testowy!");
+                    alert("Błąd zapisu. Sprawdź internet.");
                     setIsSaving(false);
                 }
             };
 
+            // EKRAN 1: INTRO
             if (step === 'intro') return (
                 <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
-                    <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full">
+                    <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full relative">
                         <div className="text-4xl mb-4">👁️</div>
                         <h1 className="text-2xl font-bold mb-4 text-slate-800">Eksperyment Percepcji</h1>
                         <p className="mb-8 text-slate-600">
                             Zobaczysz 10 tablic testu projekcyjnego. Przy każdej wpisz <strong>jedno słowo</strong>, które pierwsze przychodzi Ci na myśl.
                         </p>
-                        <button onClick={() => setStep('test')} className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">Rozpocznij</button>
+                        <button onClick={() => setStep('test')} className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition transform hover:-translate-y-1">Rozpocznij</button>
                     </div>
+                    <AdminGear onAdminLogin={handleAdminLogin} />
                 </div>
             );
 
+            // EKRAN 2: TEST
             if (step === 'test') return (
                 <div className="min-h-screen flex items-center justify-center p-4">
                     <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg max-w-2xl w-full">
@@ -150,40 +381,31 @@
                                 ))}
                             </div>
                         </div>
-                        
                         <div className="bg-white mb-6 flex items-center justify-center border border-slate-100 rounded-lg p-4" style={{minHeight: '350px'}}>
                             <img src={IMAGES[imgIndex].src} className="max-w-full max-h-[400px] object-contain inkblot" alt="Inkblot" />
                         </div>
-                        
                         <div className="flex flex-col sm:flex-row gap-3">
-                            <input 
-                                autoFocus
-                                type="text" 
-                                value={input}
-                                onChange={e => setInput(e.target.value)}
-                                onKeyDown={e => e.key === 'Enter' && nextImage()}
-                                placeholder="Co widzisz? (jedno słowo)"
-                                className="border-2 border-slate-200 p-3 w-full rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
-                            />
-                            <button onClick={nextImage} disabled={!input.trim()} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold disabled:opacity-50 hover:bg-blue-700 transition">
-                                Dalej
-                            </button>
+                            <input autoFocus type="text" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && nextImage()} placeholder="Co widzisz? (jedno słowo)" className="border-2 border-slate-200 p-3 w-full rounded-lg outline-none focus:border-blue-500 transition" />
+                            <button onClick={nextImage} disabled={!input.trim()} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold disabled:opacity-50 hover:bg-blue-700 transition">Dalej</button>
                         </div>
                     </div>
+                    <AdminGear onAdminLogin={handleAdminLogin} />
                 </div>
             );
 
+            // EKRAN 3: PROCESSING (ULEPSZONY)
             if (step === 'processing') return (
                 <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-white">
-                    <div className="text-4xl mb-6 animate-bounce">🧠</div>
-                    <h2 className="text-2xl font-bold mb-2">Analiza skojarzeń...</h2>
-                    <p className="text-slate-400 mb-8 text-sm">Przetwarzanie wzorców semantycznych</p>
-                    <div className="w-64 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500 transition-all duration-75 ease-out" style={{width: `${progress}%`}}></div>
+                    <div className="text-6xl mb-8 animate-bounce">🧠</div>
+                    <h2 className="text-2xl font-bold mb-4 pulse-text">{loadingText}</h2>
+                    <div className="w-80 h-2 bg-slate-700 rounded-full overflow-hidden shadow-lg border border-slate-600">
+                        <div className="h-full bg-blue-500 transition-all duration-75 ease-out shadow-[0_0_10px_#3b82f6]" style={{width: `${progress}%`}}></div>
                     </div>
+                    <p className="mt-4 text-slate-400 text-sm font-mono">{Math.round(progress)}%</p>
                 </div>
             );
 
+            // EKRAN 4: WYNIK (Barnum)
             if (step === 'result') return (
                 <div className="min-h-screen flex items-center justify-center p-4">
                     <div className="bg-white p-8 rounded-xl shadow-lg max-w-2xl w-full fade-in">
@@ -193,34 +415,38 @@
                         </div>
                         <div className="text-center">
                             <p className="mb-4 text-sm font-bold text-slate-500 uppercase tracking-wide">Oceń trafność tego opisu (1-5)</p>
-                            
                             {isSaving ? (
-                                <div className="text-blue-600 font-bold animate-pulse">Zapisywanie wyniku...</div>
+                                <div className="text-blue-600 font-bold animate-pulse">Zapisywanie...</div>
                             ) : (
                                 <div className="flex justify-center gap-3">
                                     {[1,2,3,4,5].map(r => (
-                                        <button key={r} onClick={() => submitRating(r)} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-blue-100 text-blue-600 font-bold text-xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition shadow-sm">
-                                            {r}
-                                        </button>
+                                        <button key={r} onClick={() => submitRating(r)} className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-blue-100 text-blue-600 font-bold text-xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition shadow-sm">{r}</button>
                                     ))}
                                 </div>
                             )}
-                            
-                            <div className="flex justify-between w-64 mx-auto mt-2 text-xs text-slate-400 font-medium">
-                                <span>1 - Nietrafne</span><span>5 - Bardzo trafne</span>
-                            </div>
+                            <div className="flex justify-between w-64 mx-auto mt-2 text-xs text-slate-400 font-medium"><span>1 - Nietrafne</span><span>5 - Bardzo trafne</span></div>
                         </div>
                     </div>
                 </div>
             );
 
+            // EKRAN 5: DZIĘKUJĘ + PRZEJŚCIE DO WYNIKÓW
             if (step === 'thankyou') return (
                 <div className="min-h-screen flex flex-col items-center justify-center text-center p-4 fade-in">
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-4xl mb-6 text-green-600 shadow-sm">✓</div>
                     <h2 className="text-3xl font-bold text-slate-800 mb-2">Dziękuję!</h2>
-                    <p className="text-slate-600">Twój wynik został pomyślnie zapisany.</p>
-                    <p className="text-slate-400 text-sm mt-8">Możesz zamknąć to okno.</p>
+                    <p className="text-slate-600 mb-8">Twój wynik został pomyślnie zapisany.</p>
+                    
+                    <button onClick={() => setStep('dashboard')} className="bg-slate-800 text-white px-8 py-3 rounded-lg font-bold hover:bg-slate-700 transition shadow-lg flex items-center gap-2 transform hover:-translate-y-1">
+                        📊 Zobacz wyniki grupy
+                    </button>
+                    <p className="text-slate-400 text-xs mt-4">Kliknij powyżej, aby zobaczyć podsumowanie odpowiedzi całej grupy.</p>
                 </div>
+            );
+
+            // EKRAN 6: DASHBOARD
+            if (step === 'dashboard') return (
+                <Dashboard dbInstance={dbInstance} />
             );
         }
 
