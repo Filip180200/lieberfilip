@@ -1,33 +1,76 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Filip Liebersbach</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statystyka - Filip Liebersbach</title>
     
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" href="images/logo.png" type="image/x-icon">
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WKCSKFHS');</script>
-
+    
     <style>
         #squares-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; background-color: #111; pointer-events: none;
         }
-        /* Blokada scrolla na PC */
+        /* Blokada scrolla na PC, bo strona jest krótka */
         body { background: transparent; overflow: hidden; }
         @media (max-width: 900px) { body { overflow: auto; } }
+
+        /* Lokalne style dla dużych przycisków menu */
+        .menu-buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px; /* Ograniczenie szerokości przycisków */
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .menu-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            padding: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            
+            /* Styl szkła dla guzika */
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .menu-button i {
+            font-size: 1.4rem;
+            color: #8ecae6; /* Kolor ikon */
+        }
     </style>
 </head>
 <body>
     <canvas id="squares-canvas"></canvas>
-
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKCSKFHS"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <header>
         <div class="pill-nav-container">
@@ -41,8 +84,7 @@
                         <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
                         <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
                         <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
-                        <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
-                        <li><a href="zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
                     </ul>
                 </div>
                 <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
@@ -53,7 +95,6 @@
                         <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
                         <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
                         <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
-                        <li><a href="zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
                     </ul>
                 </div>
             </nav>
@@ -61,18 +102,21 @@
     </header>
 
     <main class="intro">
-        <div class="main_content glass-effect" style="height: calc(100vh - 240px); min-height: 400px; padding: 40px;">
+        <div class="main_content glass-effect list-layout" style="min-height: 400px; height: auto; justify-content: center;">
             
-            <div class="profile-photo">
-                <img src="images/main_photo.png" alt="Zdjęcie profilowe" onerror="this.src='images/main_photo.jpg'" />
+            <div class="content-header" style="border-bottom: none;">
+                <h1>Zajęcia</h1>
+                <p>Narzędzia i materiały edukacyjne</p>
             </div>
-            
-            <div class="intro-text">
-                <h1>Filip Liebersbach</h1>
-                <p><b>Psycholog, Asystent Dydaktyczny, Analityk Danych</b></p>
-                <p>Z pasją do psychologii społecznej i wpływu nowych technologii na interakcje międzyludzkie.</p>
-                <p style="margin-top: 15px;">Witam na mojej stronie. Znajdziesz tu informacje o moim doświadczeniu, projektach, publikacjach oraz ciekawych książkach, które polecam.</p>
+
+            <div class="menu-buttons-container">
+                
+                <a href="mb.html" class="menu-button">
+                    <i class="fa-solid fa-chart-column"></i>
+                    Metody Badań Psychologicznych
+                </a>
             </div>
+
         </div>
     </main>
 
@@ -92,5 +136,5 @@
 
     <script src="background.js"></script>
     <script src="nav.js"></script>
-</body>
+    </body>
 </html>
