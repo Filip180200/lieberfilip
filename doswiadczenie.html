@@ -15,11 +15,10 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; background-color: #111; pointer-events: none;
         }
-        /* Blokada scrolla strony na PC */
-        body { background: transparent; overflow: hidden; }
-        /* Odblokowanie na telefonach */
-        @media (max-width: 900px) { body { overflow: auto; } }
+        /* Odblokowujemy scroll */
+        body { background: transparent; overflow-y: auto; overflow-x: hidden; }
     </style>
+
 </head>
 <body>
     <canvas id="squares-canvas"></canvas>
@@ -27,14 +26,17 @@
     <header>
         <div class="pill-nav-container">
             <nav class="pill-nav">
-                <a href="index.html" class="pill-logo glass-effect"><img src="images/logo.png" alt="Logo" /></a>
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
                 <div class="pill-nav-items">
                     <ul class="pill-list">
-                        <li><a href="doswiadczenie.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
                         <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
                         <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
                         <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
                         <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                        <li><a href="zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
                     </ul>
                 </div>
                 <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
@@ -45,13 +47,14 @@
                         <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
                         <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
                         <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                        <li><a href="zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
                     </ul>
                 </div>
             </nav>
         </div>
     </header>
 
-    <main class="intro">
+    <main class="intro page-scroll">
         <div class="main_content glass-effect list-layout">
             
             <div class="content-header">
@@ -164,7 +167,7 @@
         </div>
     </main>
 
-    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+    <footer style="position: relative; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
         <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
                 <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>

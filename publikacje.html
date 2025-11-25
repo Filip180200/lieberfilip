@@ -20,6 +20,39 @@
         body { background: transparent; overflow: hidden; }
         /* Odblokowanie na telefonach */
         @media (max-width: 900px) { body { overflow: auto; } }
+
+        /* --- STYL DLA OKŁADKI (DODATKOWY CSS WEWNĘTRZNY) --- */
+        .publication-wrapper {
+            display: flex;           /* Układ obok siebie */
+            gap: 20px;               /* Odstęp między obrazkiem a tekstem */
+            align-items: center;
+        }
+
+        .publication-cover {
+            width: 100px;            /* Twój stały rozmiar */
+            height: 140px;           /* Twój stały rozmiar */
+            
+            object-fit: contain;     /* ZMIANA: To sprawia, że widać cały obrazek */
+            background: rgba(255,255,255,0.1); /* Tło, żeby puste miejsca w prostokącie były ciemne, a nie przezroczyste */
+            
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        /* Na telefonach układamy jedno pod drugim */
+        @media (max-width: 600px) {
+            .publication-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .publication-cover {
+                width: 140px;
+                height: auto;
+                margin-bottom: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -35,9 +68,10 @@
                     <ul class="pill-list">
                         <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
                         <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
-                        <li><a href="publikacje.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
-                        <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
                         <li><a href="statystyka.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                        <li><a href="zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
                     </ul>
                 </div>
                 <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
@@ -48,13 +82,14 @@
                         <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
                         <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
                         <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                        <li><a href="zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
                     </ul>
                 </div>
             </nav>
         </div>
     </header>
 
-    <main class="intro">
+    <main class="intro page-scroll">
         <div class="main_content glass-effect list-layout">
             
             <div class="content-header">
@@ -72,43 +107,73 @@
                 <div class="scroll-list">
 
                     <div class="list-item" data-category="artykul">
-                        <span class="date">2024</span>
-                        <h3>‘We are looking for people like you’ – new technique of social influence</h3>
-                        <div class="role">Autorzy: Dariusz Doliński, Tomasz Grzyb, Wojciech Kulesza, Piotr Błaszczyk, Dominik Laska, Filip Liebersbach, Diana Redkiewicz, Łukasz Strzelczyk</div>
-                        <p>A low response rate in surveys makes the research more expensive and time consuming, but it also, or even more importantly, constitutes a major methodological problem. Therefore, researchers use all kinds of measures in order to increase the response rate. This article describes four experiments (three field studies and one on-line experiment) designed to test a specific technique intended for this purpose. The technique consists in suggesting, to a respondent, that the study requires individuals with a certain rare quality that they have.</p>
-                        <p style="margin-top: 10px;">
-                            <a href="https://doi.org/10.1080/15534510.2024.2316348" target="_blank" style="color: #8ecae6; text-decoration: underline;">
-                                <i class="fa-solid fa-link"></i> https://doi.org/10.1080/15534510.2024.2316348
-                            </a>
-                        </p>
-                    </div>
-
-                    <div class="list-item" data-category="artykul">
-                        <span class="date">2025</span>
-                        <h3>Interakcje online i ich potencjał do wzmacniania polaryzacji społecznej</h3>
-                        <div class="role">Autorzy: Kamil Izydorczak, Filip Liebersbach, Kamil Kornacki, Tadeusz Berkowski, Paweł Garduła, Bartosz Stolarski</div>
-                        <p>Celem pracy było sprawdzenie potencjału interackji online w wzacnianiu polaryzacji społecznej</p>
+                        <div class="publication-wrapper">
+                            <img src="images_publikacje/social influence.jpg" alt="Okładka" class="publication-cover"> 
+                            
+                            <div class="publication-content">
+                                <span class="date">2024</span>
+                                <h3>‘We are looking for people like you’ – new technique of social influence</h3>
+                                <div class="role">Autorzy: Dariusz Doliński, Tomasz Grzyb, Wojciech Kulesza, Piotr Błaszczyk, Dominik Laska, Filip Liebersbach, Diana Redkiewicz, Łukasz Strzelczyk</div>
+                                <p>A low response rate in surveys makes the research more expensive and time consuming, but it also, or even more importantly, constitutes a major methodological problem. Therefore, researchers use all kinds of measures in order to increase the response rate. This article describes four experiments.</p>
+                                <p style="margin-top: 10px;">
+                                    <a href="https://doi.org/10.1080/15534510.2024.2316348" target="_blank" style="color: #8ecae6; text-decoration: underline;">
+                                        <i class="fa-solid fa-link"></i> Link do artykułu
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="list-item" data-category="prezentacje">
-                        <span class="date">2024</span>
-                        <h3>Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym</h3>
-                        <div class="role">Autorzy: Filip Liebersbach, Julita Koszur</div>
-                        <p>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI. Zakładano, że lęk społeczny i narcyzm będą miały pozytywny związek z medialną wielozadaniowością.</p>
+                        <div class="publication-wrapper">
+                            <img src="images_publikacje/PSPS.png" alt="Okładka" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2025</span>
+                                <h3>Interakcje online i ich potencjał do wzmacniania polaryzacji społecznej</h3>
+                                <div class="role">Autorzy: Kamil Izydorczak, Filip Liebersbach, Kamil Kornacki, Tadeusz Berkowski, Paweł Garduła, Bartosz Stolarski</div>
+                                <p>Celem pracy było sprawdzenie potencjału interackji online w wzacnianiu polaryzacji społecznej.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="prezentacje">
+                         <div class="publication-wrapper">
+                            <img src="images_publikacje/PSPS.png" alt="Okładka" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2024</span>
+                                <h3>Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym</h3>
+                                <div class="role">Autorzy: Filip Liebersbach, Julita Koszur</div>
+                                <p>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408).</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="list-item" data-category="plakaty">
-                        <span class="date">2024</span>
-                        <h3>Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym wśród studentek i studentów</h3>
-                        <div class="role">Autor: Filip Liebersbach</div>
-                        <p>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI.</p>
+                        <div class="publication-wrapper">
+                            <img src="images_publikacje/U SWPS.png" alt="Okładka" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2024</span>
+                                <h3>Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym wśród studentek i studentów</h3>
+                                <div class="role">Autor: Filip Liebersbach</div>
+                                <p>Celem pracy było sprawdzenie, czy medialna wielozadaniowość ma związek z lękiem społecznym oraz narcyzmem. W badaniu uczestniczyli studenci (N = 408), a ich zadaniem było wypełnienie trzech narzędzi w losowej kolejności: kwestionariusz medialnej wielozadaniowości, skali lęku społecznego Lebowitza oraz kwestionariusza narcyzmu NPI.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="list-item" data-category="prezentacje">
-                        <span class="date">2023</span>
-                        <h3>Technoromans - jak technologia wpływa na nasze relacje</h3>
-                        <div class="role">Autorzy: Filip Liebersbach, Krzysztof Wiatr</div>
-                        <p>Podczas Konferencji Dni Psychologii 2023 "Romanse, Zbrodnie i Uzależnienia", przedstawiłem przegląd badań na temat wpływu technologii na relacje międzyludzkie.</p>
+                        <div class="publication-wrapper">
+                            <img src="images_publikacje/pssiap_12_dni_psychologii.jpg" alt="Okładka" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2023</span>
+                                <h3>Technoromans - jak technologia wpływa na nasze relacje</h3>
+                                <div class="role">Autorzy: Filip Liebersbach, Krzysztof Wiatr</div>
+                                <p>Podczas Konferencji Dni Psychologii 2023 "Romanse, Zbrodnie i Uzależnienia", przedstawiłem przegląd badań na temat wpływu technologii na relacje międzyludzkie.</p>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -116,7 +181,7 @@
         </div>
     </main>
 
-    <footer style="position: fixed; bottom: 0; width: 100%; padding: 10px; background: transparent; pointer-events: none; z-index: 10;">
+    <footer>
         <div class="footer-content" style="pointer-events: auto;">
             <div class="social-icons">
                 <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>

@@ -226,13 +226,13 @@ body::before {
 /* ========================================= */
 
 .intro {
+    flex: 1;                /* Klucz: Rozpycha się, zajmując wolne miejsce między menu a stopką */
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    height: 100vh;
-    padding: 100px 20px 20px; /* Mniejszy padding u góry */
+    align-items: center;    /* Na stronie głównej wyśrodkuje, na innych nadpiszemy */
+    padding: 100px 20px 40px; /* Padding dół 40px, żeby nie kleiło się do stopki */
     box-sizing: border-box;
+    width: 100%;
 }
 
 /* KARTA STANDARDOWA (Index) */
@@ -441,3 +441,37 @@ footer {
 }
 #dataTable th, #dataTable td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 #dataTable th { background-color: #686767; }
+
+/* ========================================= */
+/* --- 7. MODYFIKACJE DLA STRON PRZEWIJANYCH (Doświadczenie itp.) --- */
+/* ========================================= */
+
+/* Nadpisujemy .intro tylko tam, gdzie dodaliśmy klasę .page-scroll */
+.intro.page-scroll {
+    height: auto !important;          /* Pozwalamy rosnąć */
+    min-height: 100vh;
+    align-items: flex-start;          /* Zaczynamy od góry, nie od środka */
+    padding-top: 120px;               /* Miejsce na nawigację */
+    padding-bottom: 40px;
+}
+
+/* Nadpisujemy kontener treści */
+.intro.page-scroll .main_content.list-layout {
+    height: auto !important;          /* Wysokość zależna od tekstu */
+    max-height: none !important;      /* Usuwamy limit */
+    overflow: visible !important;     /* Pokaż wszystko */
+    margin-bottom: 20px;
+}
+
+/* Usuwamy wewnętrzny scroll listy, bo teraz scrolluje cała strona */
+.intro.page-scroll .scroll-list-container {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    overflow: visible !important;
+}
+
+.intro.page-scroll .scroll-list {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0 10px; /* Lekki padding boczny */
+}
