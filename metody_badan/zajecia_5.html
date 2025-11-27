@@ -41,7 +41,7 @@
                     <div class="font-bold border-b border-indigo-600 pb-1 mb-2">Procedura Badania:</div>
                     <div class="flex items-center gap-3">
                         <span class="bg-white text-indigo-900 font-bold w-6 h-6 flex items-center justify-center rounded-full text-xs">0</span>
-                        <span>Definicje Ról</span>
+                        <span>Definicje Ról i Struktur</span>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="bg-white text-indigo-900 font-bold w-6 h-6 flex items-center justify-center rounded-full text-xs">1</span>
@@ -94,73 +94,126 @@
         <div class="flex-1 bg-slate-50 p-4 relative overflow-hidden">
             
             <div id="step-0" class="step-content active h-full overflow-auto scroller">
-                <div class="max-w-5xl mx-auto space-y-6 pb-8">
-                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded shadow-sm">
-                        <h3 class="font-bold text-blue-800 text-lg mb-1">📘 Słownik Pojęć Socjometrycznych</h3>
-                        <p class="text-blue-700 text-sm">Zanim przejdziesz do analizy, zapoznaj się z kluczowymi rolami grupowymi.</p>
+                <div class="max-w-6xl mx-auto space-y-8 pb-8">
+                    
+                    <div>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded shadow-sm mb-4">
+                            <h3 class="font-bold text-blue-800 text-lg mb-1">🎭 Role Grupowe (Jednostki)</h3>
+                            <p class="text-blue-700 text-sm">Klasyfikacja członków grupy na podstawie liczby i rodzaju otrzymanych wyborów.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-xl">⭐</div>
+                                    <h4 class="font-bold text-slate-800">Gwiazda Socjometryczna</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Osoba z największą liczbą wyborów. Lider opinii, osoba najbardziej lubiana lub szanowana.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-xl">👑</div>
+                                    <h4 class="font-bold text-slate-800">Szara Eminencja</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Osoba, która nie jest Gwiazdą (ma mało wyborów), ale jest wybrana przez Gwiazdę. Ma realny wpływ na lidera.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-xl">🌉</div>
+                                    <h4 class="font-bold text-slate-800">Most (Łącznik)</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Osoba, która łączy dwie odrębne podgrupy. Jej odejście grozi rozpadem grupy na dwa obce obozy.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl">👥</div>
+                                    <h4 class="font-bold text-slate-800">Przeciętny</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Większość członków grupy – mają kilka wyborów, są akceptowani.
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-xl">👻</div>
+                                    <h4 class="font-bold text-slate-800">Izolant (Samotnik)</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Osoba bez wyborów, która sama też nikogo nie wybiera (lub wybiera rzadko). Jest na marginesie, "niewidzialna".
+                                </p>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-xl">👎</div>
+                                    <h4 class="font-bold text-slate-800">Odrzucony</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Osoba, która otrzymała najwięcej wyborów negatywnych (jeśli takie były badane).
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-xl">⭐</div>
-                                <h4 class="font-bold text-slate-800">Gwiazda Socjometryczna</h4>
-                            </div>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                Osoba z największą liczbą wyborów. Lider opinii, osoba najbardziej lubiana lub szanowana.
-                            </p>
+                    <div class="pt-4 border-t-2 border-slate-200">
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded shadow-sm mb-4">
+                            <h3 class="font-bold text-indigo-900 text-lg mb-1">📐 Układy relacji (Geometria grupy)</h3>
+                            <p class="text-indigo-800 text-sm">Typowe struktury tworzone przez powiązania między członkami grupy.</p>
                         </div>
 
-                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-xl">👑</div>
-                                <h4 class="font-bold text-slate-800">Szara Eminencja</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-xl text-green-600 font-bold">↔️</div>
+                                    <h4 class="font-bold text-slate-800">Para</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Wzajemny wybór dwóch osób (A wybiera B, B wybiera A). Najmniejsza komórka społeczna.
+                                </p>
                             </div>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                Osoba, która nie jest Gwiazdą (ma mało wyborów), ale jest wybrana przez Gwiazdę. Ma realny wpływ na lidera.
-                            </p>
-                        </div>
 
-                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-xl">🌉</div>
-                                <h4 class="font-bold text-slate-800">Most (Łącznik)</h4>
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-xl text-orange-600 font-bold">🔺</div>
+                                    <h4 class="font-bold text-slate-800">Trójkąt</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Zamknięty układ trzech osób (A->B->C->A). Bardzo stabilny, trudny do rozbicia.
+                                </p>
                             </div>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                Osoba, która łączy dwie odrębne podgrupy. Jej odejście grozi rozpadem grupy na dwa obce obozy.
-                            </p>
-                        </div>
 
-                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl">👥</div>
-                                <h4 class="font-bold text-slate-800">Przeciętny</h4>
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-xl text-slate-600 font-bold">🔗</div>
+                                    <h4 class="font-bold text-slate-800">Łańcuch</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    A wybiera B, B wybiera C, C wybiera D. Informacja/plotka płynie tylko w jedną stronę.
+                                </p>
                             </div>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                Większość członków grupy – mają kilka wyborów, są akceptowani.
-                            </p>
-                        </div>
 
-                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-xl">👻</div>
-                                <h4 class="font-bold text-slate-800">Izolant (Samotnik)</h4>
+                            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-xl text-rose-600 font-bold">🏰</div>
+                                    <h4 class="font-bold text-slate-800">Klika</h4>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Zamknięta podgrupa, której członkowie wybierają się nawzajem, ignorując resztę grupy.
+                                </p>
                             </div>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                Osoba bez wyborów, która sama też nikogo nie wybiera (lub wybiera rzadko). Jest na marginesie, "niewidzialna".
-                            </p>
-                        </div>
-
-                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-xl">👎</div>
-                                <h4 class="font-bold text-slate-800">Odrzucony</h4>
-                            </div>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                Osoba, która otrzymała najwięcej wyborów negatywnych (jeśli takie były badane).
-                            </p>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -228,7 +281,7 @@
         const people = [ {id:0,name:'Anna'},{id:1,name:'Bartek'},{id:2,name:'Celina'},{id:3,name:'Darek'},{id:4,name:'Ewa'},{id:5,name:'Filip'},{id:6,name:'Gosia'},{id:7,name:'Hela'},{id:8,name:'Igor'},{id:9,name:'Jan'} ];
 
         // Scenarios
- const scenarios = {
+         const scenarios = {
     'school': {
         name: '1. Klasa Szkolna',
         icon: '🏫',
@@ -539,6 +592,7 @@
     }
 };
 
+        
         let currentScenario = null, currentCriterion = 'task';
         let userMatrix = Array(10).fill().map(() => Array(10).fill(0));
         let matrixLocked = false, graphLocked = true, pendingAction = null;
@@ -811,7 +865,6 @@
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${step}`).classList.add('active');
             
-            // ZMIANA: Pętla teraz obsługuje krok 0
             for(let i=0; i<=3; i++) {
                 const tab = document.getElementById(`tab-${i}`);
                 if (!tab) continue;
