@@ -1,0 +1,310 @@
+ const scenarios = {
+    'school': {
+        name: '1. Klasa Szkolna',
+        icon: '🏫',
+        task: {
+            q: 'Z kim przygotujesz prezentację na ocenę?',
+            // Gwiazda: 0 (Anna) - wszyscy chcą z nią pracować.
+            // Szara Eminencja: 3 (Darek) - Anna wybiera tylko jego i Celinę.
+            // Most: 5 (Filip) - łączy grupę "kujonów" z resztą.
+            // Izolant: 9 (Jan) - wybiera gwiazdy, ale nikt nie wybiera jego.
+            choices: [
+                [0, 3], [0, 2],       // Anna (Gwiazda) wybiera Darka (GE)
+                [1, 0], [1, 2],
+                [2, 0], [2, 3],
+                [3, 0], [3, 4],
+                [4, 0], [4, 5],
+                [5, 4], [5, 6],       // Filip (Most)
+                [6, 5], [6, 7],
+                [7, 0], [7, 6],
+                [8, 0], [8, 7],
+                [9, 0], [9, 5]        // Jan (Izolant) wybiera, ale nikt jego
+            ]
+        },
+        emotion: {
+            q: 'Kogo zaprosisz na urodziny?',
+            // Gwiazda: 5 (Filip).
+            // Izolant: 0 (Anna) - w zadaniach gwiazda, tu nikt jej nie chce.
+            choices: [
+                [0, 5], [0, 2],       // Anna (Izolant) wybiera, nikt jej
+                [1, 5], [1, 3],
+                [2, 5], [2, 1],
+                [3, 5], [3, 1],
+                [4, 5], [4, 6],
+                [5, 6], [5, 8],
+                [6, 5], [6, 4],
+                [7, 5], [7, 8],
+                [8, 7], [8, 9],
+                [9, 5], [9, 8]
+            ]
+        }
+    },
+    'corp': {
+        name: '2. Korporacja',
+        icon: '🏢',
+        task: {
+            q: 'Kto ma najwyższe kompetencje techniczne?',
+            // Dwie Gwiazdy: 1 (Bartek) i 8 (Igor).
+            // Most: 4 (Ewa).
+            // Izolant: 9 (Jan).
+            choices: [
+                [0, 1], [0, 8],
+                [1, 2], [1, 3],       // Gwiazda A
+                [2, 1], [2, 0],
+                [3, 1], [3, 2],
+                [4, 1], [4, 8],       // Most łączy 1 i 8
+                [5, 8], [5, 6],
+                [6, 8], [6, 7],
+                [7, 8], [7, 6],
+                [8, 7], [8, 5],       // Gwiazda B
+                [9, 1], [9, 8]        // Izolant wybiera liderów
+            ]
+        },
+        emotion: {
+            q: 'Z kim pójdziesz na papierosa/kawę?',
+            // Gwiazda: 6 (Gosia).
+            // Szara Eminencja: 2 (Celina) - Gosia ją wybiera.
+            choices: [
+                [0, 6], [0, 1],
+                [1, 6], [1, 0],
+                [2, 6], [2, 3],       // Celina (GE)
+                [3, 6], [3, 2],
+                [4, 6], [4, 5],
+                [5, 6], [5, 4],
+                [6, 2], [6, 7],       // Gwiazda wybiera GE
+                [7, 6], [7, 8],
+                [8, 7], [8, 6],
+                [9, 6], [9, 7]        // Izolant
+            ]
+        }
+    },
+    'hospital': {
+        name: '3. Szpital',
+        icon: '🏥',
+        task: {
+            q: 'Komu powierzysz pacjenta w stanie krytycznym?',
+            // Gwiazda: 2 (Celina).
+            // Most: 5 (Filip).
+            choices: [
+                [0, 2], [0, 1],
+                [1, 2], [1, 0],
+                [2, 3], [2, 5],       // Gwiazda wybiera Most
+                [3, 2], [3, 4],
+                [4, 2], [4, 3],
+                [5, 2], [5, 6],       // Most łączy górę z dołem
+                [6, 5], [6, 7],
+                [7, 6], [7, 8],
+                [8, 2], [8, 7],
+                [9, 2], [9, 5]        // Izolant
+            ]
+        },
+        emotion: {
+            q: 'Kto najbardziej wspiera cię psychicznie?',
+            // Gwiazda: 7 (Hela).
+            // Izolant: 2 (Celina) - szefowa, nikt jej nie lubi prywatnie.
+            choices: [
+                [0, 7], [0, 1],
+                [1, 7], [1, 0],
+                [2, 7], [2, 3],       // Celina (Izolant) wybiera, nikt jej
+                [3, 7], [3, 4],
+                [4, 7], [4, 5],
+                [5, 7], [5, 6],
+                [6, 7], [6, 5],
+                [7, 8], [7, 9],
+                [8, 7], [8, 9],
+                [9, 7], [9, 8]
+            ]
+        }
+    },
+    'sports': {
+        name: '4. Drużyna',
+        icon: '⚽',
+        task: {
+            q: 'Komu podasz piłkę w kluczowej akcji?',
+            // Gwiazda: 9 (Jan).
+            // Szara Eminencja: 0 (Anna).
+            choices: [
+                [0, 9], [0, 1],
+                [1, 9], [1, 0],
+                [2, 9], [2, 3],
+                [3, 9], [3, 2],
+                [4, 9], [4, 5],
+                [5, 9], [5, 4],
+                [6, 9], [6, 5],
+                [7, 9], [7, 8],
+                [8, 9], [8, 7],
+                [9, 0], [9, 1]        // Gwiazda wybiera Annę (GE)
+            ]
+        },
+        emotion: {
+            q: 'Z kim najchętniej mieszkasz na zgrupowaniu?',
+            // Dwie silne kliki (1-4 i 5-9).
+            // Most: 0 (Anna).
+            choices: [
+                [0, 1], [0, 5],       // Anna (Most)
+                [1, 2], [1, 3],
+                [2, 1], [2, 3],
+                [3, 1], [3, 2],
+                [4, 1], [4, 2],       // Izolant wewnątrz grupy (nikt nie wybiera 4)
+                [5, 6], [5, 7],
+                [6, 5], [6, 7],
+                [7, 5], [7, 8],
+                [8, 7], [8, 9],
+                [9, 8], [9, 5]
+            ]
+        }
+    },
+    'kitchen': {
+        name: '5. Kuchnia',
+        icon: '🍳',
+        task: {
+            q: 'Kto najlepiej zarządza serwisem?',
+            // Gwiazda: 0 (Anna).
+            // Most: 5 (Filip).
+            // Izolant: 9 (Jan).
+            choices: [
+                [0, 1], [0, 2],
+                [1, 0], [1, 2],
+                [2, 0], [2, 3],
+                [3, 0], [3, 2],
+                [4, 0], [4, 5],
+                [5, 0], [5, 6],       // Most
+                [6, 5], [6, 7],
+                [7, 6], [7, 8],
+                [8, 7], [8, 0],
+                [9, 0], [9, 5]        // Jan (Izolant)
+            ]
+        },
+        emotion: {
+            q: 'Z kim wyskoczysz tylnym wyjściem?',
+            // Gwiazda: 3 (Darek).
+            // Szara Eminencja: 8 (Igor).
+            choices: [
+                [0, 3], [0, 1],
+                [1, 3], [1, 4],
+                [2, 3], [2, 1],
+                [3, 8], [3, 4],       // Gwiazda wybiera Igora (GE)
+                [4, 3], [4, 1],
+                [5, 3], [5, 6],       // Izolant (nikt nie wybiera 5)
+                [6, 3], [6, 7],
+                [7, 8], [7, 6],
+                [8, 7], [8, 9],
+                [9, 3], [9, 8]
+            ]
+        }
+    },
+    'expedition': {
+        name: '6. Góry',
+        icon: '🏔️',
+        task: {
+            q: 'Komu powierzysz asekurację?',
+            // Gwiazda: 4 (Ewa).
+            // Izolant: 0 (Anna) - brak zaufania.
+            choices: [
+                [0, 4], [0, 1],       // Izolant wybiera
+                [1, 4], [1, 2],
+                [2, 4], [2, 3],
+                [3, 4], [3, 2],
+                [4, 5], [4, 6],
+                [5, 4], [5, 6],
+                [6, 4], [6, 5],
+                [7, 4], [7, 8],
+                [8, 4], [8, 7],
+                [9, 4], [9, 8]
+            ]
+        },
+        emotion: {
+            q: 'Z kim chcesz utknąć w namiocie?',
+            // Gwiazda: 1 (Bartek).
+            // Most: 9 (Jan).
+            choices: [
+                [0, 1], [0, 2],
+                [1, 2], [1, 3],
+                [2, 1], [2, 3],
+                [3, 1], [3, 2],
+                [4, 1], [4, 5],       // Izolant (4)
+                [5, 1], [5, 6],
+                [6, 5], [6, 7],
+                [7, 8], [7, 6],
+                [8, 7], [8, 9],
+                [9, 8], [9, 1]        // Most (9) łączy 8 i 1
+            ]
+        }
+    },
+    'theatre': {
+        name: '7. Teatr',
+        icon: '🎭',
+        task: {
+            q: 'Kto powinien grać główną rolę?',
+            // Gwiazda: 6 (Gosia).
+            // Szara Eminencja: 2 (Celina).
+            choices: [
+                [0, 6], [0, 1],
+                [1, 6], [1, 0],
+                [2, 6], [2, 3],
+                [3, 6], [3, 4],
+                [4, 6], [4, 5],
+                [5, 6], [5, 4],
+                [6, 2], [6, 7],       // Gwiazda wybiera GE (2)
+                [7, 6], [7, 8],
+                [8, 6], [8, 7],
+                [9, 6], [9, 8]        // Izolant (9)
+            ]
+        },
+        emotion: {
+            q: 'Z kim czujesz "chemię"?',
+            // Sieć rozproszona (pary).
+            // Most: 4 (Ewa).
+            choices: [
+                [0, 1], [0, 2],
+                [1, 0], [1, 2],
+                [2, 0], [2, 1],
+                [3, 2], [3, 4],       // Izolant (3)
+                [4, 2], [4, 5],       // Most (4)
+                [5, 4], [5, 6],
+                [6, 5], [6, 7],
+                [7, 6], [7, 8],
+                [8, 7], [8, 9],
+                [9, 8], [9, 7]
+            ]
+        }
+    },
+    'heist': {
+        name: '8. Włam',
+        icon: '💰',
+        task: {
+            q: 'Kto trzyma klucze do sejfu?',
+            // Gwiazda: 7 (Hela).
+            // Izolant: 2 (Celina).
+            choices: [
+                [0, 7], [0, 1],
+                [1, 7], [1, 0],
+                [2, 7], [2, 3],       // Izolant wybiera
+                [3, 7], [3, 4],
+                [4, 7], [4, 3],
+                [5, 7], [5, 6],
+                [6, 7], [6, 5],
+                [7, 0], [7, 1],
+                [8, 7], [8, 9],
+                [9, 7], [9, 8]
+            ]
+        },
+        emotion: {
+            q: 'Za kogo dasz się złapać?',
+            // Gwiazda: 3 (Darek).
+            // Szara Eminencja: 0 (Anna).
+            choices: [
+                [0, 3], [0, 1],
+                [1, 3], [1, 0],
+                [2, 3], [2, 1],       // Izolant (2)
+                [3, 0], [3, 4],       // Gwiazda wybiera GE (0)
+                [4, 3], [4, 5],
+                [5, 3], [5, 4],
+                [6, 3], [6, 5],
+                [7, 3], [7, 6],
+                [8, 3], [8, 7],
+                [9, 3], [9, 8]
+            ]
+        }
+    }
+};
