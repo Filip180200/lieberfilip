@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dixit: 84 Karty + Edycja</title>
+    <style>
+        :root {
+            --card-width: 200px;
+            --card-height: 300px;
+            --bg-color: #2c3e50;
+            --accent-color: #e67e22;
+            --select-color: #2ecc71;
+            --remove-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Panel sterowania */
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        button {
+            background-color: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        button.mode-select {
+            background-color: #3498db;
+        }
+
+        button.confirm-btn {
+            background-color: var(--select-color);
+            display: none;
+        }
+        
+        button.reset {
+            background-color: #7f8c8d;
+        }
+
+        /* Kontener na karty */
+        .board {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1400px;
+            width: 100%;
+            padding-bottom: 50px;
+        }
+
+        /* Stylizacja karty (wspólna) */
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            background-color: #fff;
+            transition: transform 0.2s, border 0.2s;
+            border: 4px solid white;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-number {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* --- TRYB DUŻY (WYŚWIETLANIE) --- */
+        .board:not(.selection-mode) .card {
+            width: var(--card-width);
+            height: var(--card-height);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Przycisk usuwania (tylko w trybie dużym) */
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--remove-color);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 50;
+            opacity: 0.8;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .remove-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* --- TRYB SELEKCJI (SIATKA) --- */
+        .board.selection-mode {
+            gap: 8px;
+        }
+
+        .board.selection-mode .card {
+            width: 80px;  /* Jeszcze mniejsze, żeby 84 się mieściły */
+            height: 120px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.7;
+        }
+        
+        .board.selection-mode .card:hover {
+            transform: scale(1.05);
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* Karta zaznaczona w trybie selekcji */
+        .board.selection-mode .card.selected {
+            border-color: var(--select-color);
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 0 0 10px var(--select-color);
+            z-index: 20;
+        }
+
+        .board.selection-mode .card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            color: var(--select-color);
+            text-shadow: 0 0 3px black;
+            font-weight: bold;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .animate-pop {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .status-bar {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            min-height: 1.5em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐰 Dixit: Talia 84 Kart</h1>
+
+    <div class="status-bar" id="status">Wybierz tryb poniżej</div>
+
+    <div class="controls">
+        <button onclick="drawRandom(1)">🎲 Losuj 1</button>
+        <button onclick="drawRandom(3)">🎲 Losuj 3</button>
+        
+        <button class="mode-select" onclick="showSelectionMode()">🔍 Przeglądaj (84)</button>
+
+        <button id="confirmBtn" class="confirm-btn" onclick="showSelectedCards()">✅ Pokaż wybrane</button>
+        
+        <button class="reset" onclick="resetBoard()">🗑️ Wyczyść stół</button>
+    </div>
+
+    <div class="board" id="board">
+        <!-- Tutaj pojawią się karty -->
+    </div>
+
+    <script>
+        // Zmieniono na 84 karty
+        const TOTAL_CARDS = 84; 
+        const board = document.getElementById('board');
+        const statusEl = document.getElementById('status');
+        const confirmBtn = document.getElementById('confirmBtn');
+        let selectedIds = new Set(); 
+
+        // Generowanie talii
+        const deck = Array.from({ length: TOTAL_CARDS }, (_, i) => ({
+            id: i + 1,
+            // Używamy różnych wymiarów/seedów, aby urozmaicić obrazki
+            imageUrl: `https://picsum.photos/seed/dixit_game_${i + 1}/400/600`
+        }));
+
+        // --- LOSOWANIE ---
+        function drawRandom(amount) {
+            selectedIds.clear(); // Resetujemy ręczny wybór przy losowaniu
+            const shuffled = [...deck].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, amount);
+            
+            // Dodajemy wylosowane do zbioru wybranych, aby można je było potem usuwać
+            selected.forEach(c => selectedIds.add(c.id));
+            
+            showSelectedCards();
+            statusEl.innerText = `Wylosowano automatycznie: ${amount}.`;
+        }
+
+        // --- TRYB WYBORU (SIATKA) ---
+        function showSelectionMode() {
+            board.innerHTML = '';
+            board.className = 'board selection-mode';
+            
+            deck.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                if (selectedIds.has(card.id)) cardEl.classList.add('selected');
+
+                cardEl.onclick = () => toggleCardSelection(card.id, cardEl);
+
+                // Używamy mniejszego obrazka (lazy loading symulowany) w trybie siatki dla wydajności
+                cardEl.innerHTML = `
+                    <img src="${card.imageUrl}" loading="lazy" alt="Karta ${card.id}">
+                    <div class="card-number">${card.id}</div>
+                `;
+                board.appendChild(cardEl);
+            });
+
+            statusEl.innerText = "Kliknij karty, aby zaznaczyć. Potem kliknij 'Pokaż wybrane'.";
+            updateConfirmButton();
+        }
+
+        function toggleCardSelection(id, element) {
+            if (selectedIds.has(id)) {
+                selectedIds.delete(id);
+                element.classList.remove('selected');
+            } else {
+                selectedIds.add(id);
+                element.classList.add('selected');
+            }
+            updateConfirmButton();
+        }
+
+        function updateConfirmButton() {
+            const count = selectedIds.size;
+            if (count > 0) {
+                confirmBtn.style.display = 'block';
+                confirmBtn.innerText = `✅ Pokaż wybrane (${count})`;
+                statusEl.innerText = `Wybrano: ${count}`;
+            } else {
+                confirmBtn.style.display = 'none';
+                statusEl.innerText = "Wybierz karty z listy.";
+            }
+        }
+
+        // --- TRYB PREZENTACJI (DUŻE KARTY) ---
+        function showSelectedCards() {
+            const cardsToShow = deck.filter(card => selectedIds.has(card.id));
+            
+            board.className = 'board'; // Usuwa klasę selection-mode
+            board.innerHTML = '';
+            confirmBtn.style.display = 'none'; // Ukrywamy przycisk, bo już oglądamy
+            
+            if (cardsToShow.length === 0) {
+                board.innerHTML = '<div style="color:#aaa; width:100%; text-align:center;">Brak kart na stole.</div>';
+                statusEl.innerText = "Stół jest pusty.";
+                return;
+            }
+
+            statusEl.innerText = "Karty na stole. Kliknij 'X' na karcie, aby ją usunąć.";
+
+            cardsToShow.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card animate-pop';
+                cardEl.style.animationDelay = `${index * 0.1}s`;
+
+                // Przycisk usuwania
+                const removeBtn = document.createElement('div');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerText = '×';
+                removeBtn.title = 'Usuń tę kartę';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation(); // Żeby nie klikało nic pod spodem
+                    removeOneCard(card.id);
+                };
+
+                const img = document.createElement('img');
+                img.src = card.imageUrl;
+                
+                const num = document.createElement('div');
+                num.className = 'card-number';
+                num.innerText = '#' + card.id;
+
+                cardEl.appendChild(removeBtn);
+                cardEl.appendChild(img);
+                cardEl.appendChild(num);
+                
+                board.appendChild(cardEl);
+            });
+        }
+
+        // Funkcja usuwająca pojedynczą kartę z widoku
+        function removeOneCard(id) {
+            selectedIds.delete(id);
+            showSelectedCards(); // Przeładowanie widoku bez tej karty
+        }
+
+        function resetBoard() {
+            selectedIds.clear();
+            board.className = 'board';
+            board.innerHTML = '<div style="color:#aaa; width:100%; text-align:center; padding:20px;">Stół wyczyszczony.</div>';
+            confirmBtn.style.display = 'none';
+            statusEl.innerText = "Gotowy do nowej tury.";
+        }
+    </script>
+
+</body>
+</html>
