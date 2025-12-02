@@ -12,6 +12,7 @@
             --accent-color: #e67e22;
             --select-color: #2ecc71;
             --remove-color: #e74c3c;
+            --zoom-color: #3498db;
         }
 
         body {
@@ -128,15 +129,12 @@
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Przycisk usuwania (tylko w trybie dużym) */
-        .remove-btn {
+        /* Przycisk akcji (wspólny styl dla X i Lupki) */
+        .action-btn {
             position: absolute;
             top: 5px;
-            right: 5px;
             width: 30px;
             height: 30px;
-            background-color: var(--remove-color);
-            color: white;
             border: 2px solid white;
             border-radius: 50%;
             display: flex;
@@ -144,15 +142,28 @@
             justify-content: center;
             cursor: pointer;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             z-index: 50;
             opacity: 0.8;
             transition: opacity 0.2s, transform 0.2s;
+            color: white;
         }
 
-        .remove-btn:hover {
+        .action-btn:hover {
             opacity: 1;
             transform: scale(1.1);
+        }
+
+        /* Przycisk usuwania (prawa strona) */
+        .remove-btn {
+            right: 5px;
+            background-color: var(--remove-color);
+        }
+
+        /* Przycisk powiększania (lewa strona) */
+        .zoom-btn {
+            left: 5px;
+            background-color: var(--zoom-color);
         }
 
         /* --- TRYB SELEKCJI (SIATKA) --- */
@@ -161,7 +172,7 @@
         }
 
         .board.selection-mode .card {
-            width: 80px;  /* Jeszcze mniejsze, żeby 84 się mieściły */
+            width: 80px;  
             height: 120px;
             cursor: pointer;
             border: 2px solid transparent;
@@ -174,7 +185,6 @@
             z-index: 10;
         }
 
-        /* Karta zaznaczona w trybie selekcji */
         .board.selection-mode .card.selected {
             border-color: var(--select-color);
             transform: scale(1.1);
@@ -210,6 +220,51 @@
             min-height: 1.5em;
             text-align: center;
         }
+
+        /* --- MODAL (PEŁNY EKRAN) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+            border: 5px solid white;
+        }
+
+        .modal-close {
+            margin-top: 15px;
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 18px;
+            padding: 8px 24px;
+            border-radius: 30px;
+        }
+        
+        .modal-close:hover {
+            background: white;
+            color: black;
+            transform: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -233,30 +288,34 @@
         <!-- Tutaj pojawią się karty -->
     </div>
 
+    <!-- Modal do pełnego ekranu -->
+    <div id="modal" class="modal-overlay" onclick="closeFullscreen()">
+        <img id="modalImg" class="modal-content" src="" alt="Pełny ekran" onclick="event.stopPropagation()"> <!-- stopPropagation zapobiega zamknięciu przy kliknięciu w obrazek -->
+        <button class="modal-close" onclick="closeFullscreen()">Zamknij</button>
+    </div>
+
     <script>
-        // Zmieniono na 84 karty
         const TOTAL_CARDS = 84; 
         const board = document.getElementById('board');
         const statusEl = document.getElementById('status');
         const confirmBtn = document.getElementById('confirmBtn');
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        
         let selectedIds = new Set(); 
 
         // Generowanie talii
         const deck = Array.from({ length: TOTAL_CARDS }, (_, i) => ({
             id: i + 1,
-            // Używamy różnych wymiarów/seedów, aby urozmaicić obrazki
             imageUrl: `https://picsum.photos/seed/dixit_game_${i + 1}/400/600`
         }));
 
         // --- LOSOWANIE ---
         function drawRandom(amount) {
-            selectedIds.clear(); // Resetujemy ręczny wybór przy losowaniu
+            selectedIds.clear(); 
             const shuffled = [...deck].sort(() => 0.5 - Math.random());
             const selected = shuffled.slice(0, amount);
-            
-            // Dodajemy wylosowane do zbioru wybranych, aby można je było potem usuwać
             selected.forEach(c => selectedIds.add(c.id));
-            
             showSelectedCards();
             statusEl.innerText = `Wylosowano automatycznie: ${amount}.`;
         }
@@ -273,7 +332,6 @@
 
                 cardEl.onclick = () => toggleCardSelection(card.id, cardEl);
 
-                // Używamy mniejszego obrazka (lazy loading symulowany) w trybie siatki dla wydajności
                 cardEl.innerHTML = `
                     <img src="${card.imageUrl}" loading="lazy" alt="Karta ${card.id}">
                     <div class="card-number">${card.id}</div>
@@ -312,9 +370,9 @@
         function showSelectedCards() {
             const cardsToShow = deck.filter(card => selectedIds.has(card.id));
             
-            board.className = 'board'; // Usuwa klasę selection-mode
+            board.className = 'board';
             board.innerHTML = '';
-            confirmBtn.style.display = 'none'; // Ukrywamy przycisk, bo już oglądamy
+            confirmBtn.style.display = 'none';
             
             if (cardsToShow.length === 0) {
                 board.innerHTML = '<div style="color:#aaa; width:100%; text-align:center;">Brak kart na stole.</div>';
@@ -322,20 +380,30 @@
                 return;
             }
 
-            statusEl.innerText = "Karty na stole. Kliknij 'X' na karcie, aby ją usunąć.";
+            statusEl.innerText = "Karty na stole. Kliknij 🔍 aby powiększyć.";
 
             cardsToShow.forEach((card, index) => {
                 const cardEl = document.createElement('div');
                 cardEl.className = 'card animate-pop';
                 cardEl.style.animationDelay = `${index * 0.1}s`;
 
-                // Przycisk usuwania
+                // Przycisk powiększania (Lupka) - LEWA STRONA
+                const zoomBtn = document.createElement('div');
+                zoomBtn.className = 'action-btn zoom-btn';
+                zoomBtn.innerText = '🔍';
+                zoomBtn.title = 'Powiększ';
+                zoomBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openFullscreen(card.imageUrl);
+                };
+
+                // Przycisk usuwania (Krzyżyk) - PRAWA STRONA
                 const removeBtn = document.createElement('div');
-                removeBtn.className = 'remove-btn';
+                removeBtn.className = 'action-btn remove-btn';
                 removeBtn.innerText = '×';
                 removeBtn.title = 'Usuń tę kartę';
                 removeBtn.onclick = (e) => {
-                    e.stopPropagation(); // Żeby nie klikało nic pod spodem
+                    e.stopPropagation();
                     removeOneCard(card.id);
                 };
 
@@ -346,7 +414,8 @@
                 num.className = 'card-number';
                 num.innerText = '#' + card.id;
 
-                cardEl.appendChild(removeBtn);
+                cardEl.appendChild(zoomBtn);   // Dodanie lupki
+                cardEl.appendChild(removeBtn); // Dodanie krzyżyka
                 cardEl.appendChild(img);
                 cardEl.appendChild(num);
                 
@@ -354,10 +423,9 @@
             });
         }
 
-        // Funkcja usuwająca pojedynczą kartę z widoku
         function removeOneCard(id) {
             selectedIds.delete(id);
-            showSelectedCards(); // Przeładowanie widoku bez tej karty
+            showSelectedCards();
         }
 
         function resetBoard() {
@@ -367,6 +435,24 @@
             confirmBtn.style.display = 'none';
             statusEl.innerText = "Gotowy do nowej tury.";
         }
+
+        // --- OBSŁUGA MODALA (PEŁNY EKRAN) ---
+        function openFullscreen(url) {
+            modalImg.src = url;
+            modal.style.display = 'flex';
+        }
+
+        function closeFullscreen() {
+            modal.style.display = 'none';
+            modalImg.src = '';
+        }
+
+        // Zamknij modal klawiszem ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && modal.style.display === 'flex') {
+                closeFullscreen();
+            }
+        });
     </script>
 
 </body>
