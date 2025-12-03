@@ -684,7 +684,7 @@
 
         function submitPassword() {
             const val = document.getElementById('password-input').value;
-            if (pendingAction === 'matrix' && val === '4321') {
+            if (pendingAction === 'matrix' && val === '2015') {
                 matrixLocked = true;
                 const correctData = currentScenario[currentCriterion].choices;
                 const correctGrid = Array(10).fill().map(() => Array(10).fill(0));
@@ -711,7 +711,7 @@
                 document.getElementById('lock-2').classList.add('hidden');
                 document.getElementById('check-2').classList.remove('hidden');
                 closeModal();
-            } else if (pendingAction === 'graph' && val === '1234') {
+            } else if (pendingAction === 'graph' && val === '2025') {
                 graphLocked = false;
                 document.getElementById('graph-lock-overlay').classList.add('hidden');
                 document.getElementById('lock-3').classList.add('hidden');
