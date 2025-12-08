@@ -216,9 +216,9 @@
             // ==========================================================
             { 
                 id: 'vid1', category: 'Round 6: Video-Puzzles', 
-                question: "Which famous conditioning experiment is shown here?", 
+                question: "Which famous experimentor is shown here?", 
                 type: 'options', mediaType: 'video',
-                mediaUrl: 'https://www.youtube.com/embed/hhqumfpxuzI', // Pavlov's Dog
+                mediaUrl: 'https://youtube.com/clip/UgkxByZiojm42S60V2vYDMfAtUFENPFCHjfG?si=m7bQ54uDdb887Vzh', 
                 options: ['Albert Bandura', 'Ivan Pavlov', 'Abraham Maslow', 'Aaron Beck'], 
                 correctAnswer: 1, points: 300, time: 90 
             },
@@ -240,10 +240,10 @@
             },
             { 
                 id: 'vid4', category: 'Round 6: Video-Puzzles', 
-                question: "Which visual illusion is being demonstrated?", 
+                question: "Which famous experimentor is shown here?", 
                 type: 'options', mediaType: 'video',
-                mediaUrl: 'https://www.youtube.com/embed/Tcmm2q6xZFA', // Muller-Lyer
-                options: ['Ponzo illusion', 'Poggendorff illusion', 'Ebbinghaus illusion', 'Müller-Lyer illusion'], 
+                mediaUrl: 'https://www.youtube.com/watch?v=dLAi78hluFc&t=37s', // 
+                options: ['Mamie Phipps Clark', 'Elizabeth Loftus', 'Carol Gilligan', 'Jane Elliott'], 
                 correctAnswer: 3, points: 300, time: 90 
             },
             { 
@@ -258,7 +258,7 @@
                 id: 'vid6', category: 'Round 6: Video-Puzzles', 
                 question: "Identify the Polish social psychologist:", 
                 type: 'options', mediaType: 'video', // Using image placeholder for safety as specific Polish lecture videos vary
-                mediaUrl: 'https://www.youtube.com/watch?v=WHFrdWcggU8',
+                mediaUrl: 'https://www.youtube.com/watch?v=qK-mFdpfHMM',
                 options: ['Dariusz Doliński', 'Bogdan Wojciszke', 'Bogdan de Barbaro', 'Tomasz Grzyb'], 
                 correctAnswer: 0, points: 300, time: 90 
             },
