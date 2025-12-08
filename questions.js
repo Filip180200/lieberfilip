@@ -206,7 +206,7 @@
                 id: 'img6', category: 'Round 5: Photo-Puzzles', 
                 question: "Who studied conformity using line lengths like this?", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://www.soylentidergi.com/wp-content/uploads/2025/07/solomon-asch.webp',
+                mediaUrl: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQci4k77Ism7l_aMaWTbm9WQBUysVwSW4JI4cviLVyMYeOlgNJU',
                 options: ['John Ridley Stroop', 'Franz Carl Müller-Lyer', 'Walter Mischel', 'Solomon Asch'], 
                 correctAnswer: 3, points: 200, time: 45 
             },
