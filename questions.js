@@ -85,7 +85,7 @@
             { 
                 id: 'c1', category: 'Round 3: Cross-Cultural Psych', 
                 question: "In psychology, the acronym W.E.I.R.D. stands for:", 
-                type: 'options', options: ['White, English-speaking...', 'Western, Educated, Industrialized, Rich, Democratic', 'World, Economy, Internet...', 'Western, European, Independent...'], 
+                type: 'options', options: ['White, English-speaking, Intelligent, Rich, Developed', 'Western, Educated, Industrialized, Rich, Democratic', 'World, Economy, Internet, Resources, Data', ' Western, European, Independent, Rational, Developed'], 
                 correctAnswer: 1, points: 100, time: 30 
             },
             { 
@@ -166,7 +166,7 @@
                 id: 'img1', category: 'Round 5: Photo-Puzzles', 
                 question: "Who is this famous psychologist?", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Sigmund_Freud%2C_by_Max_Halberstadt_%28cropped%29.jpg',
+                mediaUrl: 'https://szczesliwie.pl/wp-content/uploads/2024/10/Sigmund_Freud_LIFE-e1729162274108-1062x720.jpg',
                 options: ['Jean Piaget', 'Wilhelm Wundt', 'Sigmund Freud', 'Aaron Beck'], 
                 correctAnswer: 2, points: 200, time: 45 
             },
@@ -174,7 +174,7 @@
                 id: 'img2', category: 'Round 5: Photo-Puzzles', 
                 question: "Who is this psychologist, known for the Stanford Prison Experiment?", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Philip_Zimbardo.jpg',
+                mediaUrl: 'https://cms.bps.org.uk/sites/default/files/2022-08/Stanford%20prison%20experiment.jpg',
                 options: ['Abraham Maslow', 'Philip Zimbardo', 'Wilhelm Wundt', 'Aaron Beck'], 
                 correctAnswer: 1, points: 200, time: 45 
             },
@@ -182,23 +182,23 @@
                 id: 'img3', category: 'Round 5: Photo-Puzzles', 
                 question: "Identify this psychologist:", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Carl_Jung.jpg',
+                mediaUrl: 'https://pieknoumyslu.com/wp-content/uploads/2018/08/eksperyment-milgrama.jpg',
                 options: ['Abraham Maslow', 'Carl Gustav Jung', 'Aaron Beck', 'Stanley Milgram'], 
-                correctAnswer: 1, points: 200, time: 45 
+                correctAnswer: 3, points: 200, time: 45 
             },
             { 
                 id: 'img4', category: 'Round 5: Photo-Puzzles', 
                 question: "Who is associated with this type of conditioning (pigeons/rats)?", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/B.F._Skinner_at_Harvard_circa_1950.jpg',
+                mediaUrl: 'https://www.taalhammer.com/wp-content/uploads/2024/04/Burrhus-Frederic-Skinner-behaviourism.jpeg',
                 options: ['Abraham Maslow', 'Philip Zimbardo', 'B.F. Skinner', 'Ivan Pavlov'], 
                 correctAnswer: 2, points: 200, time: 45 
             },
             { 
                 id: 'img5', category: 'Round 5: Photo-Puzzles', 
-                question: "Who conducted the 'Little Albert' experiment?", 
+                question: "Identify this psychologist:", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/John_Broadus_Watson.JPG',
+                mediaUrl: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQh1oTjTNViho5FCX6-QspUub05ppCWeWxHUxZGrtDCBfrUaEdf',
                 options: ['Albert Bandura', 'Harry Harlow', 'John B. Watson', 'Mary Ainsworth'], 
                 correctAnswer: 2, points: 200, time: 45 
             },
@@ -206,7 +206,7 @@
                 id: 'img6', category: 'Round 5: Photo-Puzzles', 
                 question: "Who studied conformity using line lengths like this?", 
                 type: 'options', mediaType: 'image',
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Asch_experiment.svg/640px-Asch_experiment.svg.png',
+                mediaUrl: 'hhttps://www.soylentidergi.com/wp-content/uploads/2025/07/solomon-asch.webp',
                 options: ['John Ridley Stroop', 'Franz Carl Müller-Lyer', 'Walter Mischel', 'Solomon Asch'], 
                 correctAnswer: 3, points: 200, time: 45 
             },
@@ -329,7 +329,7 @@
             {
                 id: 'open5',
                 category: 'SpeedNetworking',
-                question: "What’s the best lesson you’ve learned in the last year?",
+                question: "What’s the best lesson you’ve learned in the last year? ",
                 type: 'open',
                 answerString: "-",
                 points: 0,
