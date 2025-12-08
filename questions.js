@@ -51,7 +51,7 @@
             { 
                 id: 's2', category: 'Round 2: Social Psychology', 
                 question: "In the 'Stanford Prison Experiment,' what forced Philip Zimbardo to end the study after only six days?", 
-                type: 'options', options: ['The university ran out of funding', 'The "prisoners" escaped', 'The "guards" became sadistic / prisoners stressed', 'The students realized it was fake'], 
+                type: 'options', options: ['The university ran out of funding', 'The "prisoners" escaped', 'The "guards" became sadistic', 'The students realized it was fake'], 
                 correctAnswer: 2, points: 100, time: 30 
             },
             { 
@@ -220,7 +220,7 @@
                 type: 'options', mediaType: 'video',
                 mediaUrl: 'https://www.youtube.com/embed/hhqumfpxuzI', // Pavlov's Dog
                 options: ['Albert Bandura', 'Ivan Pavlov', 'Abraham Maslow', 'Aaron Beck'], 
-                correctAnswer: 1, points: 300, time: 60 
+                correctAnswer: 1, points: 300, time: 90 
             },
             { 
                 id: 'vid2', category: 'Round 6: Video-Puzzles', 
@@ -228,7 +228,7 @@
                 type: 'options', mediaType: 'video',
                 mediaUrl: 'https://www.youtube.com/embed/OrNBEhzjg8I', // Harlow's Monkeys
                 options: ['Harry Harlow', 'Mary Ainsworth', 'John Bowlby', 'Konrad Lorenz'], 
-                correctAnswer: 0, points: 300, time: 60 
+                correctAnswer: 0, points: 300, time: 90 
             },
             { 
                 id: 'vid3', category: 'Round 6: Video-Puzzles', 
@@ -236,7 +236,7 @@
                 type: 'options', mediaType: 'video',
                 mediaUrl: 'https://www.youtube.com/embed/Pr0OTCVtHbU', // Bobo Doll
                 options: ['Bobo Doll', 'Little Albert', 'Little Adam', 'Jean Piaget’s experiments'], 
-                correctAnswer: 0, points: 300, time: 60 
+                correctAnswer: 0, points: 300, time: 90 
             },
             { 
                 id: 'vid4', category: 'Round 6: Video-Puzzles', 
@@ -244,7 +244,7 @@
                 type: 'options', mediaType: 'video',
                 mediaUrl: 'https://www.youtube.com/embed/Tcmm2q6xZFA', // Muller-Lyer
                 options: ['Ponzo illusion', 'Poggendorff illusion', 'Ebbinghaus illusion', 'Müller-Lyer illusion'], 
-                correctAnswer: 3, points: 300, time: 60 
+                correctAnswer: 3, points: 300, time: 90 
             },
             { 
                 id: 'vid5', category: 'Round 6: Video-Puzzles', 
@@ -252,7 +252,7 @@
                 type: 'options', mediaType: 'video',
                 mediaUrl: 'https://www.youtube.com/embed/QX_oy9614HQ', // Marshmallow Test
                 options: ['Albert Bandura', 'Jean Piaget', 'Walter Mischel', 'Lawrence Kohlberg'], 
-                correctAnswer: 2, points: 300, time: 60 
+                correctAnswer: 2, points: 300, time: 90 
             },
             { 
                 id: 'vid6', category: 'Round 6: Video-Puzzles', 
@@ -260,7 +260,7 @@
                 type: 'options', mediaType: 'video', // Using image placeholder for safety as specific Polish lecture videos vary
                 mediaUrl: 'https://www.youtube.com/watch?v=WHFrdWcggU8',
                 options: ['Dariusz Doliński', 'Bogdan Wojciszke', 'Bogdan de Barbaro', 'Tomasz Grzyb'], 
-                correctAnswer: 0, points: 300, time: 60 
+                correctAnswer: 0, points: 300, time: 90 
             },
 
             // ==========================================================
@@ -292,21 +292,93 @@
             // ==========================================================
             {
                 id: 'open1',
-                category: 'SpeeDating',
+                category: 'SpeedNetworking',
                 question: "What’s one thing you’re excited about right now?",
                 type: 'open', // Nowy typ
                 answerString: "-", // Tekst poprawnej odpowiedzi
                 points: 0, // Punkty w tej rundzie zazwyczaj liczy się ręcznie na kartkach
-                time: 60
+                time: 90
             },
             {
                 id: 'open2',
-                category: 'SpeeDating',
-                question: "What’s something interesting about your work?",
+                category: 'SpeedNetworking',
+                question: "What are you most passionate about in your field?",
                 type: 'open',
                 answerString: "-",
                 points: 0,
-                time: 60
+                time: 90
+            },
+            {
+                id: 'open3',
+                category: 'SpeedNetworking',
+                question: "What’s your favorite thing about where you live?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open4',
+                category: 'SpeedNetworking',
+                question: "What’s the best lesson you’ve learned in the last year?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open5',
+                category: 'SpeedNetworking',
+                question: "What’s the best lesson you’ve learned in the last year?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open6',
+                category: 'SpeedNetworking',
+                question: "Who has influenced you the most professionally?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open7',
+                category: 'SpeedNetworking',
+                question: "What’s your most unusual hobby?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open8',
+                category: 'SpeedNetworking',
+                question: "If you weren’t doing what you do now, what career would you choose?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open9',
+                category: 'SpeedNetworking',
+                question: "What kind of people are you hoping to meet during this conference?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
+            },
+            {
+                id: 'open10',
+                category: 'SpeedNetworking',
+                question: "What’s one thing you loved as a kid and still secretly love?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 90
             }
         ];
 
@@ -319,5 +391,5 @@
             'Round 5: Photo-Puzzles',
             'Round 6: Video-Puzzles',
             'Jeopardy',
-            'SpeeDating'
+            'SpeedNetworking'
         ];
