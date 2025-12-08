@@ -4,74 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pub Quiz - EFPSA</title>
-    <!-- Style: Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- JSX Compiler in browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Ładowanie bazy pytań z pliku questions.js -->
     <script src="questions.js"></script>
     
     <style>
-        /* Animations */
         @keyframes blob {
             0% { transform: translate(0px, 0px) scale(1); }
             33% { transform: translate(30px, -50px) scale(1.1); }
             66% { transform: translate(-20px, 20px) scale(0.9); }
             100% { transform: translate(0px, 0px) scale(1); }
         }
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .btn-buzzer { animation: pulse-ring 2s infinite; }
         @keyframes pulse-ring {
             0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(234, 179, 8, 0); }
             100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
         }
-        .btn-buzzer {
-            animation: pulse-ring 2s infinite;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
     <div id="root"></div>
 
-    <!-- Main App Script -->
     <script type="text/babel" data-type="module">
         import React, { useState, useEffect, useMemo } from 'https://esm.sh/react@18.2.0';
         import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { 
-            getAuth, 
-            signInAnonymously, 
-            signInWithCustomToken, 
-            onAuthStateChanged 
-        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { 
-            getFirestore, 
-            collection, 
-            doc, 
-            setDoc, 
-            onSnapshot, 
-            updateDoc, 
-            increment, 
-            arrayUnion, 
-            serverTimestamp 
+            getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, increment, 
+            serverTimestamp, getDocs, deleteDoc 
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { 
-            Play, Pause, SkipForward, RefreshCw, CheckCircle, Users, Trophy, 
-            Monitor, Smartphone, Settings, XCircle, Clock, Lock, Filter, Hand, AlertCircle, MousePointerClick, Image, Video 
+            Play, CheckCircle, Users, Trophy, Monitor, Smartphone, Settings, Clock, Lock, 
+            MousePointerClick, Image, Video, Hand, Trash2, SkipForward 
         } from 'https://esm.sh/lucide-react@0.294.0';
 
-        // --- LOAD DATA FROM EXTERNAL FILE ---
-        // Pobieramy dane z globalnego obiektu window (zdefiniowane w questions.js)
         const INITIAL_DATA = window.INITIAL_DATA || [];
         const CATEGORIES_LIST = window.CATEGORIES_LIST || [];
 
-        // --- FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyA1asHC5MvUOflb6PW-_Exo3-mBDIhfb5o",
             authDomain: "efpsa-6cb30.firebaseapp.com",
@@ -86,86 +61,55 @@
         const db = getFirestore(app);
         const appId = "pub-quiz-efpsa-v2"; 
 
-        // --- MAIN COMPONENT ---
         function PubQuizApp() {
             const [user, setUser] = useState(null);
             const [role, setRole] = useState(null);
-            
-            // Password Logic
             const [pendingRole, setPendingRole] = useState(null);
             const [passwordInput, setPasswordInput] = useState('');
             const [passwordError, setPasswordError] = useState('');
 
             useEffect(() => {
-                const initAuth = async () => {
-                    try { await signInAnonymously(auth); } catch (error) { console.error(error); }
-                };
+                const initAuth = async () => { try { await signInAnonymously(auth); } catch (e) { console.error(e); } };
                 initAuth();
                 return onAuthStateChanged(auth, setUser);
             }, []);
 
-            const handleRoleSelect = (selectedRole) => {
-                if (selectedRole === 'player') setRole('player');
-                else { setPendingRole(selectedRole); setPasswordInput(''); setPasswordError(''); }
-            };
+            const handleRoleSelect = (r) => { r === 'player' ? setRole('player') : (setPendingRole(r), setPasswordInput(''), setPasswordError('')) };
+            const verifyPassword = () => { passwordInput === "admin" ? (setRole(pendingRole), setPendingRole(null)) : setPasswordError("Incorrect password (try: admin)"); };
 
-            const verifyPassword = () => {
-                if (passwordInput === "admin") {
-                    if (pendingRole) setRole(pendingRole);
-                    setPendingRole(null);
-                } else {
-                    setPasswordError("Incorrect password (try: admin)");
-                }
-            };
+            if (!user) return <div className="min-h-screen flex items-center justify-center">Connecting...</div>;
 
-            if (!user) return <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">Connecting...</div>;
-
-            if (pendingRole) {
-                return (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                        <div className="bg-slate-800 p-8 rounded-2xl max-w-md w-full border border-slate-700 shadow-2xl">
-                            <h2 className="text-2xl font-bold text-center mb-4">Password Required</h2>
-                            <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} className="w-full p-3 bg-slate-900 border border-slate-600 rounded mb-4" placeholder="Password..." onKeyDown={(e)=>e.key==='Enter' && verifyPassword()} />
-                            {passwordError && <p className="text-red-400 text-sm mb-4 text-center">{passwordError}</p>}
-                            <div className="flex gap-3">
-                                <button onClick={() => setPendingRole(null)} className="flex-1 py-2 rounded font-bold text-slate-400 hover:bg-slate-700">Cancel</button>
-                                <button onClick={verifyPassword} className="flex-1 bg-purple-600 hover:bg-purple-500 py-2 rounded font-bold">Login</button>
-                            </div>
-                        </div>
+            if (pendingRole) return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-slate-800 p-8 rounded-2xl max-w-md w-full border border-slate-700">
+                        <h2 className="text-2xl font-bold text-center mb-4">Password Required</h2>
+                        <input type="password" value={passwordInput} onChange={e=>setPasswordInput(e.target.value)} className="w-full p-3 bg-slate-900 border rounded mb-4" onKeyDown={e=>e.key==='Enter'&&verifyPassword()}/>
+                        {passwordError && <p className="text-red-400 text-sm text-center mb-4">{passwordError}</p>}
+                        <div className="flex gap-3"><button onClick={()=>setPendingRole(null)} className="flex-1 py-2 text-slate-400">Cancel</button><button onClick={verifyPassword} className="flex-1 bg-purple-600 rounded font-bold">Login</button></div>
                     </div>
-                );
-            }
-
-            if (!role) {
-                return (
-                    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-                        <h1 className="text-5xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">PUB QUIZ</h1>
-                        {INITIAL_DATA.length === 0 && <div className="text-red-500 bg-red-900/50 p-4 rounded mb-4">Warning: questions.js not loaded correctly or empty.</div>}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-                            <RoleCard icon={<Smartphone size={40}/>} title="Player" desc="Mobile Phone" onClick={()=>handleRoleSelect('player')} />
-                            <RoleCard icon={<Monitor size={40}/>} title="Screen" desc="Projector" locked onClick={()=>handleRoleSelect('screen')} />
-                            <RoleCard icon={<Settings size={40}/>} title="Host" desc="Admin Panel" locked onClick={()=>handleRoleSelect('host')} />
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="bg-slate-900 text-slate-100 font-sans">
-                    {role === 'host' && <HostView user={user} />}
-                    {role === 'player' && <PlayerView user={user} />}
-                    {role === 'screen' && <ScreenView />}
                 </div>
             );
+
+            if (!role) return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                    <h1 className="text-5xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">PUB QUIZ</h1>
+                    {INITIAL_DATA.length === 0 && <div className="text-red-500 bg-red-900/50 p-4 rounded mb-4">Error: questions.js not loaded or empty.</div>}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+                        <RoleCard icon={<Smartphone size={40}/>} title="Player" desc="Mobile Phone" onClick={()=>handleRoleSelect('player')} />
+                        <RoleCard icon={<Monitor size={40}/>} title="Screen" desc="Projector" locked onClick={()=>handleRoleSelect('screen')} />
+                        <RoleCard icon={<Settings size={40}/>} title="Host" desc="Admin Panel" locked onClick={()=>handleRoleSelect('host')} />
+                    </div>
+                </div>
+            );
+
+            return <div className="bg-slate-900 text-slate-100 font-sans">{role === 'host' ? <HostView user={user}/> : role === 'player' ? <PlayerView user={user}/> : <ScreenView/>}</div>;
         }
 
         function RoleCard({ icon, title, desc, onClick, locked }) {
             return (
-                <button onClick={onClick} className="bg-slate-800 hover:bg-slate-700 p-6 rounded-2xl border-2 border-slate-700 hover:border-purple-500 transition-all flex flex-col items-center group relative">
+                <button onClick={onClick} className="bg-slate-800 hover:bg-slate-700 p-6 rounded-2xl border-2 border-slate-700 hover:border-purple-500 flex flex-col items-center relative group">
                     {locked && <Lock size={16} className="absolute top-4 right-4 text-slate-500"/>}
-                    <div className="text-purple-400 group-hover:scale-110 transition-transform mb-2">{icon}</div>
-                    <h2 className="text-xl font-bold">{title}</h2>
-                    <p className="text-slate-400 text-sm">{desc}</p>
+                    <div className="text-purple-400 group-hover:scale-110 transition-transform mb-2">{icon}</div><h2 className="text-xl font-bold">{title}</h2><p className="text-slate-400 text-sm">{desc}</p>
                 </button>
             );
         }
@@ -178,226 +122,132 @@
             const [activeCategory, setActiveCategory] = useState(null);
 
             useEffect(() => {
-                const unsubG = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), d => d.exists() && setGameState(d.data()));
-                const unsubP = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'players'), s => {
-                    const pl = []; s.forEach(d => pl.push({id:d.id, ...d.data()}));
-                    setPlayers(pl.sort((a,b)=>b.score-a.score));
+                const u1 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), d=>d.exists()&&setGameState(d.data()));
+                const u2 = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'players'), s=>{
+                    const p=[]; s.forEach(d=>p.push({id:d.id, ...d.data()})); setPlayers(p.sort((a,b)=>b.score-a.score));
                 });
-                const unsubQ = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), d => d.exists() && setQuestions(d.data()?.data || []));
-                return () => { unsubG(); unsubP(); unsubQ(); };
+                const u3 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), d=>d.exists()&&setQuestions(d.data()?.data||[]));
+                return ()=>{u1();u2();u3()};
             }, []);
 
             const loadCategory = async (catName) => {
-                if(!confirm(`Are you sure you want to load: ${catName}? This will reset the current question.`)) return;
+                if(!confirm(`Load: ${catName}?`)) return;
                 setActiveCategory(catName);
-                
                 const roundQuestions = INITIAL_DATA.filter(q => q.category === catName);
-                
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), { data: roundQuestions });
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                    currentQuestionIndex: 0,
-                    status: 'lobby',
-                    timerEnd: null,
-                    revealedAnswer: false,
-                    buzzedPlayer: null 
-                });
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { currentQuestionIndex: 0, status: 'lobby', timerEnd: null, revealedAnswer: false, buzzedPlayer: null });
             };
 
-            const setStatus = async (status) => {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { status });
-            };
-
+            const setStatus = async (s) => updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { status: s });
+            
             const nextQuestion = async () => {
-                if (!gameState) return;
+                if(!gameState) return;
                 const nextIdx = gameState.currentQuestionIndex + 1;
-                if (nextIdx < questions.length) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                        currentQuestionIndex: nextIdx,
-                        status: 'question',
-                        revealedAnswer: false,
-                        timerEnd: null,
-                        buzzedPlayer: null
-                    });
-                } else {
-                    await setStatus('finished');
-                }
+                if(nextIdx < questions.length) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { currentQuestionIndex: nextIdx, status: 'question', revealedAnswer: false, timerEnd: null, buzzedPlayer: null });
+                else await setStatus('finished');
             };
 
-            const jumpToQuestion = async (index) => {
-                if(!gameState) return;
-                if(!confirm(`Jump to question #${index+1}?`)) return;
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                    currentQuestionIndex: index,
-                    status: 'question',
-                    revealedAnswer: false,
-                    timerEnd: null,
-                    buzzedPlayer: null
-                });
+            const jumpToQuestion = async (idx) => {
+                if(!confirm(`Jump to question ${idx+1}?`)) return;
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { currentQuestionIndex: idx, status: 'question', revealedAnswer: false, timerEnd: null, buzzedPlayer: null });
             };
 
             const startTimer = async () => {
-                const duration = questions[gameState.currentQuestionIndex].time || 30;
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                    timerEnd: Date.now() + (duration * 1000),
-                    timerDuration: duration
-                });
+                const dur = questions[gameState.currentQuestionIndex].time || 30;
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { timerEnd: Date.now()+(dur*1000), timerDuration: dur });
             };
 
-            const revealAnswer = async () => {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                    revealedAnswer: true, status: 'reveal'
-                });
+            // NEW: Delete All Players Feature
+            const resetPlayers = async () => {
+                if(!confirm("ARE YOU SURE YOU WANT TO DELETE ALL PLAYERS? This cannot be undone.")) return;
+                try {
+                    // Firebase client-side deletion requires iterating
+                    // Note: In a large app, do this server-side. For a pub quiz with <50 teams, this is fine.
+                    // We can't easily iterate collection in one go without loading, but we have 'players' state.
+                    const q = collection(db, 'artifacts', appId, 'public', 'data', 'players');
+                    const snapshot = await getDocs(q);
+                    const deletePromises = [];
+                    snapshot.forEach((docSnap) => {
+                        deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', docSnap.id)));
+                    });
+                    await Promise.all(deletePromises);
+                    alert("All players deleted.");
+                } catch(err) {
+                    console.error(err);
+                    alert("Error deleting players: " + err.message);
+                }
             };
 
-            const resetBuzzer = async () => {
-                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                    buzzedPlayer: null
-                });
-            };
-
-            const awardBuzzerPoints = async (playerId, points) => {
-                if(!playerId) return;
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', playerId), {
-                    score: increment(points)
-                });
-                alert(`Awarded ${points} pts!`);
-            };
+            const revealAnswer = async () => updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { revealedAnswer: true, status: 'reveal' });
+            const resetBuzzer = async () => updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { buzzedPlayer: null });
+            const awardBuzzer = async (pid, pts) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', pid), { score: increment(pts) }); alert(`Awarded ${pts} pts`); };
 
             const currentQ = questions[gameState?.currentQuestionIndex] || {};
             const isBuzzerMode = currentQ.type === 'buzzer';
 
             return (
-                <div className="p-4 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-screen">
-                    {/* LEFT: CATEGORY SELECTION */}
+                <div className="p-4 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-screen pb-12">
                     <div className="lg:col-span-3 space-y-2 max-h-[80vh] overflow-y-auto">
                         <h3 className="font-bold text-slate-400 mb-2">SELECT ROUND</h3>
-                        {CATEGORIES_LIST.map((cat, idx) => (
-                            <button 
-                                key={cat} 
-                                onClick={() => loadCategory(cat)}
-                                className={`w-full text-left p-3 rounded font-bold text-sm transition-all border-l-4 ${activeCategory === cat ? 'bg-purple-900 border-purple-500 text-white' : 'bg-slate-800 border-slate-600 text-slate-400 hover:bg-slate-700'}`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
+                        {CATEGORIES_LIST.map(cat => <button key={cat} onClick={()=>loadCategory(cat)} className={`w-full text-left p-3 rounded font-bold text-sm border-l-4 transition-all ${activeCategory===cat?'bg-purple-900 border-purple-500':'bg-slate-800 border-slate-600 hover:bg-slate-700'}`}>{cat}</button>)}
                     </div>
 
-                    {/* CENTER: CONTROLS */}
                     <div className="lg:col-span-6 bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold text-purple-400">Host Panel</h2>
-                            <span className="bg-slate-900 px-3 py-1 rounded text-xs font-mono uppercase text-yellow-500">{gameState?.status}</span>
-                        </div>
-
-                        {/* QUESTION INFO */}
+                        <div className="flex justify-between items-center mb-4"><h2 className="text-xl font-bold text-purple-400">Host Panel</h2><span className="bg-slate-900 px-3 py-1 rounded text-xs font-mono text-yellow-500 uppercase">{gameState?.status}</span></div>
                         <div className="bg-slate-900 p-4 rounded mb-6 border border-slate-700 min-h-[120px]">
-                            {questions.length > 0 ? (
-                                <>
-                                    <div className="text-xs text-slate-500 mb-1 flex justify-between">
-                                        <span>{currentQ.category}</span>
-                                        <span>Question {gameState?.currentQuestionIndex + 1} / {questions.length}</span>
-                                    </div>
-                                    <p className="text-lg font-bold mb-2">{currentQ.question}</p>
-                                    
-                                    {currentQ.mediaType === 'image' && <div className="text-xs text-blue-400 flex items-center gap-1"><Image size={12}/> [Slide contains image]</div>}
-                                    {currentQ.mediaType === 'video' && <div className="text-xs text-red-400 flex items-center gap-1"><Video size={12}/> [Slide contains video]</div>}
-                                    {isBuzzerMode && <p className="text-yellow-400 text-sm mt-2 font-mono">[FASTEST FINGER MODE]</p>}
-                                </>
-                            ) : (
-                                <p className="text-slate-500 italic">Select a category on the left to load questions.</p>
-                            )}
+                            {questions.length>0 ? (
+                                <><div className="text-xs text-slate-500 mb-1 flex justify-between"><span>{currentQ.category}</span><span>Question {gameState?.currentQuestionIndex+1}/{questions.length}</span></div><p className="text-lg font-bold mb-2">{currentQ.question}</p>
+                                {currentQ.mediaType==='image'&&<div className="text-xs text-blue-400 flex items-center gap-1"><Image size={12}/> [Image Slide]</div>}
+                                {currentQ.mediaType==='video'&&<div className="text-xs text-red-400 flex items-center gap-1"><Video size={12}/> [Video Slide - Local File]</div>}
+                                {isBuzzerMode&&<p className="text-yellow-400 text-sm mt-2 font-mono">[FASTEST FINGER]</p>}</>
+                            ) : <p className="text-slate-500 italic">Select a category on the left.</p>}
                         </div>
 
-                        {/* CONTROL BUTTONS */}
                         <div className="flex-1 space-y-3">
-                            {gameState?.status === 'lobby' && questions.length > 0 && (
-                                <button onClick={() => setStatus('question')} className="w-full bg-green-600 hover:bg-green-500 py-4 rounded font-bold flex justify-center items-center gap-2">
-                                    <Play /> START ROUND
-                                </button>
-                            )}
-
-                            {gameState?.status === 'question' && !isBuzzerMode && (
+                            {gameState?.status==='lobby' && questions.length>0 && <button onClick={()=>setStatus('question')} className="w-full bg-green-600 hover:bg-green-500 py-4 rounded font-bold flex justify-center items-center gap-2"><Play/> START ROUND</button>}
+                            
+                            {gameState?.status==='question' && !isBuzzerMode && (
                                 <div className="flex gap-2">
-                                    <button onClick={startTimer} disabled={!!gameState?.timerEnd} className="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded font-bold flex justify-center gap-2">
-                                        <Clock /> {gameState?.timerEnd ? 'Time running...' : 'Start Timer'}
-                                    </button>
-                                    <button onClick={revealAnswer} className="flex-1 bg-yellow-600 hover:bg-yellow-500 py-3 rounded font-bold flex justify-center gap-2 text-black">
-                                        <CheckCircle /> Reveal Ans.
-                                    </button>
+                                    <button onClick={startTimer} disabled={!!gameState?.timerEnd} className="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded font-bold flex gap-2 justify-center"><Clock/> {gameState?.timerEnd?'Running...':'Start Timer'}</button>
+                                    <button onClick={revealAnswer} className="flex-1 bg-yellow-600 hover:bg-yellow-500 py-3 rounded font-bold flex gap-2 justify-center text-black"><CheckCircle/> Reveal Ans.</button>
                                 </div>
                             )}
 
-                            {gameState?.status === 'question' && isBuzzerMode && (
+                            {gameState?.status==='question' && isBuzzerMode && (
                                 <div className="bg-slate-700 p-3 rounded space-y-3">
-                                    <div className="text-center p-2 bg-black rounded border border-slate-600">
-                                        <p className="text-xs text-slate-400">BUZZED IN:</p>
-                                        <p className="text-2xl font-bold text-yellow-400 animate-pulse">
-                                            {gameState.buzzedPlayer ? gameState.buzzedPlayer.name : "..."}
-                                        </p>
-                                    </div>
-                                    
+                                    <div className="text-center p-2 bg-black rounded border border-slate-600"><p className="text-xs text-slate-400">BUZZED IN:</p><p className="text-2xl font-bold text-yellow-400 animate-pulse">{gameState.buzzedPlayer ? gameState.buzzedPlayer.name : "..."}</p></div>
                                     {gameState.buzzedPlayer ? (
                                         <div className="flex gap-2">
-                                            <button onClick={() => awardBuzzerPoints(gameState.buzzedPlayer.id, currentQ.points)} className="flex-1 bg-green-600 py-2 rounded font-bold text-sm">Correct (+{currentQ.points})</button>
-                                            <button onClick={() => awardBuzzerPoints(gameState.buzzedPlayer.id, -100)} className="flex-1 bg-red-600 py-2 rounded font-bold text-sm">Wrong (-100)</button>
+                                            <button onClick={()=>awardBuzzer(gameState.buzzedPlayer.id, currentQ.points)} className="flex-1 bg-green-600 py-2 rounded font-bold text-sm">Correct (+{currentQ.points})</button>
+                                            <button onClick={()=>awardBuzzer(gameState.buzzedPlayer.id, -100)} className="flex-1 bg-red-600 py-2 rounded font-bold text-sm">Wrong (-100)</button>
                                             <button onClick={resetBuzzer} className="flex-1 bg-slate-500 py-2 rounded font-bold text-sm">Reset</button>
                                         </div>
-                                    ) : (
-                                        <p className="text-center text-sm text-slate-400">Waiting for players to buzz...</p>
-                                    )}
+                                    ) : <p className="text-center text-sm text-slate-400">Waiting for players...</p>}
                                 </div>
                             )}
 
                             <div className="flex gap-2 pt-4 border-t border-slate-700">
-                                <button onClick={() => setStatus('leaderboard')} className="flex-1 bg-purple-700 hover:bg-purple-600 py-2 rounded text-sm font-bold"><Trophy size={16} className="inline"/> Leaderboard</button>
+                                <button onClick={()=>setStatus('leaderboard')} className="flex-1 bg-purple-700 hover:bg-purple-600 py-2 rounded text-sm font-bold"><Trophy size={16} className="inline"/> Leaderboard</button>
                                 <button onClick={nextQuestion} className="flex-1 bg-slate-600 hover:bg-slate-500 py-2 rounded text-sm font-bold"><SkipForward size={16} className="inline"/> Next</button>
                             </div>
 
-                            {/* QUICK NAV */}
-                            {questions.length > 0 && (
-                                <div className="pt-4 mt-4 border-t border-slate-700">
-                                    <div className="mb-2">
-                                        <span className="text-xs font-bold text-slate-500 uppercase block mb-1">Active Category:</span>
-                                        <span className="text-sm font-bold text-white block mb-2 text-purple-300">{questions[0]?.category}</span>
-                                        <p className="text-xs font-bold text-slate-400 uppercase flex items-center gap-2"><MousePointerClick size={14}/> Select question number:</p>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {questions.map((q, idx) => (
-                                            <button 
-                                                key={q.id}
-                                                onClick={() => jumpToQuestion(idx)}
-                                                className={`h-8 px-3 rounded flex items-center justify-center font-bold text-sm transition-all border ${gameState?.currentQuestionIndex === idx ? 'bg-purple-600 border-purple-400 text-white scale-110 shadow-lg' : 'bg-slate-800 border-slate-600 text-slate-400 hover:bg-slate-700 hover:border-slate-500'}`}
-                                                title={q.question}
-                                            >
-                                                {idx + 1}
-                                                {/* Type Icons */}
-                                                {q.mediaType === 'image' && <Image size={12} className="ml-1 text-blue-400"/>}
-                                                {q.mediaType === 'video' && <Video size={12} className="ml-1 text-red-400"/>}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                            {questions.length>0 && <div className="pt-4 mt-4 border-t border-slate-700"><p className="text-xs font-bold text-slate-400 uppercase flex items-center gap-2 mb-2"><MousePointerClick size={14}/> Jump to:</p><div className="flex flex-wrap gap-2">{questions.map((q,i)=><button key={q.id} onClick={()=>jumpToQuestion(i)} className={`h-8 px-3 rounded font-bold text-sm border ${gameState?.currentQuestionIndex===i?'bg-purple-600 border-purple-400':'bg-slate-800 border-slate-600 hover:bg-slate-700'}`}>{i+1}</button>)}</div></div>}
                         </div>
                     </div>
 
-                    {/* RIGHT: PLAYERS */}
-                    <div className="lg:col-span-3 bg-slate-800 p-4 rounded-xl border border-slate-700 h-[600px] overflow-hidden flex flex-col">
-                        <h3 className="font-bold text-blue-400 mb-2 flex items-center gap-2"><Users size={16}/> PLAYERS ({players.length})</h3>
+                    <div className="lg:col-span-3 bg-slate-800 p-4 rounded-xl border border-slate-700 h-[600px] flex flex-col">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="font-bold text-blue-400 flex items-center gap-2"><Users size={16}/> PLAYERS ({players.length})</h3>
+                            <button onClick={resetPlayers} className="text-red-500 hover:text-red-400 p-1 bg-red-900/30 rounded" title="Delete All Players"><Trash2 size={16}/></button>
+                        </div>
                         <div className="overflow-y-auto flex-1 space-y-1">
-                            {players.map((p, i) => (
-                                <div key={p.id} className="flex justify-between items-center bg-slate-700 p-2 rounded text-sm">
-                                    <span className="font-bold truncate w-24">{p.name}</span>
-                                    <span className="text-yellow-400 font-mono">{p.score}</span>
-                                </div>
-                            ))}
+                            {players.map((p,i)=><div key={p.id} className="flex justify-between items-center bg-slate-700 p-2 rounded text-sm"><span className="font-bold truncate w-24">{p.name}</span><span className="text-yellow-400 font-mono">{p.score}</span></div>)}
                         </div>
                     </div>
                 </div>
             );
         }
 
-        // --- PLAYER VIEW ---
         function PlayerView({ user }) {
             const [gameState, setGameState] = useState(null);
             const [questions, setQuestions] = useState([]);
@@ -408,117 +258,40 @@
             const [hasAnswered, setHasAnswered] = useState(false);
 
             useEffect(() => {
-                const unsubG = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), d => {
-                    if(d.exists()) {
-                        const s = d.data();
-                        setGameState(prev => {
-                            if(prev && prev.currentQuestionIndex !== s.currentQuestionIndex) {
-                                setSelectedOption(null); setHasAnswered(false);
-                            }
-                            return s;
-                        });
-                    }
+                const u1 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), d=>{
+                    if(d.exists()) { const s=d.data(); setGameState(prev=>{ if(prev && prev.currentQuestionIndex !== s.currentQuestionIndex) { setSelectedOption(null); setHasAnswered(false); } return s; }); }
                 });
-                const unsubP = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), d => d.exists() && (setMyPlayer({id:d.id, ...d.data()}) || setJoined(true)));
-                const unsubQ = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), d => d.exists() && setQuestions(d.data()?.data || []));
-                return () => { unsubG(); unsubP(); unsubQ(); };
+                const u2 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), d=>d.exists()&&(setMyPlayer({id:d.id, ...d.data()})||setJoined(true)));
+                const u3 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), d=>d.exists()&&setQuestions(d.data()?.data||[]));
+                return ()=>{u1();u2();u3()};
             }, [user]);
 
-            const joinGame = async () => {
-                if (!teamName.trim()) return;
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), { name: teamName, score: 0 });
-            };
-
-            const submitOption = (idx) => {
-                if(hasAnswered) return;
-                setSelectedOption(idx);
-                setHasAnswered(true);
-            };
-
-            const hitBuzzer = async () => {
-                if(gameState.buzzedPlayer) return; 
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), {
-                    buzzedPlayer: { id: user.uid, name: myPlayer.name, time: Date.now() }
-                });
-            };
+            const joinGame = async () => { if(teamName.trim()) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), { name: teamName, score: 0 }); };
+            const submitOption = (i) => { if(!hasAnswered) { setSelectedOption(i); setHasAnswered(true); } };
+            const hitBuzzer = async () => { if(!gameState.buzzedPlayer) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { buzzedPlayer: { id: user.uid, name: myPlayer.name, time: Date.now() } }); };
 
             useEffect(() => {
-                if (gameState?.revealedAnswer && hasAnswered && selectedOption !== null && questions[gameState.currentQuestionIndex]?.type !== 'buzzer') {
-                    const q = questions[gameState.currentQuestionIndex];
-                    if (q.correctAnswer === selectedOption) {
-                        updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), { score: increment(q.points) });
-                    }
+                if(gameState?.revealedAnswer && hasAnswered && selectedOption!==null && questions[gameState.currentQuestionIndex]?.type !== 'buzzer') {
+                    const q=questions[gameState.currentQuestionIndex];
+                    if(q.correctAnswer===selectedOption) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), { score: increment(q.points) });
                     setHasAnswered(false);
                 }
             }, [gameState?.revealedAnswer]);
 
-            if (!joined) return (
-                <div className="flex flex-col items-center justify-center min-h-screen p-6">
-                    <h1 className="text-3xl font-bold mb-6 text-purple-400">Enter Team Name</h1>
-                    <input type="text" value={teamName} onChange={e=>setTeamName(e.target.value)} className="p-4 rounded bg-slate-800 text-white w-full mb-4 text-center border border-slate-600" placeholder="Name..."/>
-                    <button onClick={joinGame} className="w-full bg-purple-600 py-4 rounded font-bold text-xl">JOIN GAME</button>
-                </div>
-            );
-
-            if (gameState?.status === 'lobby') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><h2 className="text-2xl font-bold">{myPlayer?.name}</h2><p className="text-slate-400 mt-2">Watch the big screen. Waiting for round.</p></div>;
-            if (gameState?.status === 'leaderboard') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><Trophy size={64} className="text-yellow-400 mb-4"/><h1 className="text-4xl font-bold mb-2">{myPlayer?.score}</h1><p>Your Points</p></div>;
+            if(!joined) return <div className="flex flex-col items-center justify-center min-h-screen p-6"><h1 className="text-3xl font-bold mb-6 text-purple-400">Enter Team Name</h1><input value={teamName} onChange={e=>setTeamName(e.target.value)} className="p-4 rounded bg-slate-800 text-white w-full mb-4 text-center border" placeholder="Name..."/><button onClick={joinGame} className="w-full bg-purple-600 py-4 rounded font-bold text-xl">JOIN</button></div>;
+            if(gameState?.status==='lobby') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><h2 className="text-2xl font-bold">{myPlayer?.name}</h2><p className="text-slate-400 mt-2">Waiting for round...</p></div>;
+            if(gameState?.status==='leaderboard') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><Trophy size={64} className="text-yellow-400 mb-4"/><h1 className="text-4xl font-bold mb-2">{myPlayer?.score}</h1><p>Your Points</p></div>;
 
             const currentQ = questions[gameState?.currentQuestionIndex];
             if(!currentQ) return <div>Wait...</div>;
 
-            if (currentQ.type === 'buzzer') {
-                const someoneBuzzed = !!gameState.buzzedPlayer;
+            if(currentQ.type==='buzzer') {
                 const iBuzzed = gameState.buzzedPlayer?.id === user.uid;
-
-                return (
-                    <div className="min-h-screen bg-slate-900 p-6 flex flex-col items-center justify-center text-center">
-                         <div className="mb-8">
-                             <span className="text-xs font-bold bg-yellow-600 text-black px-2 py-1 rounded">FASTEST FINGER</span>
-                             <p className="mt-4 text-xl font-bold">{currentQ.question}</p>
-                         </div>
-                         {iBuzzed ? (
-                             <div className="bg-green-600 p-8 rounded-full animate-bounce">
-                                 <CheckCircle size={64} color="white"/>
-                             </div>
-                         ) : (
-                             <button 
-                                onClick={hitBuzzer}
-                                disabled={someoneBuzzed}
-                                className={`w-64 h-64 rounded-full font-black text-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] transition-all transform active:scale-95 flex flex-col items-center justify-center
-                                ${someoneBuzzed 
-                                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed' 
-                                    : 'bg-red-600 hover:bg-red-500 text-white btn-buzzer border-8 border-red-800'}`}
-                             >
-                                <Hand size={48} className="mb-2"/>
-                                {someoneBuzzed ? 'TOO LATE' : 'BUZZ!'}
-                             </button>
-                         )}
-                         {someoneBuzzed && !iBuzzed && <p className="mt-4 text-red-400 font-bold">Buzzed in: {gameState.buzzedPlayer.name}</p>}
-                         {iBuzzed && <p className="mt-4 text-green-400 font-bold text-2xl">YOUR TURN!</p>}
-                    </div>
-                );
+                const someoneBuzzed = !!gameState.buzzedPlayer;
+                return <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center"><div className="mb-8"><span className="text-xs bg-yellow-600 text-black px-2 py-1 rounded font-bold">FASTEST FINGER</span><p className="mt-4 text-xl font-bold">{currentQ.question}</p></div>{iBuzzed ? <div className="bg-green-600 p-8 rounded-full animate-bounce"><CheckCircle size={64} color="white"/></div> : <button onClick={hitBuzzer} disabled={someoneBuzzed} className={`w-64 h-64 rounded-full font-black text-2xl shadow-xl transition-all active:scale-95 flex flex-col items-center justify-center ${someoneBuzzed ? 'bg-slate-700 text-slate-500' : 'bg-red-600 hover:bg-red-500 text-white btn-buzzer border-8 border-red-800'}`}><Hand size={48} className="mb-2"/>{someoneBuzzed?'TOO LATE':'BUZZ!'}</button>}</div>;
             }
 
-            return (
-                <div className="min-h-screen flex flex-col bg-slate-900">
-                    <div className="p-4 bg-slate-800 flex justify-between items-center"><span className="font-bold">{myPlayer?.name}</span><span className="text-yellow-400 font-mono">{myPlayer?.score} pts</span></div>
-                    <div className="flex-1 p-4 flex flex-col justify-center">
-                         {gameState?.status === 'reveal' ? (
-                             <div className="text-center">
-                                 {selectedOption === currentQ.correctAnswer ? <div className="text-green-500"><CheckCircle size={80} className="mx-auto mb-2"/><h2 className="text-3xl font-bold">CORRECT!</h2></div> : <div className="text-red-500"><XCircle size={80} className="mx-auto mb-2"/><h2 className="text-3xl font-bold">WRONG...</h2></div>}
-                             </div>
-                         ) : (
-                             <div className="grid gap-4">
-                                {currentQ.options.map((opt, i) => (
-                                    <button key={i} onClick={() => submitOption(i)} disabled={hasAnswered} className={`h-20 rounded-lg font-bold text-xl ${['bg-red-600','bg-blue-600','bg-yellow-500','bg-green-600'][i]} text-white shadow-lg ${hasAnswered && selectedOption !== i ? 'opacity-30' : ''} ${selectedOption === i ? 'ring-4 ring-white' : ''}`}>
-                                        {['▲','◆','●','■'][i]}
-                                    </button>
-                                ))}
-                             </div>
-                         )}
-                    </div>
-                </div>
-            );
+            return <div className="min-h-screen flex flex-col bg-slate-900"><div className="p-4 bg-slate-800 flex justify-between"><span className="font-bold">{myPlayer?.name}</span><span className="text-yellow-400 font-mono">{myPlayer?.score} pts</span></div><div className="flex-1 p-4 flex flex-col justify-center">{gameState?.status==='reveal' ? <div className="text-center">{selectedOption===currentQ.correctAnswer?<div className="text-green-500"><CheckCircle size={80} className="mx-auto"/><h2 className="text-3xl font-bold">CORRECT!</h2></div>:<div className="text-red-500"><XCircle size={80} className="mx-auto"/><h2 className="text-3xl font-bold">WRONG</h2></div>}</div> : <div className="grid gap-4">{currentQ.options.map((opt,i)=><button key={i} onClick={()=>submitOption(i)} disabled={hasAnswered} className={`h-20 rounded-lg font-bold text-xl ${['bg-red-600','bg-blue-600','bg-yellow-500','bg-green-600'][i]} ${hasAnswered&&selectedOption!==i?'opacity-30':''} ${selectedOption===i?'ring-4 ring-white':''}`}>{['▲','◆','●','■'][i]}</button>)}</div>}</div></div>;
         }
 
         // --- SCREEN VIEW ---
@@ -529,132 +302,62 @@
             const [timeLeft, setTimeLeft] = useState(0);
 
             useEffect(() => {
-                const uG = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), d => d.exists() && setGameState(d.data()));
-                const uQ = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), d => d.exists() && setQuestions(d.data()?.data || []));
-                const uP = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'players'), s => {
-                    const pl = []; s.forEach(d => pl.push({id:d.id, ...d.data()}));
-                    setPlayers(pl.sort((a,b)=>b.score-a.score));
+                const u1 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), d=>d.exists()&&setGameState(d.data()));
+                const u2 = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'questions', 'list'), d=>d.exists()&&setQuestions(d.data()?.data||[]));
+                const u3 = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'players'), s=>{
+                    const p=[]; s.forEach(d=>p.push({id:d.id, ...d.data()})); setPlayers(p.sort((a,b)=>b.score-a.score));
                 });
-                return () => { uG(); uQ(); uP(); };
+                return ()=>{u1();u2();u3()};
             }, []);
 
             useEffect(() => {
                 if(!gameState?.timerEnd) { setTimeLeft(0); return; }
-                const i = setInterval(() => {
-                    const d = Math.ceil((gameState.timerEnd - Date.now())/1000);
-                    setTimeLeft(d > 0 ? d : 0);
-                }, 200);
+                const i = setInterval(() => { const d = Math.ceil((gameState.timerEnd - Date.now())/1000); setTimeLeft(d>0?d:0); }, 200);
                 return () => clearInterval(i);
             }, [gameState?.timerEnd]);
 
             if (!gameState) return <div className="bg-black min-h-screen text-white flex items-center justify-center">Waiting...</div>;
             
-            // LOBBY
             if (gameState.status === 'lobby') {
-                const currentCategory = questions[0]?.category;
-                return (
-                    <div className="fixed inset-0 overflow-hidden bg-slate-900 flex flex-col items-center justify-center text-white relative">
-                        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-                        <div className="z-10 text-center">
-                            <h1 className="text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">PUB QUIZ</h1>
-                            {currentCategory && (
-                                <div className="mb-8 animate-bounce">
-                                    <p className="text-slate-400 text-sm font-bold tracking-widest uppercase">Get ready for:</p>
-                                    <h2 className="text-5xl font-bold text-yellow-400 mt-2">{currentCategory}</h2>
-                                </div>
-                            )}
-                            <div className="text-2xl mt-4 bg-white text-black px-6 py-2 rounded-full font-bold">Teams: {players.length}</div>
-                        </div>
-                        <div className="grid grid-cols-4 gap-4 mt-12 max-w-6xl">{players.map(p=><div key={p.id} className="bg-slate-800 p-4 rounded text-center font-bold animate-pulse">{p.name}</div>)}</div>
-                    </div>
-                );
+                return <div className="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center text-white"><div className="absolute top-0 left-0 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply blur-3xl opacity-20 animate-blob"></div><div className="z-10 text-center"><h1 className="text-8xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">PUB QUIZ</h1>{questions[0]?.category && <h2 className="text-5xl font-bold text-yellow-400 mt-2 mb-8 animate-bounce">{questions[0].category}</h2>}<div className="text-2xl bg-white text-black px-6 py-2 rounded-full font-bold">Teams: {players.length}</div></div><div className="grid grid-cols-4 gap-4 mt-12 max-w-6xl">{players.map(p=><div key={p.id} className="bg-slate-800 p-4 rounded text-center font-bold animate-pulse">{p.name}</div>)}</div></div>;
             }
 
-            if (gameState.status === 'leaderboard') return (
-                <div className="fixed inset-0 overflow-hidden bg-slate-900 flex flex-col items-center justify-center p-12">
-                    <h1 className="text-6xl font-bold text-yellow-400 mb-12">TOP 5</h1>
-                    <div className="w-full max-w-4xl space-y-4">{players.slice(0,5).map((p,i)=><div key={p.id} className="flex items-center bg-slate-800 p-6 rounded-2xl border-2 border-slate-700"><div className="text-4xl font-black mr-8 w-12">{i+1}</div><div className="text-3xl font-bold flex-1">{p.name}</div><div className="text-4xl font-mono text-purple-400">{p.score}</div></div>)}</div>
-                </div>
-            );
+            if (gameState.status === 'leaderboard') return <div className="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center p-12"><h1 className="text-6xl font-bold text-yellow-400 mb-12">TOP 5</h1><div className="w-full max-w-4xl space-y-4">{players.slice(0,5).map((p,i)=><div key={p.id} className="flex items-center bg-slate-800 p-6 rounded-2xl border-2 border-slate-700"><div className="text-4xl font-black mr-8 w-12">{i+1}</div><div className="text-3xl font-bold flex-1">{p.name}</div><div className="text-4xl font-mono text-purple-400">{p.score}</div></div>)}</div></div>;
 
             const currentQ = questions[gameState.currentQuestionIndex];
             if (!currentQ) return <div>End of questions</div>;
 
             if (currentQ.type === 'buzzer') {
-                return (
-                    <div className="fixed inset-0 overflow-hidden bg-slate-900 text-white flex flex-col items-center justify-center relative">
-                        <div className={`absolute inset-0 transition-colors duration-300 ${gameState.buzzedPlayer ? 'bg-red-900/50' : 'bg-slate-900'}`}></div>
-                        <div className="z-10 text-center max-w-6xl p-8">
-                            <span className="text-2xl uppercase font-bold text-yellow-500 mb-4 block tracking-[0.5em]">{currentQ.category}</span>
-                            <h2 className="text-6xl font-bold leading-tight mb-12">{currentQ.question}</h2>
-                            {gameState.buzzedPlayer ? (
-                                <div className="animate-bounce">
-                                    <p className="text-3xl text-slate-300 mb-4">BUZZED IN:</p>
-                                    <div className="bg-white text-red-600 text-8xl font-black px-12 py-8 rounded-3xl shadow-[0_0_100px_rgba(220,38,38,0.8)] border-8 border-red-600">
-                                        {gameState.buzzedPlayer.name}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center animate-pulse opacity-50">
-                                    <Hand size={120} className="mb-4 text-slate-500"/>
-                                    <p className="text-4xl font-bold text-slate-500">WAITING FOR BUZZ...</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                );
+                return <div className="fixed inset-0 bg-slate-900 text-white flex flex-col items-center justify-center"><div className={`absolute inset-0 transition-colors duration-300 ${gameState.buzzedPlayer?'bg-red-900/50':'bg-slate-900'}`}></div><div className="z-10 text-center max-w-6xl p-8"><span className="text-2xl uppercase font-bold text-yellow-500 mb-4 block tracking-[0.5em]">{currentQ.category}</span><h2 className="text-6xl font-bold leading-tight mb-12">{currentQ.question}</h2>{gameState.buzzedPlayer ? <div className="animate-bounce"><p className="text-3xl text-slate-300 mb-4">BUZZED IN:</p><div className="bg-white text-red-600 text-8xl font-black px-12 py-8 rounded-3xl shadow-xl border-8 border-red-600">{gameState.buzzedPlayer.name}</div></div> : <div className="flex flex-col items-center animate-pulse opacity-50"><Hand size={120} className="mb-4 text-slate-500"/><p className="text-4xl font-bold text-slate-500">WAITING FOR BUZZ...</p></div>}</div></div>;
             }
 
             return (
                 <div className="fixed inset-0 overflow-hidden bg-slate-900 text-white flex flex-col">
-                    <div className="h-24 px-8 flex justify-between items-center bg-slate-800 border-b border-slate-700 shrink-0">
-                        <span className="text-3xl font-bold text-slate-400 uppercase tracking-widest truncate">{currentQ.category}</span>
-                        <div className={`font-mono font-black px-6 py-2 rounded-xl border-4 ${timeLeft <= 5 ? 'text-red-500 border-red-500 animate-pulse' : 'text-white border-slate-600'} text-6xl shadow-2xl bg-slate-900`}>
-                            {timeLeft}s
-                        </div>
+                    <div className="h-20 px-8 flex justify-between items-center bg-slate-800 border-b border-slate-700 shrink-0">
+                        <span className="text-2xl font-bold text-slate-400 uppercase tracking-widest truncate">{currentQ.category}</span>
+                        <div className={`font-mono font-black px-4 py-1 rounded-xl border-4 ${timeLeft <= 5 ? 'text-red-500 border-red-500 animate-pulse' : 'text-white border-slate-600'} text-5xl shadow-2xl bg-slate-900`}>{timeLeft}s</div>
                     </div>
-                    <div className="flex-1 flex flex-col items-center justify-center p-4 relative w-full max-w-[95vw] mx-auto">
-                        
+                    <div className="flex-1 flex flex-col items-center justify-end p-4 relative w-full max-w-[95vw] mx-auto overflow-hidden">
                         {(currentQ.mediaType === 'image' || currentQ.mediaType === 'video') && (
-                            <div className="flex-1 min-h-0 flex items-center justify-center w-full max-h-[45vh] mb-4">
-                                {currentQ.mediaType === 'image' && (
-                                    <img 
-                                        src={currentQ.mediaUrl} 
-                                        alt="Riddle" 
-                                        className="h-full w-auto object-contain rounded-xl shadow-2xl border-2 border-white/20"
-                                    />
-                                )}
+                            <div className="flex-1 w-full flex items-center justify-center min-h-0 mb-4">
+                                {currentQ.mediaType === 'image' && <img src={currentQ.mediaUrl} alt="Riddle" className="max-h-full max-w-full object-contain rounded-xl shadow-2xl border-2 border-white/20"/>}
                                 {currentQ.mediaType === 'video' && (
-                                     <div className="aspect-video h-full rounded-xl overflow-hidden shadow-2xl border-2 border-white/20 bg-black">
-                                        <iframe 
-                                            width="100%" 
-                                            height="100%" 
-                                            src={currentQ.mediaUrl} 
-                                            title="Video Riddle" 
-                                            frameBorder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                            allowFullScreen
-                                        ></iframe>
+                                     <div className="aspect-video h-full max-h-full rounded-xl overflow-hidden shadow-2xl border-2 border-white/20 bg-black">
+                                        <video className="w-full h-full" controls autoPlay>
+                                            <source src={currentQ.mediaUrl} type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
                                      </div>
                                 )}
                             </div>
                         )}
-
-                        <h2 className={`${(currentQ.mediaType) ? 'text-3xl md:text-4xl' : 'text-5xl md:text-7xl'} font-bold text-center leading-tight mb-6 shrink-0`}>
-                            {currentQ.question}
-                        </h2>
-                        
-                        <div className="grid grid-cols-2 gap-4 w-full h-[25vh] shrink-0">
+                        <h2 className={`${(currentQ.mediaType) ? 'text-3xl' : 'text-5xl md:text-6xl mb-12'} font-bold text-center leading-tight mb-6 shrink-0 z-10 drop-shadow-lg`}>{currentQ.question}</h2>
+                        <div className="grid grid-cols-2 gap-4 w-full h-[25vh] shrink-0 z-10">
                             {currentQ.options.map((opt, i) => {
                                 const colors = ['bg-red-600','bg-blue-600','bg-yellow-500','bg-green-600'];
                                 const isCorrect = gameState.status === 'reveal' && i === currentQ.correctAnswer;
                                 const isDimmed = gameState.status === 'reveal' && i !== currentQ.correctAnswer;
-                                return (
-                                    <div key={i} className={`rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 relative overflow-hidden ${colors[i]} ${isDimmed ? 'opacity-20 grayscale' : 'opacity-100'} ${isCorrect ? 'scale-105 z-10 ring-4 ring-white' : ''}`}>
-                                        <div className="absolute left-4 text-3xl font-black text-black/20">{['▲','◆','●','■'][i]}</div>
-                                        <span className="text-2xl md:text-3xl font-bold text-white shadow-black drop-shadow-md text-center px-2">{opt}</span>
-                                    </div>
-                                )
+                                return <div key={i} className={`rounded-2xl flex items-center justify-center shadow-2xl transition-all relative overflow-hidden ${colors[i]} ${isDimmed?'opacity-20 grayscale':'opacity-100'} ${isCorrect?'scale-105 z-10 ring-4 ring-white':''}`}><div className="absolute left-4 text-3xl font-black text-black/20">{['▲','◆','●','■'][i]}</div><span className="text-2xl md:text-3xl font-bold text-white shadow-black drop-shadow-md text-center px-2">{opt}</span></div>;
                             })}
                         </div>
                     </div>

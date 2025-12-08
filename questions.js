@@ -256,9 +256,9 @@
             },
             { 
                 id: 'vid6', category: 'Round 6: Video-Puzzles', 
-                question: "Identify the Polish social psychologist (Placeholder for lecture/interview):", 
-                type: 'options', mediaType: 'image', // Using image placeholder for safety as specific Polish lecture videos vary
-                mediaUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Dariusz_Doli%C5%84ski_SWPS.jpg/480px-Dariusz_Doli%C5%84ski_SWPS.jpg',
+                question: "Identify the Polish social psychologist:", 
+                type: 'options', mediaType: 'video', // Using image placeholder for safety as specific Polish lecture videos vary
+                mediaUrl: 'https://www.youtube.com/watch?v=WHFrdWcggU8',
                 options: ['Dariusz Doliński', 'Bogdan Wojciszke', 'Bogdan de Barbaro', 'Tomasz Grzyb'], 
                 correctAnswer: 0, points: 300, time: 60 
             },
