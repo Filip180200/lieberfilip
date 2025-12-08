@@ -41,7 +41,7 @@
         } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { 
             Play, CheckCircle, Users, Trophy, Monitor, Smartphone, Settings, Clock, Lock, 
-            MousePointerClick, Image, Video, Hand, Trash2, SkipForward 
+            MousePointerClick, Image, Video, Hand, Trash2, SkipForward, HelpCircle 
         } from 'https://esm.sh/lucide-react@0.294.0';
 
         const INITIAL_DATA = window.INITIAL_DATA || [];
@@ -157,25 +157,16 @@
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { timerEnd: Date.now()+(dur*1000), timerDuration: dur });
             };
 
-            // NEW: Delete All Players Feature
             const resetPlayers = async () => {
-                if(!confirm("ARE YOU SURE YOU WANT TO DELETE ALL PLAYERS? This cannot be undone.")) return;
+                if(!confirm("ARE YOU SURE YOU WANT TO DELETE ALL PLAYERS?")) return;
                 try {
-                    // Firebase client-side deletion requires iterating
-                    // Note: In a large app, do this server-side. For a pub quiz with <50 teams, this is fine.
-                    // We can't easily iterate collection in one go without loading, but we have 'players' state.
                     const q = collection(db, 'artifacts', appId, 'public', 'data', 'players');
                     const snapshot = await getDocs(q);
                     const deletePromises = [];
-                    snapshot.forEach((docSnap) => {
-                        deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', docSnap.id)));
-                    });
+                    snapshot.forEach((docSnap) => deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', docSnap.id))));
                     await Promise.all(deletePromises);
                     alert("All players deleted.");
-                } catch(err) {
-                    console.error(err);
-                    alert("Error deleting players: " + err.message);
-                }
+                } catch(err) { alert("Error: " + err.message); }
             };
 
             const revealAnswer = async () => updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { revealedAnswer: true, status: 'reveal' });
@@ -184,6 +175,7 @@
 
             const currentQ = questions[gameState?.currentQuestionIndex] || {};
             const isBuzzerMode = currentQ.type === 'buzzer';
+            const isOpenMode = currentQ.type === 'open';
 
             return (
                 <div className="p-4 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-screen pb-12">
@@ -198,18 +190,31 @@
                             {questions.length>0 ? (
                                 <><div className="text-xs text-slate-500 mb-1 flex justify-between"><span>{currentQ.category}</span><span>Question {gameState?.currentQuestionIndex+1}/{questions.length}</span></div><p className="text-lg font-bold mb-2">{currentQ.question}</p>
                                 {currentQ.mediaType==='image'&&<div className="text-xs text-blue-400 flex items-center gap-1"><Image size={12}/> [Image Slide]</div>}
-                                {currentQ.mediaType==='video'&&<div className="text-xs text-red-400 flex items-center gap-1"><Video size={12}/> [Video Slide - Local File]</div>}
-                                {isBuzzerMode&&<p className="text-yellow-400 text-sm mt-2 font-mono">[FASTEST FINGER]</p>}</>
+                                {currentQ.mediaType==='video'&&<div className="text-xs text-red-400 flex items-center gap-1"><Video size={12}/> [Video Slide - Local]</div>}
+                                {isBuzzerMode&&<p className="text-yellow-400 text-sm mt-2 font-mono">[FASTEST FINGER]</p>}
+                                {isOpenMode&&<div className="mt-2 p-2 bg-purple-900/30 border border-purple-500 rounded"><p className="text-xs text-purple-400 font-bold uppercase mb-1">Answer (For Host):</p><p className="font-mono">{currentQ.answerString}</p></div>}
+                                </>
                             ) : <p className="text-slate-500 italic">Select a category on the left.</p>}
                         </div>
 
                         <div className="flex-1 space-y-3">
                             {gameState?.status==='lobby' && questions.length>0 && <button onClick={()=>setStatus('question')} className="w-full bg-green-600 hover:bg-green-500 py-4 rounded font-bold flex justify-center items-center gap-2"><Play/> START ROUND</button>}
                             
-                            {gameState?.status==='question' && !isBuzzerMode && (
+                            {gameState?.status==='question' && !isBuzzerMode && !isOpenMode && (
                                 <div className="flex gap-2">
                                     <button onClick={startTimer} disabled={!!gameState?.timerEnd} className="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded font-bold flex gap-2 justify-center"><Clock/> {gameState?.timerEnd?'Running...':'Start Timer'}</button>
                                     <button onClick={revealAnswer} className="flex-1 bg-yellow-600 hover:bg-yellow-500 py-3 rounded font-bold flex gap-2 justify-center text-black"><CheckCircle/> Reveal Ans.</button>
+                                </div>
+                            )}
+
+                            {/* OPEN QUESTION CONTROLS */}
+                            {gameState?.status==='question' && isOpenMode && (
+                                <div className="space-y-2">
+                                    <div className="flex gap-2">
+                                        <button onClick={startTimer} disabled={!!gameState?.timerEnd} className="flex-1 bg-blue-600 hover:bg-blue-500 py-3 rounded font-bold flex gap-2 justify-center"><Clock/> {gameState?.timerEnd?'Running...':'Start Timer'}</button>
+                                        <button onClick={revealAnswer} className="flex-1 bg-yellow-600 hover:bg-yellow-500 py-3 rounded font-bold flex gap-2 justify-center text-black"><CheckCircle/> Show Answer</button>
+                                    </div>
+                                    <p className="text-xs text-center text-slate-500">Open Question: No auto-scoring. Verify answers manually.</p>
                                 </div>
                             )}
 
@@ -248,6 +253,7 @@
             );
         }
 
+        // --- PLAYER VIEW ---
         function PlayerView({ user }) {
             const [gameState, setGameState] = useState(null);
             const [questions, setQuestions] = useState([]);
@@ -271,15 +277,16 @@
             const hitBuzzer = async () => { if(!gameState.buzzedPlayer) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gameState', 'main'), { buzzedPlayer: { id: user.uid, name: myPlayer.name, time: Date.now() } }); };
 
             useEffect(() => {
-                if(gameState?.revealedAnswer && hasAnswered && selectedOption!==null && questions[gameState.currentQuestionIndex]?.type !== 'buzzer') {
+                // Auto score only for 'options' type
+                if(gameState?.revealedAnswer && hasAnswered && selectedOption!==null && questions[gameState.currentQuestionIndex]?.type === 'options') {
                     const q=questions[gameState.currentQuestionIndex];
                     if(q.correctAnswer===selectedOption) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'players', user.uid), { score: increment(q.points) });
                     setHasAnswered(false);
                 }
             }, [gameState?.revealedAnswer]);
 
-            if(!joined) return <div className="flex flex-col items-center justify-center min-h-screen p-6"><h1 className="text-3xl font-bold mb-6 text-purple-400">Enter Team Name</h1><input value={teamName} onChange={e=>setTeamName(e.target.value)} className="p-4 rounded bg-slate-800 text-white w-full mb-4 text-center border" placeholder="Name..."/><button onClick={joinGame} className="w-full bg-purple-600 py-4 rounded font-bold text-xl">JOIN</button></div>;
-            if(gameState?.status==='lobby') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><h2 className="text-2xl font-bold">{myPlayer?.name}</h2><p className="text-slate-400 mt-2">Waiting for round...</p></div>;
+            if(!joined) return <div className="flex flex-col items-center justify-center min-h-screen p-6"><h1 className="text-3xl font-bold mb-6 text-purple-400">Enter Team Name</h1><input value={teamName} onChange={e=>setTeamName(e.target.value)} className="p-4 rounded bg-slate-800 text-white w-full mb-4 text-center border" placeholder="Name..."/><button onClick={joinGame} className="w-full bg-purple-600 py-4 rounded font-bold text-xl">JOIN GAME</button></div>;
+            if(gameState?.status==='lobby') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><h2 className="text-2xl font-bold">{myPlayer?.name}</h2><p className="text-slate-400 mt-2">Watch the big screen. Waiting for round.</p></div>;
             if(gameState?.status==='leaderboard') return <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center"><Trophy size={64} className="text-yellow-400 mb-4"/><h1 className="text-4xl font-bold mb-2">{myPlayer?.score}</h1><p>Your Points</p></div>;
 
             const currentQ = questions[gameState?.currentQuestionIndex];
@@ -289,6 +296,24 @@
                 const iBuzzed = gameState.buzzedPlayer?.id === user.uid;
                 const someoneBuzzed = !!gameState.buzzedPlayer;
                 return <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center"><div className="mb-8"><span className="text-xs bg-yellow-600 text-black px-2 py-1 rounded font-bold">FASTEST FINGER</span><p className="mt-4 text-xl font-bold">{currentQ.question}</p></div>{iBuzzed ? <div className="bg-green-600 p-8 rounded-full animate-bounce"><CheckCircle size={64} color="white"/></div> : <button onClick={hitBuzzer} disabled={someoneBuzzed} className={`w-64 h-64 rounded-full font-black text-2xl shadow-xl transition-all active:scale-95 flex flex-col items-center justify-center ${someoneBuzzed ? 'bg-slate-700 text-slate-500' : 'bg-red-600 hover:bg-red-500 text-white btn-buzzer border-8 border-red-800'}`}><Hand size={48} className="mb-2"/>{someoneBuzzed?'TOO LATE':'BUZZ!'}</button>}</div>;
+            }
+
+            if(currentQ.type==='open') {
+                return (
+                    <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center">
+                        <div className="mb-8"><span className="text-xs bg-blue-600 text-white px-2 py-1 rounded font-bold">OPEN QUESTION</span><p className="mt-4 text-xl font-bold">{currentQ.question}</p></div>
+                        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <HelpCircle size={64} className="mx-auto text-blue-400 mb-4"/>
+                            <p className="text-slate-400">Think about your answer or write it down!</p>
+                            {gameState?.status === 'reveal' && (
+                                <div className="mt-4 pt-4 border-t border-slate-700 animate-fade-in">
+                                    <p className="text-sm text-slate-500 mb-1">ANSWER:</p>
+                                    <p className="text-xl font-bold text-green-400">{currentQ.answerString}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
             }
 
             return <div className="min-h-screen flex flex-col bg-slate-900"><div className="p-4 bg-slate-800 flex justify-between"><span className="font-bold">{myPlayer?.name}</span><span className="text-yellow-400 font-mono">{myPlayer?.score} pts</span></div><div className="flex-1 p-4 flex flex-col justify-center">{gameState?.status==='reveal' ? <div className="text-center">{selectedOption===currentQ.correctAnswer?<div className="text-green-500"><CheckCircle size={80} className="mx-auto"/><h2 className="text-3xl font-bold">CORRECT!</h2></div>:<div className="text-red-500"><XCircle size={80} className="mx-auto"/><h2 className="text-3xl font-bold">WRONG</h2></div>}</div> : <div className="grid gap-4">{currentQ.options.map((opt,i)=><button key={i} onClick={()=>submitOption(i)} disabled={hasAnswered} className={`h-20 rounded-lg font-bold text-xl ${['bg-red-600','bg-blue-600','bg-yellow-500','bg-green-600'][i]} ${hasAnswered&&selectedOption!==i?'opacity-30':''} ${selectedOption===i?'ring-4 ring-white':''}`}>{['▲','◆','●','■'][i]}</button>)}</div>}</div></div>;
@@ -351,15 +376,32 @@
                                 )}
                             </div>
                         )}
+                        
                         <h2 className={`${(currentQ.mediaType) ? 'text-3xl' : 'text-5xl md:text-6xl mb-12'} font-bold text-center leading-tight mb-6 shrink-0 z-10 drop-shadow-lg`}>{currentQ.question}</h2>
-                        <div className="grid grid-cols-2 gap-4 w-full h-[25vh] shrink-0 z-10">
-                            {currentQ.options.map((opt, i) => {
-                                const colors = ['bg-red-600','bg-blue-600','bg-yellow-500','bg-green-600'];
-                                const isCorrect = gameState.status === 'reveal' && i === currentQ.correctAnswer;
-                                const isDimmed = gameState.status === 'reveal' && i !== currentQ.correctAnswer;
-                                return <div key={i} className={`rounded-2xl flex items-center justify-center shadow-2xl transition-all relative overflow-hidden ${colors[i]} ${isDimmed?'opacity-20 grayscale':'opacity-100'} ${isCorrect?'scale-105 z-10 ring-4 ring-white':''}`}><div className="absolute left-4 text-3xl font-black text-black/20">{['▲','◆','●','■'][i]}</div><span className="text-2xl md:text-3xl font-bold text-white shadow-black drop-shadow-md text-center px-2">{opt}</span></div>;
-                            })}
-                        </div>
+                        
+                        {/* OPTIONS or OPEN ANSWER DISPLAY */}
+                        {currentQ.type === 'options' ? (
+                            <div className="grid grid-cols-2 gap-4 w-full h-[25vh] shrink-0 z-10">
+                                {currentQ.options.map((opt, i) => {
+                                    const colors = ['bg-red-600','bg-blue-600','bg-yellow-500','bg-green-600'];
+                                    const isCorrect = gameState.status === 'reveal' && i === currentQ.correctAnswer;
+                                    const isDimmed = gameState.status === 'reveal' && i !== currentQ.correctAnswer;
+                                    return <div key={i} className={`rounded-2xl flex items-center justify-center shadow-2xl transition-all relative overflow-hidden ${colors[i]} ${isDimmed?'opacity-20 grayscale':'opacity-100'} ${isCorrect?'scale-105 z-10 ring-4 ring-white':''}`}><div className="absolute left-4 text-3xl font-black text-black/20">{['▲','◆','●','■'][i]}</div><span className="text-2xl md:text-3xl font-bold text-white shadow-black drop-shadow-md text-center px-2">{opt}</span></div>;
+                                })}
+                            </div>
+                        ) : (
+                            // OPEN QUESTION REVEAL
+                            <div className="w-full h-[25vh] shrink-0 z-10 flex items-center justify-center">
+                                {gameState.status === 'reveal' ? (
+                                    <div className="bg-green-600 p-8 rounded-3xl shadow-2xl border-4 border-white animate-bounce-in max-w-4xl text-center">
+                                        <p className="text-xl text-green-200 uppercase font-bold tracking-widest mb-2">ANSWER:</p>
+                                        <p className="text-4xl md:text-6xl font-bold text-white">{currentQ.answerString}</p>
+                                    </div>
+                                ) : (
+                                    <div className="text-slate-500 text-2xl font-bold animate-pulse">Thinking time...</div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             );

@@ -286,6 +286,26 @@
             { id: 'j15', category: 'Jeopardy', question: "Brain structure for fear/stress...", type: 'buzzer', points: 300, time: 0 },
             { id: 'j16', category: 'Jeopardy', question: "Nerve connecting brain to organs (relaxation)...", type: 'buzzer', points: 500, time: 0 },
 
+
+            // --- NOWOŚĆ: SPEEDATING ---
+            {
+                id: 'open1',
+                category: 'SpeeDating',
+                question: "What’s one thing you’re excited about right now?",
+                type: 'open', // Nowy typ
+                answerString: "-", // Tekst poprawnej odpowiedzi
+                points: 0, // Punkty w tej rundzie zazwyczaj liczy się ręcznie na kartkach
+                time: 90
+            },
+            {
+                id: 'open2',
+                category: 'SpeeDating',
+                question: "What’s something interesting about your work?",
+                type: 'open',
+                answerString: "-",
+                points: 0,
+                time: 60
+            }
         ];
 
         
@@ -296,6 +316,6 @@
             'Round 4: Mind & Body',
             'Round 5: Photo-Puzzles',
             'Round 6: Video-Puzzles',
-            'Jeopardy'
-
+            'Jeopardy',
+            'SpeeDating'
         ];
