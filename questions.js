@@ -258,7 +258,7 @@
                 id: 'vid6', category: 'Round 6: Video-Puzzles', 
                 question: "Identify the Polish social psychologist:", 
                 type: 'options', mediaType: 'video', // Using image placeholder for safety as specific Polish lecture videos vary
-                mediaUrl: 'https://www.youtube.com/watch?v=qK-mFdpfHMM',
+                mediaUrl: 'https://www.youtube.com/watch?v=MZv5sCkYQ3U',
                 options: ['Dariusz Doliński', 'Bogdan Wojciszke', 'Bogdan de Barbaro', 'Tomasz Grzyb'], 
                 correctAnswer: 0, points: 300, time: 90 
             },
