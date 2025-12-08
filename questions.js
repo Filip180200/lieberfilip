@@ -287,7 +287,9 @@
             { id: 'j16', category: 'Jeopardy', question: "Nerve connecting brain to organs (relaxation)...", type: 'buzzer', points: 500, time: 0 },
 
 
-            // --- NOWOŚĆ: SPEEDATING ---
+            // ==========================================================
+            // ROUND BONUS: SPEEDDATING
+            // ==========================================================
             {
                 id: 'open1',
                 category: 'SpeeDating',
@@ -295,7 +297,7 @@
                 type: 'open', // Nowy typ
                 answerString: "-", // Tekst poprawnej odpowiedzi
                 points: 0, // Punkty w tej rundzie zazwyczaj liczy się ręcznie na kartkach
-                time: 90
+                time: 60
             },
             {
                 id: 'open2',
