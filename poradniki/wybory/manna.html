@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wybór Testu: 2 Grupy Niezależne</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .overflow-x-auto::-webkit-scrollbar { height: 6px; }
+        .overflow-x-auto::-webkit-scrollbar-track { background: #f1f1f1; }
+        .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-6 font-sans text-slate-900">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-6 text-center">
+            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Wybór Testu: 2 Grupy Niezależne</h1>
+            <p class="text-slate-500 text-sm mt-1">Algorytm decyzyjny dla zmiennych zależnych</p>
+        </header>
+
+        <!-- Main Flow Container -->
+        <div class="overflow-x-auto pb-4 lg:pb-0">
+            <div class="min-w-[900px] relative flex items-center gap-0 py-12">
+                
+                <!-- 1. START -->
+                <div class="flex-shrink-0 z-10">
+                    <div class="bg-slate-900 text-white p-4 rounded-xl shadow-lg w-32 text-center border-4 border-white">
+                        <span class="text-[9px] uppercase font-bold tracking-tighter opacity-60 block">Start</span>
+                        <span class="font-bold text-xs leading-none text-nowrap">2 Gr. Niezależne</span>
+                    </div>
+                </div>
+
+                <!-- Line 1 -->
+                <div class="flex-grow h-1 bg-slate-200 relative min-w-[30px]">
+                    <div id="line-1" class="absolute inset-0 transition-all duration-500"></div>
+                </div>
+
+                <!-- 2. KROK 1: Rodzaj Zmiennej -->
+                <div id="step-1-box" class="flex-shrink-0 w-52 p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-sm border-slate-200 z-10">
+                    <p class="text-[9px] font-bold text-blue-600 uppercase mb-1">Krok 1: Zmienna</p>
+                    <p class="text-[11px] font-bold mb-3 leading-tight">Czy zmienna zależna jest ilościowa?</p>
+                    <div class="flex flex-col gap-1.5">
+                        <button onclick="selectPath('mann_jako')" id="btn-jako" class="py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100 hover:border-orange-300">
+                            NIE (Jakościowa/Porządkowa)
+                        </button>
+                        <button onclick="activateStep2()" id="btn-ilosc" class="py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100 hover:border-blue-300">
+                            TAK (Ilościowa)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Branching Connectors -->
+                <div class="flex-grow h-40 relative min-w-[40px]">
+                    <div id="line-branch-up" class="absolute top-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
+                    <div id="line-branch-down" class="absolute bottom-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
+                </div>
+
+                <!-- 3. KROK 2: Rozkład Normalny -->
+                <div class="flex flex-col gap-6 flex-shrink-0 w-52 z-10">
+                    <!-- Placeholder/Path for Non-Quantitative -->
+                    <div onclick="selectPath('mann_jako')" id="card-direct-mann" class="p-3 rounded-2xl border-2 cursor-pointer transition-all duration-300 text-center shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
+                        <div class="text-xs font-bold text-orange-600">Skala porządkowa</div>
+                        <div class="text-[9px] font-black uppercase text-slate-400 mt-1">Brak wymogu normalności</div>
+                    </div>
+
+                    <!-- Step 2: Distribution Check -->
+                    <div id="step-2-box" class="p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-md border-slate-100 opacity-30">
+                        <p class="text-[9px] font-bold text-indigo-600 uppercase mb-1">Krok 2: Rozkład</p>
+                        <p class="text-[11px] font-bold mb-3 leading-tight">Czy rozkład jest normalny w obu grupach?</p>
+                        <div class="flex gap-1.5">
+                            <button onclick="selectPath('mann_ilosc')" id="btn-dist-no" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100">NIE</button>
+                            <button onclick="selectPath('ttest')" id="btn-dist-yes" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100">TAK</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Line Final Connectors -->
+                <div class="flex-grow h-40 relative min-w-[40px]">
+                    <div id="line-final-1" class="absolute top-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
+                    <div id="line-final-2" class="absolute bottom-[40%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
+                    <div id="line-final-3" class="absolute bottom-[18%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
+                </div>
+
+                <!-- 4. FINAL RESULTS -->
+                <div class="flex flex-col gap-4 flex-shrink-0 w-48 z-10">
+                    <div onclick="selectPath('mann_jako')" id="card-mann-res" class="p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
+                        <div class="text-sm font-bold text-orange-700 text-center leading-tight">Test U Manna-Whitneya</div>
+                        <div class="text-[8px] font-black uppercase text-center text-slate-400 mt-1">Dla danych porządkowych</div>
+                    </div>
+                    
+                    <div onclick="selectPath('mann_ilosc')" id="card-mann-dist-res" class="p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
+                        <div class="text-sm font-bold text-orange-600 text-center leading-tight">Test U Manna-Whitneya</div>
+                        <div class="text-[8px] font-black uppercase text-center text-slate-400 mt-1">Dla braku normalności</div>
+                    </div>
+
+                    <div onclick="selectPath('ttest')" id="card-ttest-res" class="p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
+                        <div class="text-sm font-bold text-emerald-600 text-center leading-tight">Test t-Studenta</div>
+                        <div class="text-[8px] font-black uppercase text-center text-slate-400 mt-1">Test parametryczny</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO PANEL -->
+        <div id="info-panel" class="mt-8 flex justify-center">
+            <div class="text-center p-6 border-4 border-dashed border-slate-200 rounded-3xl text-slate-400 flex flex-col items-center gap-2 w-full max-w-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-10"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <p class="text-sm font-medium italic text-slate-500">Wybierz odpowiedzi na diagramie, aby zobaczyć rekomendację.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pathsData = {
+            mann_jako: {
+                title: 'Test U Manna-Whitneya',
+                desc: 'Stosowany dla zmiennych jakościowych/porządkowych. Nie wymaga założenia o rozkładzie normalnym.',
+                color: 'border-orange-500 text-orange-700 bg-orange-50'
+            },
+            mann_ilosc: {
+                title: 'Test U Manna-Whitneya',
+                desc: 'Stosowany dla zmiennych ilościowych, gdy rozkład w grupach znacząco odbiega od normalnego.',
+                color: 'border-orange-500 text-orange-700 bg-orange-50'
+            },
+            ttest: {
+                title: 'Test t-Studenta',
+                desc: 'Test parametryczny dla grup niezależnych. Wymaga zmiennej ilościowej oraz rozkładu normalnego w obu grupach.',
+                color: 'border-emerald-500 text-emerald-700 bg-emerald-50'
+            }
+        };
+
+        function resetAll() {
+            ['line-1', 'line-branch-up', 'line-branch-down', 'line-final-1', 'line-final-2', 'line-final-3'].forEach(id => {
+                document.getElementById(id).style.backgroundColor = '#e2e8f0';
+            });
+            
+            document.getElementById('step-1-box').className = 'flex-shrink-0 w-52 p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-sm border-slate-200 z-10';
+            document.getElementById('step-2-box').className = 'p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-md border-slate-100 opacity-30';
+
+            ['btn-jako', 'btn-ilosc', 'btn-dist-no', 'btn-dist-yes'].forEach(id => {
+                document.getElementById(id).className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100';
+            });
+
+            ['card-direct-mann', 'card-mann-res', 'card-mann-dist-res', 'card-ttest-res'].forEach(id => {
+                document.getElementById(id).className = document.getElementById(id).className.replace(/border-(orange|emerald)-500/g, 'border-slate-50').replace('opacity-100', 'opacity-40').replace('scale-105', '');
+            });
+        }
+
+        function activateStep2() {
+            resetAll();
+            document.getElementById('line-1').style.backgroundColor = '#60a5fa';
+            document.getElementById('step-1-box').classList.add('border-blue-400');
+            document.getElementById('btn-ilosc').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-blue-500 border-blue-600 text-white shadow-md';
+            document.getElementById('line-branch-down').style.backgroundColor = '#60a5fa';
+            document.getElementById('step-2-box').classList.remove('opacity-30');
+            document.getElementById('step-2-box').classList.add('opacity-100', 'border-indigo-400');
+        }
+
+        function selectPath(id) {
+            if (id === 'mann_jako') {
+                resetAll();
+                document.getElementById('line-1').style.backgroundColor = '#60a5fa';
+                document.getElementById('btn-jako').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-orange-500 border-orange-600 text-white shadow-md';
+                document.getElementById('line-branch-up').style.backgroundColor = '#fb923c';
+                document.getElementById('line-final-1').style.backgroundColor = '#fb923c';
+                document.getElementById('card-direct-mann').className = 'p-3 rounded-2xl border-2 cursor-pointer transition-all duration-300 text-center shadow-md bg-orange-50 border-orange-500 opacity-100 scale-105';
+                document.getElementById('card-mann-res').className = 'p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-orange-50 border-orange-500 opacity-100 scale-105 z-20';
+            } else if (id === 'mann_ilosc') {
+                activateStep2();
+                document.getElementById('btn-dist-no').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-orange-500 border-orange-600 text-white shadow-md';
+                document.getElementById('line-final-2').style.backgroundColor = '#fb923c';
+                document.getElementById('card-mann-dist-res').className = 'p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-orange-50 border-orange-500 opacity-100 scale-105 z-20';
+            } else if (id === 'ttest') {
+                activateStep2();
+                document.getElementById('btn-dist-yes').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md';
+                document.getElementById('line-final-3').style.backgroundColor = '#34d399';
+                document.getElementById('card-ttest-res').className = 'p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-emerald-50 border-emerald-500 opacity-100 scale-105 z-20';
+            }
+
+            const info = pathsData[id];
+            const panel = document.getElementById('info-panel');
+            panel.innerHTML = `
+                <div class="w-full max-w-xl p-5 rounded-3xl border-l-8 shadow-xl transition-all fade-in ${info.color}">
+                    <div class="flex items-center gap-4 text-left">
+                        <div class="p-2.5 bg-white/50 rounded-full flex-shrink-0 text-current">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">${info.title}</h3>
+                            <p class="text-sm font-medium opacity-90 leading-tight">${info.desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
