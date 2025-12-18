@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wybór Testu Statystycznego - Filip Liebersbach</title>
+    
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+        /* Odblokowany scroll */
+        body { background: transparent; overflow-y: auto; }
+
+        /* --- STYL KALKULATORA (Glass Version) --- */
+        .calculator-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #fff;
+        }
+
+        h1, h2, h3 { text-align: center; color: #fff; margin-bottom: 20px; }
+        p { color: #ccc; line-height: 1.6; margin-bottom: 15px; }
+        
+        label { display: block; margin-bottom: 8px; color: #ddd; font-weight: 500; }
+        
+        input[type="number"], 
+        input[type="text"], 
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8ecae6;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        option { background: #333; color: #fff; }
+
+        /* Guziki */
+        button {
+            padding: 12px 25px;
+            background: #8ecae6;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        button:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .help-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .help-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+        /* Boksy z pomocą / wynikami */
+        .help-box, .instruction-box, .result {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            color: #ddd;
+        }
+        .help-box h3 { text-align: left; margin-top: 0; color: #8ecae6; }
+        .help-box ul { padding-left: 20px; }
+        .help-box li { margin-bottom: 8px; }
+
+        .hidden { display: none; }
+
+        /* Guziki wyboru (Selection Buttons) */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .selection-button {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #ccc;
+            text-align: center;
+        }
+        .selection-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .selection-button.selected-button {
+            background: #8ecae6;
+            color: #000;
+            border-color: #8ecae6;
+            font-weight: bold;
+        }
+
+        /* Karta testu (wynik) */
+        .test-card {
+            background: #030303;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .test-card h3 { color: #0056b3; margin-bottom: 10px; text-align: left; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .test-card p { color: #444; }
+        .test-card ul { padding-left: 20px; }
+        .test-card li { margin-bottom: 5px; color: #444; }
+
+        .small-text { font-size: 0.85em; color: #aaa; text-align: center; margin-top: 10px; }
+        .contact-invitation { text-align: center; margin-top: 15px; font-weight: 500; }
+        .contact-invitation a { color: #8ecae6; text-decoration: underline; }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+            .button-row { flex-direction: column; }
+            .button-group { flex-direction: column; }
+            .selection-button { text-align: center; width: 100%; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="squares-canvas"></canvas>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="doswiadczenie.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Doświadczenie</span><span class="pill-label-hover">Doświadczenie</span></span></a></li>
+                        <li><a href="projekty.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projekty</span><span class="pill-label-hover">Projekty</span></span></a></li>
+                        <li><a href="publikacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publikacje</span><span class="pill-label-hover">Publikacje</span></span></a></li>
+                        <li><a href="rekomendacje.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Rekomendacje</span><span class="pill-label-hover">Rekomendacje</span></span></a></li>
+                        <li><a href="statystyka.html" class="pill glass-effect is-active"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Statystyka</span><span class="pill-label-hover">Statystyka</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="doswiadczenie.html" class="mobile-menu-link">Doświadczenie</a></li>
+                        <li><a href="projekty.html" class="mobile-menu-link">Projekty</a></li>
+                        <li><a href="publikacje.html" class="mobile-menu-link">Publikacje</a></li>
+                        <li><a href="rekomendacje.html" class="mobile-menu-link">Rekomendacje</a></li>
+                        <li><a href="statystyka.html" class="mobile-menu-link">Statystyka</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="intro" style="height: auto; min-height: 100vh; padding-bottom: 40px;">
+        <div class="main_content glass-effect" style="flex-direction: column; width: 95%; max-width: 900px; height: auto; max-height: none; padding: 40px;">
+            
+            <div class="calculator-container">
+                <h1>Prosty Analizator Statystyczny</h1>
+                <p>Ten program pomoże Ci dobrać odpowiedni test statystyczny do Twoich danych. Pamiętaj, że to narzędzie edukacyjne.</p>
+
+                <div id="step1">
+                    <label for="numVariables">Ile masz zmiennych? (max 10)</label>
+                    <input type="number" id="numVariables" min="1" max="10" value="2">
+
+                    <label for="numPeople">Ilość osób/obserwacji:</label>
+                    <input type="number" id="numPeople" min="1" value="100">
+
+                    <div class="button-row">
+                        <button onclick="generateVariableInputs()">Dalej</button>
+                        <button class="help-button" onclick="showHelp('help-step1')">Pomoc</button>
+                    </div>
+
+                    <div id="help-step1" class="help-box hidden">
+                        <h3>Więcej o Kroku 1:</h3>
+                        <p><strong>Ilość zmiennych:</strong> Określa, ile różnych cech będziesz analizować w swoich danych (np. wiek, płeć, wynik testu).</p>
+                        <p><strong>Ilość osób/obserwacji:</strong> To liczba przypadków w Twoim zbiorze danych. Liczba obserwacji ma wpływ na wybór testu rozkładu normalnego:</p>
+                        <ul>
+                            <li>Dla małych prób (np. do 100 osób) zalecany jest <em>Test Shapiro-Wilka</em>.</li>
+                            <li>Dla dużych prób (powyżej 100 osób) zalecany jest <em>Test Kołmogorowa-Smirnowa</em>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="variable-names" class="hidden">
+                    <h2>Wprowadź nazwy i typy zmiennych:</h2>
+                    <div id="variableInputsContainer"></div>
+                    <div class="button-row">
+                        <button onclick="showAnalysisOptions()">Dalej</button>
+                        <button class="help-button" onclick="showHelp('help-step2')">Pomoc</button>
+                    </div>
+
+                    <div id="help-step2" class="help-box hidden">
+                        <h3>Więcej o typach zmiennych:</h3>
+                        <ul>
+                            <li><strong>Zmienna interwałowa (ilościowa):</strong> Dane numeryczne, gdzie różnice między wartościami są znaczące i równe (np. wiek, wynik IQ, temperatura).</li>
+                            <li><strong>Zmienna porządkowa:</strong> Dane, które można uporządkować (np. wykształcenie, stopnie wojskowe, oceny szkolne).</li>
+                            <li><strong>Zmienna nominalna (kategorialna):</strong> Dane, które można jedynie kategoryzować bez porządku (np. płeć, kolor oczu, marka samochodu).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="analysis-options" class="hidden">
+                    <h2>Wybierz typ analizy:</h2>
+                    <label for="analysisType">Co chcesz sprawdzić?</label>
+                    <select id="analysisType">
+                        <option value="">-- Wybierz rodzaj analizy --</option>
+                        <option value="correlation">Korelacje (Związek między zmiennymi)</option>
+                        <option value="groupComparison">Porównanie Grup (Różnice)</option>
+                        <option value="regression">Regresja (Przewidywanie)</option>
+                        <option value="factorialANOVA">Wieloczynnikowa ANOVA</option>
+                    </select>
+
+                    <div id="correlationOptions" class="hidden variable-selection-group">
+                        <h3>Wybierz zmienne do korelacji:</h3>
+                        <label>Zmienna 1:</label><select id="var1Correlation"></select>
+                        <label>Zmienna 2:</label><select id="var2Correlation"></select>
+                    </div>
+
+                    <div id="groupComparisonOptions" class="hidden variable-selection-group">
+                        <h3>Porównanie grup:</h3>
+                        <label>Zmienna zależna (Co mierzysz?):</label><select id="dependentVar"></select>
+                        <label>Zmienna grupująca (Podział na grupy):</label><select id="categoricalVar"></select>
+                        
+                        <label>Czy grupy są zależne? (Te same osoby mierzone 2x?)</label>
+                        <div class="button-group">
+                            <div class="selection-button" data-value="no" data-target="areGroupsDependent">Nie (Grupy niezależne)</div>
+                            <div class="selection-button" data-value="yes" data-target="areGroupsDependent">Tak (Grupy zależne)</div>
+                            <input type="hidden" id="areGroupsDependent" value="no">
+                        </div>
+                    </div>
+
+                    <div id="regressionOptions" class="hidden variable-selection-group">
+                        <h3>Regresja liniowa:</h3>
+                        <label>Zmienna zależna (ilościowa):</label><select id="regressionDependentVar"></select>
+                        <label>Liczba predyktorów:</label><input type="number" id="numPredictors" min="1" value="1">
+                        <div id="predictorInputsContainer"></div>
+                        <p class="small-text">Pamiętaj o kodowaniu zmiennych kategorialnych (np. dummy variables).</p>
+                    </div>
+
+                    <div id="factorialANOVAOptions" class="hidden variable-selection-group">
+                        <h3>Wieloczynnikowa ANOVA:</h3>
+                        <label>Zmienna zależna:</label><select id="factorialDependentVar"></select>
+                        <label>Liczba czynników:</label><input type="number" id="numFactors" min="2" value="2">
+                        <div id="factorInputsContainer"></div>
+                    </div>
+
+                    <div class="button-row">
+                        <button onclick="handleNextFromAnalysisOptions()">Dalej</button>
+                        <button class="help-button" onclick="showHelp('help-all-tests-info'); populateAllTestsHelp()">Pomoc z testami</button>
+                    </div>
+
+                    <div id="help-all-tests-info" class="help-box hidden">
+                        <h3>Informacje o dostępnych testach:</h3>
+                        <div id="allTestsContainer"></div>
+                    </div>
+                </div>
+
+                <div id="distribution-test-instruction" class="hidden">
+                    <h2>Test rozkładu normalnego</h2>
+                    <div class="instruction-box">
+                        <p id="standardDistributionText">Wykonaj test: <strong id="suggestedDistributionTestType" style="color: #8ecae6;">Test Shapiro-Wilka</strong>.</p>
+                        <p>Sprawdź wartość istotności <em>p</em>.</p>
+                    </div>
+                </div>
+
+                <div id="distribution-test-choice" class="hidden">
+                    <h2>Zaznacz wynik testu rozkładu:</h2>
+                    <div class="button-group">
+                        <div class="selection-button" data-value="normal" data-target="distributionResult">Rozkład Normalny (p > 0.05)</div>
+                        <div class="selection-button" data-value="non-normal" data-target="distributionResult">Brak Normalności (p ≤ 0.05)</div>
+                        <input type="hidden" id="distributionResult" value="normal">
+                    </div>
+                    <div class="button-row">
+                        <button onclick="recommendTests()">Zasugeruj testy</button>
+                        <button class="help-button" onclick="showHelp('help-distribution-test')">Pomoc</button>
+                    </div>
+
+                    <div id="help-distribution-test" class="help-box hidden">
+                        <h3>Interpretacja wyniku testu rozkładu:</h3>
+                        <ul>
+                            <li><strong>Rozkład normalny:</strong> jeśli wynik <em>p</em> > 0.05 (brak podstaw do odrzucenia H0 o normalności).</li>
+                            <li><strong>Rozkład nienormalny:</strong> jeśli wynik <em>p</em> &le; 0.05 (rozkład istotnie różni się od normalnego).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="results" class="hidden">
+                    <h2>Sugerowane testy:</h2>
+                    <div id="recommendedTestsContainer"></div>
+                    
+                    <p class="small-text" style="margin-top: 20px;">To są uproszczone sugestie. Zawsze konsultuj się ze statystykiem.</p>
+                    <p class="contact-invitation">Potrzebujesz pomocy z analizą? <a href="mailto:kontakt@lieberfilip.pl">Napisz do mnie!</a></p>
+                    
+                    <div class="button-row">
+                        <button onclick="location.reload()">Zacznij od nowa</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer style="width: 100%; padding: 15px; background: transparent;">
+        <div class="footer-content">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em;">&copy; 2025 Filip Liebersbach.</div>
+    </footer>
+
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
+
+    <script>
+        let variables = [];
+        
+        const testData = {
+            'Korelacja Pearsona': {
+                description: 'Mierzy siłę i kierunek liniowego związku między dwiema zmiennymi interwałowymi o rozkładzie normalnym.',
+                hypotheses: (v1, v2) => [`H0: Brak związku liniowego między ${v1} a ${v2}.`, `H1: Istnieje związek liniowy.`]
+            },
+            'Korelacja Spearmana': {
+                description: 'Mierzy siłę i kierunek monotonicznego związku (dla danych porządkowych lub bez rozkładu normalnego).',
+                hypotheses: (v1, v2) => [`H0: Brak związku monotonicznego.`, `H1: Istnieje związek monotoniczny.`]
+            },
+            'Test chi-kwadrat': {
+                description: 'Badanie związku między dwiema zmiennymi nominalnymi (kategorialnymi).',
+                hypotheses: (v1, v2) => [`H0: Zmienne są niezależne.`, `H1: Zmienne są zależne.`]
+            },
+            'Test t-Studenta dla prób niezależnych': {
+                description: 'Porównuje średnie w dwóch grupach niezależnych (wymaga rozkładu normalnego).',
+                hypotheses: (dep, gr) => [`H0: Średnie w grupach są równe.`, `H1: Średnie się różnią.`]
+            },
+            'Test t-Studenta dla prób zależnych': {
+                description: 'Porównuje średnie dwóch pomiarów u tej samej grupy osób (wymaga rozkładu normalnego różnic).',
+                hypotheses: (dep) => [`H0: Brak różnic między pomiarami.`, `H1: Istnieje różnica między pomiarami.`]
+            },
+            'Test U Manna-Whitneya': {
+                description: 'Porównanie rozkładów w dwóch grupach niezależnych (nieparametryczny).',
+                hypotheses: (dep, gr) => [`H0: Rozkłady są takie same.`, `H1: Rozkłady się różnią.`]
+            },
+            'Test Wilcoxona': {
+                description: 'Porównanie dwóch pomiarów zależnych (nieparametryczny).',
+                hypotheses: (dep) => [`H0: Brak różnic (mediana różnic = 0).`, `H1: Istnieją różnice.`]
+            },
+            'ANOVA jednoczynnikowa': {
+                description: 'Porównuje średnie w więcej niż dwóch grupach niezależnych.',
+                hypotheses: (dep, gr) => [`H0: Wszystkie średnie są równe.`, `H1: Przynajmniej jedna średnia się różni.`]
+            },
+            'Test Kruskala-Wallisa': {
+                description: 'Nieparametryczny odpowiednik ANOVA (dla >2 grup).',
+                hypotheses: (dep, gr) => [`H0: Rozkłady w grupach są takie same.`, `H1: Rozkłady się różnią.`]
+            }
+        };
+
+        function showHelp(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function populateAllTestsHelp() {
+            const container = document.getElementById('allTestsContainer');
+            if (container.innerHTML.trim() !== "") return;
+            
+            let html = "";
+            for (const [testName, info] of Object.entries(testData)) {
+                html += `<div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <strong style="color: #8ecae6;">${testName}</strong>: ${info.description}
+                         </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function generateVariableInputs() {
+            const num = document.getElementById('numVariables').value;
+            const container = document.getElementById('variableInputsContainer');
+            container.innerHTML = '';
+            
+            for(let i=0; i<num; i++) {
+                container.innerHTML += `
+                    <div style="margin-bottom:10px;">
+                        <input type="text" id="variableName${i}" placeholder="Nazwa zmiennej ${i+1}" style="width:45%; display:inline-block;">
+                        <select id="variableType${i}" style="width:45%; display:inline-block;">
+                            <option value="interval">Interwałowa (Liczby)</option>
+                            <option value="ordinal">Porządkowa (Kategorie)</option>
+                            <option value="nominal">Nominalna (Grupy)</option>
+                        </select>
+                    </div>`;
+            }
+            
+            document.getElementById('variable-names').classList.remove('hidden');
+            document.getElementById('step1').classList.add('hidden');
+        }
+
+        function showAnalysisOptions() {
+            const num = document.getElementById('numVariables').value;
+            variables = [];
+            const var1Select = document.getElementById('var1Correlation');
+            const var2Select = document.getElementById('var2Correlation');
+            const depSelect = document.getElementById('dependentVar');
+            const catSelect = document.getElementById('categoricalVar');
+            const regDepSelect = document.getElementById('regressionDependentVar');
+            const facDepSelect = document.getElementById('factorialDependentVar');
+
+            // Czyść selecty
+            [var1Select, var2Select, depSelect, catSelect, regDepSelect, facDepSelect].forEach(s => {
+                if(s) s.innerHTML = '';
+            });
+
+            for(let i=0; i<num; i++) {
+                const nameInput = document.getElementById(`variableName${i}`);
+                const typeSelect = document.getElementById(`variableType${i}`);
+                
+                if (nameInput && nameInput.value.trim() !== '') {
+                    const name = nameInput.value.trim();
+                    const type = typeSelect.value;
+                    variables.push({name, type});
+
+                    const opt = `<option value="${name}" data-type="${type}">${name} (${type})</option>`;
+                    
+                    var1Select.innerHTML += opt;
+                    var2Select.innerHTML += opt;
+                    
+                    if(type !== 'nominal') depSelect.innerHTML += opt;
+                    if(type !== 'interval') catSelect.innerHTML += opt;
+                    if(type === 'interval') {
+                        regDepSelect.innerHTML += opt;
+                        facDepSelect.innerHTML += opt;
+                    }
+                }
+            }
+
+            if (variables.length === 0) return alert("Wprowadź nazwy zmiennych!");
+
+            document.getElementById('variable-names').classList.add('hidden');
+            document.getElementById('analysis-options').classList.remove('hidden');
+        }
+
+        document.getElementById('analysisType').addEventListener('change', function() {
+            document.querySelectorAll('.variable-selection-group').forEach(el => el.classList.add('hidden'));
+            const val = this.value;
+            if(val === 'correlation') document.getElementById('correlationOptions').classList.remove('hidden');
+            if(val === 'groupComparison') document.getElementById('groupComparisonOptions').classList.remove('hidden');
+            if(val === 'regression') document.getElementById('regressionOptions').classList.remove('hidden');
+            if(val === 'factorialANOVA') document.getElementById('factorialANOVAOptions').classList.remove('hidden');
+        });
+
+        function handleNextFromAnalysisOptions() {
+            const type = document.getElementById('analysisType').value;
+            if(!type) return alert("Wybierz typ analizy!");
+
+            // Logika pomijania testu rozkładu dla niektórych analiz
+            if (type === 'factorialANOVA' || type === 'regression') {
+                // Tutaj można by dodać testowanie założeń, ale w uproszczeniu przechodzimy do wyników
+                // albo pokazujemy info o założeniach. Dla uproszczenia w tym demo:
+                recommendTests(); 
+                return;
+            }
+
+            // Dla korelacji i porównań grup - idziemy do testu rozkładu
+            const n = document.getElementById('numPeople').value;
+            const testName = n > 100 ? "Test Kołmogorowa-Smirnowa" : "Test Shapiro-Wilka";
+            document.getElementById('suggestedDistributionTestType').innerText = testName;
+
+            document.getElementById('analysis-options').classList.add('hidden');
+            document.getElementById('distribution-test-instruction').classList.remove('hidden');
+            document.getElementById('distribution-test-choice').classList.remove('hidden');
+        }
+
+        function recommendTests() {
+            const analysisType = document.getElementById('analysisType').value;
+            const isNormal = document.getElementById('distributionResult').value === 'normal';
+            let resultHtml = "";
+
+            if (analysisType === 'correlation') {
+                const v1 = document.getElementById('var1Correlation').value;
+                const v2 = document.getElementById('var2Correlation').value;
+                if (isNormal) {
+                    resultHtml = createTestCard('Korelacja Pearsona', v1, v2);
+                } else {
+                    resultHtml = createTestCard('Korelacja Spearmana', v1, v2);
+                }
+            } else if (analysisType === 'groupComparison') {
+                const dep = document.getElementById('dependentVar').value;
+                const gr = document.getElementById('categoricalVar').value;
+                const dependent = document.getElementById('areGroupsDependent').value === 'yes';
+                
+                if (isNormal && !dependent) {
+                    resultHtml = createTestCard('Test t-Studenta dla prób niezależnych', dep, gr);
+                } else if (!isNormal && !dependent) {
+                    resultHtml = createTestCard('Test U Manna-Whitneya', dep, gr);
+                } else if (isNormal && dependent) {
+                    resultHtml = createTestCard('Test t-Studenta dla prób zależnych', dep);
+                } else if (!isNormal && dependent) {
+                    resultHtml = createTestCard('Test Wilcoxona', dep);
+                }
+            } else if (analysisType === 'regression') {
+                 resultHtml = createTestCard('Regresja liniowa wielokrotna');
+            } else if (analysisType === 'factorialANOVA') {
+                 resultHtml = createTestCard('Wieloczynnikowa ANOVA');
+            }
+
+            document.getElementById('recommendedTestsContainer').innerHTML = resultHtml;
+            
+            // Ukryj poprzednie sekcje
+            document.getElementById('distribution-test-instruction').classList.add('hidden');
+            document.getElementById('distribution-test-choice').classList.add('hidden');
+            document.getElementById('analysis-options').classList.add('hidden'); // Na wypadek pominięcia
+            
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function createTestCard(testName, v1="Zmienna A", v2="Zmienna B") {
+            const info = testData[testName] || { description: "Brak opisu", hypotheses: () => ["-", "-"] };
+            return `
+                <div class="test-card">
+                    <h3>${testName}</h3>
+                    <p>${info.description}</p>
+                    <h4>Hipotezy:</h4>
+                    <ul>
+                        ${info.hypotheses(v1, v2).map(h => `<li>${h}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Obsługa guzików wyboru
+        document.querySelectorAll('.selection-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const value = this.dataset.value;
+                
+                document.querySelectorAll(`.selection-button[data-target="${targetId}"]`).forEach(b => b.classList.remove('selected-button'));
+                this.classList.add('selected-button');
+                document.getElementById(targetId).value = value;
+            });
+        });
+
+    </script>
+</body>
+</html>
