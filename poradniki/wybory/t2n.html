@@ -3,199 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wybór Testu: 2 Grupy Niezależne</title>
+    <title>Wybór Testu: t-Student vs Mann-Whitney</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .transition-all { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .overflow-x-auto::-webkit-scrollbar { height: 6px; }
-        .overflow-x-auto::-webkit-scrollbar-track { background: #f1f1f1; }
-        .overflow-x-auto::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Styl dla płynnego przejścia kolorów linii SVG */
+        .path-line {
+            fill: none;
+            stroke-width: 4;
+            transition: stroke 0.4s ease, opacity 0.4s ease;
+        }
+
+        /* Ukrycie pasków przewijania przy zachowaniu możliwości scrollowania na urządzeniach mobilnych */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-6 font-sans text-slate-900">
+<body class="bg-slate-50 min-h-screen p-4 md:p-6 font-sans text-slate-800 flex flex-col items-center justify-between">
 
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-6 text-center">
-            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Wybór Testu: 2 Grupy Niezależne</h1>
-            <p class="text-slate-500 text-sm mt-1">Algorytm decyzyjny dla zmiennych zależnych</p>
+    <div class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
+        <header class="mb-4 text-center">
+            <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Wybór Testu Statystycznego</h1>
+            <p class="text-slate-500 font-bold mt-1 text-sm bg-slate-100 inline-block px-4 py-1.5 rounded-full border border-slate-200">Porównuję 2 grupy niezależne (np. kobiety vs mężczyźni)</p>
         </header>
 
-        <!-- Main Flow Container -->
-        <div class="overflow-x-auto pb-4 lg:pb-0">
-            <div class="min-w-[900px] relative flex items-center gap-0 py-12">
+        <!-- Zewnętrzny kontener scrollowalny horyzontalnie na urządzeniach mobilnych -->
+        <div class="w-full overflow-x-auto no-scrollbar pb-4">
+            
+            <!-- Przestrzenna, 3-kolumnowa plansza (1000px szerokości, 450px wysokości) -->
+            <div class="relative w-[1000px] h-[450px] mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-0 overflow-hidden">
                 
-                <!-- 1. START -->
-                <div class="flex-shrink-0 z-10">
-                    <div class="bg-slate-900 text-white p-4 rounded-xl shadow-lg w-32 text-center border-4 border-white">
-                        <span class="text-[9px] uppercase font-bold tracking-tighter opacity-60 block">Start</span>
-                        <span class="font-bold text-xs leading-none text-nowrap">2 Gr. Niezależne</span>
-                    </div>
-                </div>
+                <!-- Warstwa wektorowa SVG ze stałym systemem współrzędnych viewBox 1000x450 (bez grotów) -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 450" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Path 1: Krok 1 -> Scenariusz 1 (idzie ukośnie w dół - ścieżka NIE) -->
+                    <path id="path-1" d="M 280 225 C 350 225, 350 365, 420 365" class="path-line stroke-slate-300" />
+                    <!-- Path 2: Krok 1 -> Krok 2 (idzie ukośnie w górę - ścieżka TAK) -->
+                    <path id="path-2" d="M 280 225 C 350 225, 350 112.5, 420 112.5" class="path-line stroke-slate-300" />
+                    <!-- Path 3: Krok 2 -> Scenariusz 2 (idzie w dół pod stromym kątem - ścieżka NIE) -->
+                    <path id="path-3" d="M 600 112.5 C 670 112.5, 670 365, 740 365" class="path-line stroke-slate-300" />
+                    <!-- Path 4: Krok 2 -> Scenariusz 3 (idzie prosto w prawo - ścieżka TAK) -->
+                    <path id="path-4" d="M 600 112.5 C 670 112.5, 670 113, 740 113" class="path-line stroke-slate-300" />
+                </svg>
 
-                <!-- Line 1 -->
-                <div class="flex-grow h-1 bg-slate-200 relative min-w-[30px]">
-                    <div id="line-1" class="absolute inset-0 transition-all duration-500"></div>
-                </div>
-
-                <!-- 2. KROK 1: Rodzaj Zmiennej -->
-                <div id="step-1-box" class="flex-shrink-0 w-52 p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-sm border-slate-200 z-10">
-                    <p class="text-[9px] font-bold text-blue-600 uppercase mb-1">Krok 1: Zmienna</p>
-                    <p class="text-[11px] font-bold mb-3 leading-tight">Czy zmienna zależna jest ilościowa?</p>
-                    <div class="flex flex-col gap-1.5">
-                        <button onclick="selectPath('mann_jako')" id="btn-jako" class="py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100 hover:border-orange-300">
-                            NIE (Jakościowa/Porządkowa)
-                        </button>
-                        <button onclick="activateStep2()" id="btn-ilosc" class="py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100 hover:border-blue-300">
-                            TAK (Ilościowa)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Branching Connectors -->
-                <div class="flex-grow h-40 relative min-w-[40px]">
-                    <div id="line-branch-up" class="absolute top-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                    <div id="line-branch-down" class="absolute bottom-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                </div>
-
-                <!-- 3. KROK 2: Rozkład Normalny -->
-                <div class="flex flex-col gap-6 flex-shrink-0 w-52 z-10">
-                    <!-- Placeholder/Path for Non-Quantitative -->
-                    <div onclick="selectPath('mann_jako')" id="card-direct-mann" class="p-3 rounded-2xl border-2 cursor-pointer transition-all duration-300 text-center shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
-                        <div class="text-xs font-bold text-orange-600">Skala porządkowa</div>
-                        <div class="text-[9px] font-black uppercase text-slate-400 mt-1">Brak wymogu normalności</div>
-                    </div>
-
-                    <!-- Step 2: Distribution Check -->
-                    <div id="step-2-box" class="p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-md border-slate-100 opacity-30">
-                        <p class="text-[9px] font-bold text-indigo-600 uppercase mb-1">Krok 2: Rozkład</p>
-                        <p class="text-[11px] font-bold mb-3 leading-tight">Czy rozkład jest normalny w obu grupach?</p>
-                        <div class="flex gap-1.5">
-                            <button onclick="selectPath('mann_ilosc')" id="btn-dist-no" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100">NIE</button>
-                            <button onclick="selectPath('ttest')" id="btn-dist-yes" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100">TAK</button>
+                <!-- Warstwa interaktywnych bloków HTML pozycjonowanych absolutnie względem planszy -->
+                <div class="absolute inset-0 w-full h-full z-10 pointer-events-none">
+                    
+                    <!-- KOLUMNA 1: KROK 1 (Środek pionowy) -->
+                    <div class="absolute left-[100px] top-[140px] w-[180px] h-[170px] flex items-center justify-center pointer-events-auto">
+                        <div id="step-1-box" class="bg-white rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300">
+                            <div class="text-center">
+                                <span class="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">Krok 1</span>
+                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-800">Czy zmienna zależna ma charakter ILOŚCIOWY?</p>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <button onclick="activateStep2()" id="btn-ilosc" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-between cursor-pointer">
+                                    <span>TAK (ilościowa)</span>
+                                    <span class="text-green-500 opacity-70 text-xs">✔</span>
+                                </button>
+                                <button onclick="selectPath('mann_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex items-center justify-between cursor-pointer">
+                                    <span>NIE (porządkowa)</span>
+                                    <span class="text-red-500 opacity-70 text-xs">✖</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Line Final Connectors -->
-                <div class="flex-grow h-40 relative min-w-[40px]">
-                    <div id="line-final-1" class="absolute top-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                    <div id="line-final-2" class="absolute bottom-[40%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                    <div id="line-final-3" class="absolute bottom-[18%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                </div>
+                    <!-- KOLUMNA 2: KROK 2 (GÓRA) - Przeniesiony na ścieżkę parametryczną -->
+                    <div class="absolute left-[420px] top-[30px] w-[180px] h-[165px] flex items-center justify-center pointer-events-auto">
+                        <div id="step-2-box" class="bg-white rounded-2xl p-3 shadow-sm border-2 border-slate-200 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95">
+                            <div class="text-center">
+                                <span class="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
+                                <p class="text-[10px] font-bold leading-tight mt-2 text-slate-800">Czy założenia testu są spełnione?</p>
+                                <p class="text-[8px] text-slate-500 leading-none mt-1.5 mb-5">(Normalność rozkładu w obu grupach)</p>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="selectPath('t_student')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-400 hover:bg-emerald-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                    <span class="text-green-500 text-xs opacity-70">✔</span>
+                                    <span>TAK</span>
+                                </button>
+                                <button onclick="selectPath('mann_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                    <span class="text-red-500 text-xs opacity-70">✖</span>
+                                    <span>NIE</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- 4. FINAL RESULTS -->
-                <div class="flex flex-col gap-4 flex-shrink-0 w-48 z-10">
-                    <div onclick="selectPath('mann_jako')" id="card-mann-res" class="p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
-                        <div class="text-sm font-bold text-orange-700 text-center leading-tight">Test U Manna-Whitneya</div>
-                        <div class="text-[8px] font-black uppercase text-center text-slate-400 mt-1">Dla danych porządkowych</div>
-                    </div>
-                    
-                    <div onclick="selectPath('mann_ilosc')" id="card-mann-dist-res" class="p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
-                        <div class="text-sm font-bold text-orange-600 text-center leading-tight">Test U Manna-Whitneya</div>
-                        <div class="text-[8px] font-black uppercase text-center text-slate-400 mt-1">Dla braku normalności</div>
+                    <!-- KOLUMNA 2: SCENARIUSZ 1 (DÓŁ) - Przeniesiony jako alternatywa jakościowa -->
+                    <div class="absolute left-[420px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-direct-mann" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-yellow-100 text-yellow-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
+                            <h3 class="text-xs font-black text-slate-800 leading-tight">Test Manna-Whitney'a (U)</h3>
+                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
+                        </div>
                     </div>
 
-                    <div onclick="selectPath('ttest')" id="card-ttest-res" class="p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
-                        <div class="text-sm font-bold text-emerald-600 text-center leading-tight">Test t-Studenta</div>
-                        <div class="text-[8px] font-black uppercase text-center text-slate-400 mt-1">Test parametryczny</div>
+                    <!-- KOLUMNA 3: SCENARIUSZ 3 (GÓRA-PRAWO) - Sukces parametryczny (t-Student) -->
+                    <div class="absolute left-[740px] top-[58px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-tstudent-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-emerald-100 text-emerald-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
+                            <h3 class="text-xs font-black text-slate-800 leading-tight">Test t-Studenta</h3>
+                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
+                        </div>
                     </div>
+
+                    <!-- KOLUMNA 3: SCENARIUSZ 2 (DÓŁ-PRAWO) - Alternatywa ilościowa (Mann-Whitney) -->
+                    <div class="absolute left-[740px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-mann-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-yellow-100 text-yellow-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
+                            <h3 class="text-xs font-black text-slate-800 leading-tight">Test Manna-Whitney'a (U)</h3>
+                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <!-- INFO PANEL -->
-        <div id="info-panel" class="mt-8 flex justify-center">
-            <div class="text-center p-6 border-4 border-dashed border-slate-200 rounded-3xl text-slate-400 flex flex-col items-center gap-2 w-full max-w-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-10"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                <p class="text-sm font-medium italic text-slate-500">Wybierz odpowiedzi na diagramie, aby zobaczyć rekomendację.</p>
+        <!-- Panel opisowy z dynamicznym podsumowaniem wybranego testu -->
+        <div id="info-panel" class="mt-4 flex justify-center">
+            <div class="text-center p-6 border-2 border-dashed border-slate-300 bg-slate-100/50 rounded-2xl text-slate-500 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-40"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <p class="text-sm font-medium">Wybierz odpowiedź w Kroku 1 na schemacie, aby rozpocząć wnioskowanie.</p>
             </div>
         </div>
     </div>
 
+    <!-- Skrypty operacji i animacji interaktywnych ścieżek -->
     <script>
         const pathsData = {
             mann_jako: {
-                title: 'Test U Manna-Whitneya',
-                desc: 'Stosowany dla zmiennych jakościowych/porządkowych. Nie wymaga założenia o rozkładzie normalnym.',
-                color: 'border-orange-500 text-orange-700 bg-orange-50'
+                title: 'Test U Manna-Whitney\'a',
+                scenario: 'Scenariusz 1',
+                desc: 'Podstawowy test nieparametryczny stosowany, gdy przynajmniej jedna z analizowanych grup cechuje się pomiarem na skali porządkowej (np. stopień zadowolenia, oceny szkolne). Nie bada średnich arytmetycznych – opiera się na analizze rangowania i pozwala ocenić, czy rozkłady dwóch grup różnią się od siebie.',
+                colorClasses: 'border-yellow-400 bg-yellow-50 text-yellow-900',
+                iconColor: 'text-yellow-600',
+                bgIcon: 'bg-yellow-200/50'
             },
             mann_ilosc: {
-                title: 'Test U Manna-Whitneya',
-                desc: 'Stosowany dla zmiennych ilościowych, gdy rozkład w grupach znacząco odbiega od normalnego.',
-                color: 'border-orange-500 text-orange-700 bg-orange-50'
+                title: 'Test U Manna-Whitney\'a',
+                scenario: 'Scenariusz 2',
+                desc: 'Stosowany dla zmiennej ilościowej, gdy złamane zostały kluczowe założenia testów parametrycznych (np. brak normalności rozkładu w co najmniej jednej grupie, asymetria rozkładu lub występowanie silnych obserwacji odstających). Test ten jest odporny na zniekształcenia wynikające z nietypowych rozkładów prób.',
+                colorClasses: 'border-yellow-400 bg-yellow-50 text-yellow-900',
+                iconColor: 'text-yellow-600',
+                bgIcon: 'bg-yellow-200/50'
             },
-            ttest: {
-                title: 'Test t-Studenta',
-                desc: 'Test parametryczny dla grup niezależnych. Wymaga zmiennej ilościowej oraz rozkładu normalnego w obu grupach.',
-                color: 'border-emerald-500 text-emerald-700 bg-emerald-50'
+            t_student: {
+                title: 'Test t-Studenta dla prób niezależnych',
+                scenario: 'Scenariusz 3',
+                desc: 'Klasyczny test parametryczny służący do porównania średnich w dwóch niezależnych populacjach. Wymaga, aby zmienna zależna była ilościowa, miała rozkład zbliżony do normalnego w obu grupach oraz aby wariancje w grupach były jednorodne (w przypadku braku jednorodności wariancji, ale przy zachowanej normalności, stosuje się poprawkę Welcha).',
+                colorClasses: 'border-emerald-500 bg-emerald-50 text-emerald-900',
+                iconColor: 'text-emerald-600',
+                bgIcon: 'bg-emerald-200/50'
             }
         };
 
-        function resetAll() {
-            ['line-1', 'line-branch-up', 'line-branch-down', 'line-final-1', 'line-final-2', 'line-final-3'].forEach(id => {
-                document.getElementById(id).style.backgroundColor = '#e2e8f0';
-            });
-            
-            document.getElementById('step-1-box').className = 'flex-shrink-0 w-52 p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-sm border-slate-200 z-10';
-            document.getElementById('step-2-box').className = 'p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-md border-slate-100 opacity-30';
-
-            ['btn-jako', 'btn-ilosc', 'btn-dist-no', 'btn-dist-yes'].forEach(id => {
-                document.getElementById(id).className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100';
+        // Przywraca stan domyślny (szary) dla wszystkich ścieżek, kart i przycisków
+        function resetVisuals() {
+            const defaultLineClass = 'path-line stroke-slate-300';
+            ['path-1', 'path-2', 'path-3', 'path-4'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.setAttribute('class', defaultLineClass);
+                }
             });
 
-            ['card-direct-mann', 'card-mann-res', 'card-mann-dist-res', 'card-ttest-res'].forEach(id => {
-                document.getElementById(id).className = document.getElementById(id).className.replace(/border-(orange|emerald)-500/g, 'border-slate-50').replace('opacity-100', 'opacity-40').replace('scale-105', '');
+            // Reset Boxów decyzyjnych
+            document.getElementById('step-1-box').className = 'bg-white rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300';
+            document.getElementById('step-2-box').className = 'bg-white rounded-2xl p-3 shadow-sm border-2 border-slate-200 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95';
+
+            // Reset Przycisków
+            ['btn-jako', 'btn-ilosc'].forEach(id => {
+                document.getElementById(id).className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex items-center justify-between cursor-pointer';
+            });
+            ['btn-dist-no', 'btn-dist-yes'].forEach(id => {
+                document.getElementById(id).className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+            });
+
+            // Reset Kart z wynikami
+            ['card-direct-mann', 'card-mann-dist-res', 'card-tstudent-res'].forEach(id => {
+                document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
             });
         }
 
+        // Odpowiada za aktywację i podświetlenie Kroku 2 po wybraniu "TAK" w Kroku 1
         function activateStep2() {
-            resetAll();
-            document.getElementById('line-1').style.backgroundColor = '#60a5fa';
-            document.getElementById('step-1-box').classList.add('border-blue-400');
-            document.getElementById('btn-ilosc').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-blue-500 border-blue-600 text-white shadow-md';
-            document.getElementById('line-branch-down').style.backgroundColor = '#60a5fa';
-            document.getElementById('step-2-box').classList.remove('opacity-30');
-            document.getElementById('step-2-box').classList.add('opacity-100', 'border-indigo-400');
+            resetVisuals();
+            
+            // Styl przycisku TAK w Krok 1
+            const btnIlosc = document.getElementById('btn-ilosc');
+            btnIlosc.className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-blue-500 border-blue-600 text-white shadow-md flex items-center justify-between cursor-pointer';
+            
+            // Aktywacja linii idącej ukośnie w górę (Path 2)
+            document.getElementById('path-2').setAttribute('class', 'path-line stroke-blue-400');
+            
+            // Odkrycie i aktywacja bloku Kroku 2
+            const step2Box = document.getElementById('step-2-box');
+            step2Box.className = 'bg-white rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
+            
+            showInfoPlaceholder('Wybierz w Kroku 2 na górze, czy zależności spełniają założenia parametryczne testu t-Studenta.');
         }
 
+        // Obsługuje wybór ostatecznego scenariusza i podświetla całą poprawną ścieżkę
         function selectPath(id) {
             if (id === 'mann_jako') {
-                resetAll();
-                document.getElementById('line-1').style.backgroundColor = '#60a5fa';
-                document.getElementById('btn-jako').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-orange-500 border-orange-600 text-white shadow-md';
-                document.getElementById('line-branch-up').style.backgroundColor = '#fb923c';
-                document.getElementById('line-final-1').style.backgroundColor = '#fb923c';
-                document.getElementById('card-direct-mann').className = 'p-3 rounded-2xl border-2 cursor-pointer transition-all duration-300 text-center shadow-md bg-orange-50 border-orange-500 opacity-100 scale-105';
-                document.getElementById('card-mann-res').className = 'p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-orange-50 border-orange-500 opacity-100 scale-105 z-20';
-            } else if (id === 'mann_ilosc') {
-                activateStep2();
-                document.getElementById('btn-dist-no').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-orange-500 border-orange-600 text-white shadow-md';
-                document.getElementById('line-final-2').style.backgroundColor = '#fb923c';
-                document.getElementById('card-mann-dist-res').className = 'p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-orange-50 border-orange-500 opacity-100 scale-105 z-20';
-            } else if (id === 'ttest') {
-                activateStep2();
-                document.getElementById('btn-dist-yes').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md';
-                document.getElementById('line-final-3').style.backgroundColor = '#34d399';
-                document.getElementById('card-ttest-res').className = 'p-4 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-emerald-50 border-emerald-500 opacity-100 scale-105 z-20';
+                resetVisuals();
+                // Oznaczenie wyboru Krok 1 -> NIE
+                document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-900 shadow-md flex items-center justify-between cursor-pointer';
+                document.getElementById('path-1').setAttribute('class', 'path-line stroke-yellow-400');
+                
+                // Pokaż wynik 1
+                document.getElementById('card-direct-mann').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-50 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+            } 
+            else if (id === 'mann_ilosc') {
+                activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
+                
+                // Oznaczenie wyboru Krok 2 -> NIE
+                document.getElementById('btn-dist-no').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-900 shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+                
+                // Linia idąca z dołu w górę pod skosem do Scenariusza 2
+                document.getElementById('path-3').setAttribute('class', 'path-line stroke-yellow-400');
+                
+                // Pokaż wynik 2
+                document.getElementById('card-mann-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-50 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+            } 
+            else if (id === 't_student') {
+                activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
+                
+                // Oznaczenie wyboru Krok 2 -> TAK
+                document.getElementById('btn-dist-yes').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+                
+                // Linia idąca prosto do Scenariusza 3 (t-Student)
+                document.getElementById('path-4').setAttribute('class', 'path-line stroke-emerald-400');
+                
+                // Pokaż wynik 3
+                document.getElementById('card-tstudent-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-50 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             }
 
-            const info = pathsData[id];
+            // Aktualizuj opis tekstowy pod wykresem
+            updateInfoPanel(pathsData[id]);
+        }
+
+        // Pokazuje informację pomocniczą w trakcie przechodzenia przez kolejne etapy
+        function showInfoPlaceholder(msg) {
+             const panel = document.getElementById('info-panel');
+             panel.innerHTML = `
+                <div class="text-center p-6 border-2 border-dashed border-blue-300 bg-blue-50/50 rounded-2xl text-blue-600 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all fade-in">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-60"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <p class="text-sm font-bold">${msg}</p>
+                </div>
+            `;
+        }
+
+        // Renderuje bogaty panel ze szczegółami wybranego testu statystycznego
+        function updateInfoPanel(info) {
             const panel = document.getElementById('info-panel');
             panel.innerHTML = `
-                <div class="w-full max-w-xl p-5 rounded-3xl border-l-8 shadow-xl transition-all fade-in ${info.color}">
-                    <div class="flex items-center gap-4 text-left">
-                        <div class="p-2.5 bg-white/50 rounded-full flex-shrink-0 text-current">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="w-full max-w-2xl p-5 rounded-2xl border-l-8 shadow-lg transition-all fade-in ${info.colorClasses} flex items-start gap-4 bg-white">
+                    <div class="p-2 rounded-full flex-shrink-0 ${info.bgIcon} ${info.iconColor}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div class="text-left flex-grow">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] font-black uppercase tracking-wider opacity-70 border border-current px-2 py-0.5 rounded-full">${info.scenario}</span>
+                            <h3 class="text-lg font-bold">${info.title}</h3>
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold">${info.title}</h3>
-                            <p class="text-sm font-medium opacity-90 leading-tight">${info.desc}</p>
-                        </div>
+                        <p class="text-[13px] font-medium opacity-90 leading-relaxed mt-1.5">${info.desc}</p>
                     </div>
                 </div>
             `;

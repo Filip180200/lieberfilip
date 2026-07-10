@@ -3,210 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dobór Współczynnika Korelacji</title>
+    <title>Wybór Współczynnika Korelacji: Pearson vs Spearman</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .path-line { transition: background-color 0.5s ease; }
+        .transition-all { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .overflow-x-auto::-webkit-scrollbar {
-            height: 6px;
+        
+        /* Styl dla płynnego przejścia kolorów linii SVG */
+        .path-line {
+            fill: none;
+            stroke-width: 4;
+            transition: stroke 0.4s ease, opacity 0.4s ease;
         }
-        .overflow-x-auto::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .overflow-x-auto::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
+
+        /* Ukrycie pasków przewijania przy zachowaniu możliwości scrollowania na urządzeniach mobilnych */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-6 font-sans text-slate-900">
+<body class="bg-slate-50 min-h-screen p-4 md:p-6 font-sans text-slate-800 flex flex-col items-center justify-between">
 
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-6 text-center">
-            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Dobór Współczynnika Korelacji</h1>
-            <p class="text-slate-500 text-sm mt-1">Podążaj za ścieżką decyzyjną od lewej do prawej</p>
+    <div class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
+        <header class="mb-4 text-center">
+            <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Wybór Współczynnika Korelacji</h1>
+            <p class="text-slate-500 font-bold mt-1 text-sm bg-slate-100 inline-block px-4 py-1.5 rounded-full border border-slate-200">Badam związek między 2 zmiennymi</p>
         </header>
 
-        <!-- Main Flow Container -->
-        <div class="overflow-x-auto pb-4 lg:pb-0">
-            <div class="min-w-[850px] relative flex items-center gap-0 py-8">
+        <!-- Zewnętrzny kontener scrollowalny horyzontalnie na urządzeniach mobilnych -->
+        <div class="w-full overflow-x-auto no-scrollbar pb-4">
+            
+            <!-- Przestrzenna, 3-kolumnowa plansza (1000px szerokości, 450px wysokości) -->
+            <div class="relative w-[1000px] h-[450px] mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-0 overflow-hidden">
                 
-                <!-- 1. START -->
-                <div class="flex-shrink-0 z-10">
-                    <div class="bg-slate-900 text-white p-4 rounded-xl shadow-lg w-32 text-center border-4 border-white">
-                        <span class="text-[9px] uppercase font-bold tracking-tighter opacity-60 block">Start</span>
-                        <span class="font-bold text-xs leading-none">2 Zmienne</span>
-                    </div>
-                </div>
+                <!-- Warstwa wektorowa SVG ze skorygowanymi współrzędnymi dla idealnej symetrii (lewy margines: 80px) -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 450" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Path 1: Krok 1 -> Scenariusz 1 (idzie ukośnie w dół - ścieżka NIE) -->
+                    <path id="path-1" d="M 260 225 C 335 225, 335 365, 410 365" class="path-line stroke-slate-300" />
+                    <!-- Path 2: Krok 1 -> Krok 2 (idzie ukośnie w górę - ścieżka TAK) -->
+                    <path id="path-2" d="M 260 225 C 335 225, 335 112.5, 410 112.5" class="path-line stroke-slate-300" />
+                    <!-- Path 3: Krok 2 -> Scenariusz 2 (idzie w dół pod stromym kątem - ścieżka NIE) -->
+                    <path id="path-3" d="M 590 112.5 C 665 112.5, 665 365, 740 365" class="path-line stroke-slate-300" />
+                    <!-- Path 4: Krok 2 -> Scenariusz 3 (idzie prosto w prawo - ścieżka TAK) -->
+                    <path id="path-4" d="M 590 112.5 C 665 112.5, 665 113, 740 113" class="path-line stroke-slate-300" />
+                </svg>
 
-                <!-- Line 1 -->
-                <div class="flex-grow h-1 bg-slate-200 relative min-w-[20px]">
-                    <div id="line-1" class="absolute inset-0 transition-all duration-500"></div>
-                </div>
-
-                <!-- 2. STEP 1: SCALES -->
-                <div id="step-1-box" class="flex-shrink-0 w-48 p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-sm border-slate-200 z-10">
-                    <p class="text-[9px] font-bold text-blue-600 uppercase mb-1">Krok 1: Dane</p>
-                    <p class="text-[11px] font-bold mb-3 leading-tight">Czy obie zmienne są ilościowe?</p>
-                    <div class="flex flex-col gap-1.5">
-                        <button onclick="selectPath('spearman_ord')" id="btn-ord" class="py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100 hover:border-orange-300">
-                            NIE (Porządkowe)
-                        </button>
-                        <button onclick="activateStep2()" id="btn-quant" class="py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100 hover:border-blue-300">
-                            TAK (Ilościowe)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Branching Connectors - Fixed Height for alignment -->
-                <div class="flex-grow h-40 relative min-w-[30px]">
-                    <div id="line-branch-up" class="absolute top-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                    <div id="line-branch-down" class="absolute bottom-[28%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                </div>
-
-                <!-- 3. STEP 2 OR INTERMEDIATE RESULT -->
-                <div class="flex flex-col gap-4 flex-shrink-0 w-48 z-10">
-                    <!-- Spearman Ordinal Result -->
-                    <div onclick="selectPath('spearman_ord')" id="card-ord" class="p-3 rounded-2xl border-2 cursor-pointer transition-all duration-300 text-center shadow-md bg-white border-slate-50 opacity-40 hover:opacity-100">
-                        <div class="text-lg font-bold text-orange-600">ρ</div>
-                        <div class="text-[9px] font-black uppercase tracking-tighter text-slate-400">Spearman</div>
-                    </div>
-
-                    <!-- Step 2: Distribution -->
-                    <div id="step-2-box" class="p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-md border-slate-100 opacity-30">
-                        <p class="text-[9px] font-bold text-indigo-600 uppercase mb-1">Krok 2: Rozkład</p>
-                        <p class="text-[11px] font-bold mb-3 leading-tight">Rozkład normalny?</p>
-                        <div class="flex gap-1.5">
-                            <button onclick="selectPath('spearman_dist')" id="btn-dist-no" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100">
-                                NIE
-                            </button>
-                            <button onclick="selectPath('pearson')" id="btn-pearson-yes" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100">
-                                TAK
-                            </button>
+                <!-- Warstwa interaktywnych bloków HTML pozycjonowanych absolutnie względem planszy -->
+                <div class="absolute inset-0 w-full h-full z-10 pointer-events-none">
+                    
+                    <!-- KOLUMNA 1: KROK 1 (Przesunięty do lewej krawędzi: left-[80px]) -->
+                    <div class="absolute left-[80px] top-[140px] w-[180px] h-[170px] flex items-center justify-center pointer-events-auto">
+                        <div id="step-1-box" class="bg-white rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300">
+                            <div class="text-center">
+                                <span class="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">Krok 1</span>
+                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-800">Czy OBIE zmienne mają charakter ILOŚCIOWY?</p>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <button onclick="activateStep2()" id="btn-ilosc" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-between cursor-pointer">
+                                    <span>TAK (ilościowe)</span>
+                                    <span class="text-green-500 opacity-70 text-xs">✔</span>
+                                </button>
+                                <button onclick="selectPath('spearman_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex items-center justify-between cursor-pointer">
+                                    <span>NIE (porządkowe)</span>
+                                    <span class="text-red-500 opacity-70 text-xs">✖</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Line Final Connectors -->
-                <div class="flex-grow h-40 relative min-w-[30px]">
-                    <div id="line-final-spearman" class="absolute bottom-[35%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                    <div id="line-final-pearson" class="absolute bottom-[15%] left-0 w-full h-1 bg-slate-200 transition-all duration-500"></div>
-                </div>
+                    <!-- KOLUMNA 2: KROK 2 (Środek: left-[410px]) -->
+                    <div class="absolute left-[410px] top-[25px] w-[180px] h-[175px] flex items-center justify-center pointer-events-auto">
+                        <div id="step-2-box" class="bg-white rounded-2xl p-3 shadow-sm border-2 border-slate-200 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95">
+                            <div class="text-center">
+                                <span class="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
+                                <p class="text-[10px] font-bold leading-tight mt-2 text-slate-800">Czy założenia testu są spełnione?</p>
+                                <p class="text-[8px] text-slate-500 leading-none mt-1 mb-5">(Liniowość i rozkład normalny)</p>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="selectPath('pearson')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-400 hover:bg-emerald-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                    <span class="text-green-500 text-xs opacity-70">✔</span>
+                                    <span>TAK</span>
+                                </button>
+                                <button onclick="selectPath('spearman_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                    <span class="text-red-500 text-xs opacity-70">✖</span>
+                                    <span>NIE</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- 4. FINAL RESULTS -->
-                <div class="flex flex-col gap-2.5 flex-shrink-0 w-40 z-10">
-                    <div onclick="selectPath('spearman_dist')" id="card-dist" class="p-2.5 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-100 opacity-40 hover:opacity-100">
-                        <div class="text-lg font-bold text-orange-600 text-center">ρ</div>
-                        <div class="text-[9px] font-black uppercase text-center text-slate-400">Spearman</div>
+                    <!-- KOLUMNA 2: SCENARIUSZ 1 (Dół-Środek: left-[410px]) -->
+                    <div class="absolute left-[410px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-direct-spearman" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-yellow-100 text-yellow-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
+                            <h3 class="text-xs font-black text-slate-800 leading-tight">Korelacja Spearmana</h3>
+                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
+                        </div>
                     </div>
-                    
-                    <div onclick="selectPath('pearson')" id="card-pearson" class="p-2.5 rounded-xl border-2 cursor-pointer transition-all shadow-md bg-white border-slate-100 opacity-40 hover:opacity-100">
-                        <div class="text-lg font-bold text-emerald-600 italic text-center">r</div>
-                        <div class="text-[9px] font-black uppercase text-center text-slate-400">Pearson</div>
+
+                    <!-- KOLUMNA 3: SCENARIUSZ 3 (Góra-Prawo: left-[740px]) -->
+                    <div class="absolute left-[740px] top-[58px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-pearson-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-emerald-100 text-emerald-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
+                            <h3 class="text-xs font-black text-slate-800 leading-tight">Korelacja Pearsona</h3>
+                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
+                        </div>
                     </div>
+
+                    <!-- KOLUMNA 3: SCENARIUSZ 2 (Dół-Prawo: left-[740px]) -->
+                    <div class="absolute left-[740px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-spearman-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-yellow-100 text-yellow-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
+                            <h3 class="text-xs font-black text-slate-800 leading-tight">Korelacja Spearmana</h3>
+                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <!-- DETAILED INFO PANEL -->
-        <div id="info-panel" class="mt-8 flex justify-center">
-            <div class="text-center p-6 border-4 border-dashed border-slate-200 rounded-3xl text-slate-400 flex flex-col items-center gap-2 w-full max-w-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-10"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                <p class="text-sm font-medium italic">Kliknij w kafelki powyżej, aby zobaczyć opis.</p>
+        <!-- Panel opisowy z dynamicznym podsumowaniem wybranego testu -->
+        <div id="info-panel" class="mt-4 flex justify-center px-4 w-full">
+            <div class="text-center p-6 border-2 border-dashed border-slate-300 bg-slate-100/50 rounded-2xl text-slate-500 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-40"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <p class="text-sm font-medium">Wybierz odpowiedź w Kroku 1 na schemacie, aby rozpocząć wnioskowanie.</p>
             </div>
         </div>
     </div>
 
+    <!-- Skrypty operacji i animacji interaktywnych ścieżek -->
     <script>
         const pathsData = {
+            spearman_jako: {
+                title: 'Korelacja Spearmana',
+                scenario: 'Scenariusz 1',
+                desc: 'Współczynnik korelacji rangowej (Spearmana) jest miarą nieparametryczną. Stosujemy go, gdy przynajmniej jedna zmienna jest mierzona na skali porządkowej lub gdy dane są zliczane w rangach. Pozwala wykryć dowolny związek monotoniczny (również nieliniowy).',
+                colorClasses: 'border-yellow-400 bg-yellow-50 text-yellow-900',
+                iconColor: 'text-yellow-600',
+                bgIcon: 'bg-yellow-200/50'
+            },
+            spearman_ilosc: {
+                title: 'Korelacja Spearmana',
+                scenario: 'Scenariusz 2',
+                desc: 'Stosowany dla zmiennych ilościowych, gdy złamane zostały kluczowe założenia współczynnika Pearsona (np. brak normalności rozkładu w zmiennych, występowanie silnych obserwacji odstających lub związek ma charakter nieliniowy, lecz wciąż monotoniczny). Jest wysoce odporny na anomalie w danych.',
+                colorClasses: 'border-yellow-400 bg-yellow-50 text-yellow-900',
+                iconColor: 'text-yellow-600',
+                bgIcon: 'bg-yellow-200/50'
+            },
             pearson: {
-                title: 'r Pearsona',
-                desc: 'Zmienne ilościowe o rozkładzie zbliżonym do normalnego.',
-                color: 'border-emerald-500 text-emerald-700 bg-emerald-50'
-            },
-            spearman_dist: {
-                title: 'rho Spearmana',
-                desc: 'Zmienne ilościowe, ale rozkład odbiega od normalnego.',
-                color: 'border-orange-500 text-orange-700 bg-orange-50'
-            },
-            spearman_ord: {
-                title: 'rho Spearmana',
-                desc: 'Zmienne porządkowe (np. skale ocen, rangi).',
-                color: 'border-orange-600 text-orange-700 bg-orange-50'
+                title: 'Korelacja Pearsona',
+                scenario: 'Scenariusz 3',
+                desc: 'Współczynnik korelacji liniowej (Pearsona) to klasyczna miara parametryczna. Wymaga, aby obie zmienne były ilościowe (interwałowe lub ilorazowe), miały rozkład zbliżony do normalnego, a ich wzajemna zależność miała charakter wyraźnie liniowy. Jest podatny na wpływ obserwacji odstających.',
+                colorClasses: 'border-emerald-500 bg-emerald-50 text-emerald-900',
+                iconColor: 'text-emerald-600',
+                bgIcon: 'bg-emerald-200/50'
             }
         };
 
-        function resetAll() {
-            ['line-1', 'line-branch-up', 'line-branch-down', 'line-final-spearman', 'line-final-pearson'].forEach(id => {
-                const element = document.getElementById(id);
-                element.style.backgroundColor = '#e2e8f0'; // Default slate-200
+        // Przywraca stan domyślny (szary) dla wszystkich ścieżek, kart i przycisków
+        function resetVisuals() {
+            const defaultLineClass = 'path-line stroke-slate-300';
+            ['path-1', 'path-2', 'path-3', 'path-4'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.setAttribute('class', defaultLineClass);
+                }
             });
 
-            document.getElementById('step-1-box').className = 'flex-shrink-0 w-48 p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-sm border-slate-200 z-10';
-            document.getElementById('step-2-box').className = 'p-4 rounded-2xl border-2 transition-all duration-300 bg-white shadow-md border-slate-100 opacity-30';
+            // Reset Boxów decyzyjnych
+            document.getElementById('step-1-box').className = 'bg-white rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300';
+            document.getElementById('step-2-box').className = 'bg-white rounded-2xl p-3 shadow-sm border-2 border-slate-200 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95';
 
-            document.getElementById('btn-ord').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100';
-            document.getElementById('btn-quant').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100';
-            document.getElementById('btn-dist-no').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100';
-            document.getElementById('btn-pearson-yes').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-100';
+            // Reset Przycisków
+            ['btn-jako', 'btn-ilosc'].forEach(id => {
+                document.getElementById(id).className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex items-center justify-between cursor-pointer';
+            });
+            ['btn-dist-no', 'btn-dist-yes'].forEach(id => {
+                document.getElementById(id).className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+            });
 
-            ['card-ord', 'card-dist', 'card-pearson'].forEach(id => {
-                const base = id === 'card-ord' ? 'p-3 rounded-2xl' : 'p-2.5 rounded-xl';
-                document.getElementById(id).className = `${base} border-2 cursor-pointer transition-all duration-300 text-center shadow-md bg-white border-slate-50 opacity-40`;
+            // Reset Kart z wynikami
+            ['card-direct-spearman', 'card-spearman-dist-res', 'card-pearson-res'].forEach(id => {
+                document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
             });
         }
 
+        // Odpowiada za aktywację i podświetlenie Kroku 2 po wybraniu "TAK" w Kroku 1
         function activateStep2() {
-            resetAll();
-            document.getElementById('line-1').style.backgroundColor = '#60a5fa'; // blue-400
-            document.getElementById('step-1-box').classList.add('border-blue-400');
-            document.getElementById('btn-quant').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-blue-500 border-blue-600 text-white shadow-md';
-            document.getElementById('line-branch-down').style.backgroundColor = '#60a5fa'; // blue-400
-            document.getElementById('step-2-box').classList.remove('opacity-30');
-            document.getElementById('step-2-box').classList.add('border-indigo-400');
+            resetVisuals();
+            
+            // Styl przycisku TAK w Krok 1
+            const btnIlosc = document.getElementById('btn-ilosc');
+            btnIlosc.className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-blue-500 border-blue-600 text-white shadow-md flex items-center justify-between cursor-pointer';
+            
+            // Aktywacja linii idącej ukośnie w górę (Path 2)
+            document.getElementById('path-2').setAttribute('class', 'path-line stroke-blue-400');
+            
+            // Odkrycie i aktywacja bloku Kroku 2
+            const step2Box = document.getElementById('step-2-box');
+            step2Box.className = 'bg-white rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
+            
+            showInfoPlaceholder('Wybierz w Kroku 2, czy zależności spełniają założenia parametryczne korelacji Pearsona.');
         }
 
+        // Obsługuje wybór ostatecznego scenariusza i podświetla całą poprawną ścieżkę
         function selectPath(id) {
-            if (id === 'spearman_ord') {
-                resetAll();
-                document.getElementById('line-1').style.backgroundColor = '#60a5fa';
-                document.getElementById('step-1-box').classList.add('border-blue-400');
-                document.getElementById('btn-ord').className = 'py-1.5 px-2 rounded-lg text-[10px] font-bold border-2 transition-all bg-orange-500 border-orange-600 text-white shadow-md';
-                document.getElementById('line-branch-up').style.backgroundColor = '#fb923c'; // orange-400
-                const card = document.getElementById('card-ord');
-                card.className = 'p-3 rounded-2xl border-2 cursor-pointer transition-all duration-300 text-center shadow-md border-orange-500 bg-orange-50 scale-105 opacity-100 z-20';
-            } else if (id === 'spearman_dist') {
-                activateStep2();
-                document.getElementById('btn-dist-no').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-orange-500 border-orange-600 text-white shadow-md';
-                document.getElementById('line-final-spearman').style.backgroundColor = '#fb923c';
-                const card = document.getElementById('card-dist');
-                card.className = 'p-2.5 rounded-xl border-2 cursor-pointer transition-all shadow-md border-orange-500 bg-orange-50 scale-105 opacity-100 z-20';
-            } else if (id === 'pearson') {
-                activateStep2();
-                document.getElementById('btn-pearson-yes').className = 'flex-1 py-1.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md';
-                document.getElementById('line-final-pearson').style.backgroundColor = '#34d399'; // emerald-400
-                const card = document.getElementById('card-pearson');
-                card.className = 'p-2.5 rounded-xl border-2 cursor-pointer transition-all shadow-md border-emerald-500 bg-emerald-50 scale-105 opacity-100 z-20';
+            if (id === 'spearman_jako') {
+                resetVisuals();
+                // Oznaczenie wyboru Krok 1 -> NIE
+                document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-900 shadow-md flex items-center justify-between cursor-pointer';
+                document.getElementById('path-1').setAttribute('class', 'path-line stroke-yellow-400');
+                
+                // Pokaż wynik 1
+                document.getElementById('card-direct-spearman').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-50 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+            } 
+            else if (id === 'spearman_ilosc') {
+                activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
+                
+                // Oznaczenie wyboru Krok 2 -> NIE
+                document.getElementById('btn-dist-no').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-900 shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+                
+                // Linia idąca z dołu w górę pod skosem do Scenariusza 2
+                document.getElementById('path-3').setAttribute('class', 'path-line stroke-yellow-400');
+                
+                // Pokaż wynik 2
+                document.getElementById('card-spearman-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-50 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+            } 
+            else if (id === 'pearson') {
+                activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
+                
+                // Oznaczenie wyboru Krok 2 -> TAK
+                document.getElementById('btn-dist-yes').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+                
+                // Linia idąca prosto do Scenariusza 3 (Pearson)
+                document.getElementById('path-4').setAttribute('class', 'path-line stroke-emerald-400');
+                
+                // Pokaż wynik 3
+                document.getElementById('card-pearson-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-50 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             }
 
-            const info = pathsData[id];
+            // Aktualizuj opis tekstowy pod wykresem
+            updateInfoPanel(pathsData[id]);
+        }
+
+        // Pokazuje informację pomocniczą w trakcie przechodzenia przez kolejne etapy
+        function showInfoPlaceholder(msg) {
+             const panel = document.getElementById('info-panel');
+             panel.innerHTML = `
+                <div class="text-center p-6 border-2 border-dashed border-blue-300 bg-blue-50/50 rounded-2xl text-blue-600 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all fade-in">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-60"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <p class="text-sm font-bold">${msg}</p>
+                </div>
+            `;
+        }
+
+        // Renderuje bogaty panel ze szczegółami wybranego testu statystycznego bez konfliktów tła i ucinania słów
+        function updateInfoPanel(info) {
             const panel = document.getElementById('info-panel');
             panel.innerHTML = `
-                <div class="w-full max-w-xl p-5 rounded-3xl border-l-8 shadow-xl transition-all fade-in ${info.color}">
-                    <div class="flex items-center gap-4 text-left">
-                        <div class="p-2.5 bg-white/50 rounded-full flex-shrink-0 text-current">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div class="w-full max-w-2xl p-5 rounded-2xl border-l-8 border border-slate-200 border-l-0 shadow-lg transition-all fade-in ${info.colorClasses} flex flex-col sm:flex-row items-start gap-4">
+                    <div class="p-2 rounded-full flex-shrink-0 shrink-0 ${info.bgIcon} ${info.iconColor}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div class="text-left flex-grow">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="text-[10px] font-black uppercase tracking-wider opacity-80 border border-current px-2 py-0.5 rounded-full shrink-0">${info.scenario}</span>
+                            <h3 class="text-base sm:text-lg font-black tracking-tight leading-snug">${info.title}</h3>
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold">${info.title}</h3>
-                            <p class="text-sm font-medium opacity-90 leading-tight">${info.desc}</p>
-                        </div>
+                        <p class="text-xs sm:text-sm font-medium opacity-90 leading-relaxed mt-1.5">${info.desc}</p>
                     </div>
                 </div>
             `;
