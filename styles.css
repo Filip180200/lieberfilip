@@ -17,30 +17,10 @@ html, body {
 }
 
 body {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: auto;
     position: relative;
     font-family: 'Montserrat', sans-serif;
     color: #333;
     margin: 0;
-}
-
-/* Tło z efektem Parallax */
-body::before {
-    content: '';
-    position: fixed;
-    top: -20px;
-    left: -20px;
-    width: 120%;
-    height: 120%;
-    background-image: url('images/tlo3.jpg');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    filter: blur(5px);
-    z-index: -1;
-    transform: scale(1.05);
 }
 
 /* Animowane tło z siatka kwadratow (background.js) - wspolne dla calej strony */
