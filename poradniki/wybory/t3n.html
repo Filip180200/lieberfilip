@@ -7,6 +7,13 @@
     <title>Wybór Testu: ANOVA vs Kruskal-Wallis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+
+        body { font-family: 'Montserrat', sans-serif; background: transparent; }
+
         .transition-all { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
@@ -26,13 +33,14 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-6 font-sans text-slate-800 flex flex-col items-center justify-between">
+<body class="min-h-screen p-4 md:p-6 text-slate-100 flex flex-col items-center justify-between">
+    <canvas id="squares-canvas"></canvas>
 
     <!-- STREAMING_CHUNK: Rendering page header and description... -->
     <div class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
         <header class="mb-4 text-center">
-            <h1 class="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Wybór Testu Statystycznego</h1>
-            <p class="text-slate-500 font-bold mt-1 text-sm bg-slate-100 inline-block px-4 py-1.5 rounded-full border border-slate-200">Porównuję więcej niż 2 grupy niezależne</p>
+            <h1 class="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Wybór Testu Statystycznego</h1>
+            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Porównuję więcej niż 2 grupy niezależne</p>
         </header>
 
         <!-- STREAMING_CHUNK: Drawing flow chart diagram with SVG links... -->
@@ -40,7 +48,7 @@
         <div class="w-full overflow-x-auto no-scrollbar pb-4">
             
             <!-- Przestrzenna, 3-kolumnowa plansza (1000px szerokości, 450px wysokości) -->
-            <div class="relative w-[1000px] h-[450px] mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 p-0 overflow-hidden">
+            <div class="relative w-[1000px] h-[450px] mx-auto bg-white/5 rounded-3xl shadow-sm border border-white/10 p-0 overflow-hidden">
                 
                 <!-- Warstwa wektorowa SVG ze skorygowanymi współrzędnymi dla idealnej symetrii (lewy margines: 80px) -->
                 <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 450" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,17 +68,17 @@
                     
                     <!-- KOLUMNA 1: KROK 1 (Przesunięty do lewej krawędzi: left-[80px]) -->
                     <div class="absolute left-[80px] top-[140px] w-[180px] h-[170px] flex items-center justify-center pointer-events-auto">
-                        <div id="step-1-box" class="bg-white rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300">
+                        <div id="step-1-box" class="bg-white/5 rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300">
                             <div class="text-center">
-                                <span class="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">Krok 1</span>
-                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-800">Czy zmienna zależna ma charakter ILOŚCIOWY?</p>
+                                <span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 1</span>
+                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-100">Czy zmienna zależna ma charakter ILOŚCIOWY?</p>
                             </div>
                             <div class="flex flex-col gap-1.5">
-                                <button onclick="activateStep2()" id="btn-ilosc" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-between cursor-pointer">
+                                <button onclick="activateStep2()" id="btn-ilosc" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-blue-400 hover:bg-blue-500/10 flex items-center justify-between cursor-pointer">
                                     <span>TAK (ilościowa)</span>
                                     <span class="text-green-500 opacity-70 text-xs">✔</span>
                                 </button>
-                                <button onclick="selectPath('kruskal_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex items-center justify-between cursor-pointer">
+                                <button onclick="selectPath('kruskal_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
                                     <span>NIE (porządkowa)</span>
                                     <span class="text-red-500 opacity-70 text-xs">✖</span>
                                 </button>
@@ -80,18 +88,18 @@
 
                     <!-- KOLUMNA 2: KROK 2 (Środek: left-[410px]) -->
                     <div class="absolute left-[410px] top-[25px] w-[180px] h-[175px] flex items-center justify-center pointer-events-auto">
-                        <div id="step-2-box" class="bg-white rounded-2xl p-3 shadow-sm border-2 border-slate-200 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95">
+                        <div id="step-2-box" class="bg-white/5 rounded-2xl p-3 shadow-sm border-2 border-white/10 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95">
                             <div class="text-center">
-                                <span class="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
-                                <p class="text-[10px] font-bold leading-tight mt-2 text-slate-800">Czy założenia testu są spełnione?</p>
-                                <p class="text-[8px] text-slate-500 leading-none mt-1 mb-5">(Normalność i jednorodność wariancji)</p>
+                                <span class="text-[9px] font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
+                                <p class="text-[10px] font-bold leading-tight mt-2 text-slate-100">Czy założenia testu są spełnione?</p>
+                                <p class="text-[8px] text-slate-400 leading-none mt-1 mb-5">(Normalność i jednorodność wariancji)</p>
                             </div>
                             <div class="flex gap-1.5">
-                                <button onclick="selectPath('anova')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-emerald-400 hover:bg-emerald-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('anova')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-green-500 text-xs opacity-70">✔</span>
                                     <span>TAK</span>
                                 </button>
-                                <button onclick="selectPath('kruskal_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('kruskal_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-red-500 text-xs opacity-70">✖</span>
                                     <span>NIE</span>
                                 </button>
@@ -101,28 +109,28 @@
 
                     <!-- KOLUMNA 2: SCENARIUSZ 1 (Dół-Środek: left-[410px]) -->
                     <div class="absolute left-[410px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-direct-kruskal" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
-                            <span class="inline-block mx-auto bg-yellow-100 text-yellow-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
-                            <h3 class="text-xs font-black text-slate-800 leading-tight">Test Kruskala-Wallisa</h3>
-                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
+                        <div id="card-direct-kruskal" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Kruskala-Wallisa</h3>
+                            <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
                         </div>
                     </div>
 
                     <!-- KOLUMNA 3: SCENARIUSZ 3 (Góra-Prawo: left-[740px]) -->
                     <div class="absolute left-[740px] top-[58px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-anova-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
-                            <span class="inline-block mx-auto bg-emerald-100 text-emerald-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
-                            <h3 class="text-xs font-black text-slate-800 leading-tight">Jednoczynnikowa ANOVA</h3>
-                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
+                        <div id="card-anova-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-emerald-400/20 text-emerald-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Jednoczynnikowa ANOVA</h3>
+                            <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
                         </div>
                     </div>
 
                     <!-- KOLUMNA 3: SCENARIUSZ 2 (Dół-Prawo: left-[740px]) -->
                     <div class="absolute left-[740px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-kruskal-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
-                            <span class="inline-block mx-auto bg-yellow-100 text-yellow-800 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
-                            <h3 class="text-xs font-black text-slate-800 leading-tight">Test Kruskala-Wallisa</h3>
-                            <p class="text-[8px] text-slate-500 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
+                        <div id="card-kruskal-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                            <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Kruskala-Wallisa</h3>
+                            <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
                         </div>
                     </div>
 
@@ -133,7 +141,7 @@
         <!-- STREAMING_CHUNK: Dynamic result panel markup container... -->
         <!-- Panel opisowy z dynamicznym podsumowaniem wybranego testu -->
         <div id="info-panel" class="mt-4 flex justify-center px-4 w-full">
-            <div class="text-center p-6 border-2 border-dashed border-slate-300 bg-slate-100/50 rounded-2xl text-slate-500 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all">
+            <div class="text-center p-6 border-2 border-dashed border-white/20 bg-white/5 rounded-2xl text-slate-400 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-40"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                 <p class="text-sm font-medium">Wybierz odpowiedź w Kroku 1 na schemacie, aby rozpocząć wnioskowanie.</p>
             </div>
@@ -148,25 +156,25 @@
                 title: 'Test Kruskala-Wallisa',
                 scenario: 'Scenariusz 1',
                 desc: 'Podstawowy test nieparametryczny stosowany, gdy porównujemy więcej niż dwie grupy niezależne, a zmienna zależna mierzona jest na skali porządkowej. Pozwala zweryfikować, czy rozkłady badanej cechy różnią się istotnie statystycznie pomiędzy analizowanymi grupami. Opiera się na rangowaniu danych.',
-                colorClasses: 'border-yellow-400 bg-yellow-50 text-yellow-900',
-                iconColor: 'text-yellow-600',
-                bgIcon: 'bg-yellow-200/50'
+                colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
+                iconColor: 'text-yellow-400',
+                bgIcon: 'bg-yellow-400/20'
             },
             kruskal_ilosc: {
                 title: 'Test Kruskala-Wallisa',
                 scenario: 'Scenariusz 2',
                 desc: 'Stosowany dla zmiennej ilościowej w sytuacji, gdy złamane zostały kluczowe założenia klasycznej analizy wariancji (brak rozkładu zbliżonego do normalnego w grupach lub rażący brak jednorodności wariancji). Jest wysoce odporny na występowanie silnych obserwacji odstających.',
-                colorClasses: 'border-yellow-400 bg-yellow-50 text-yellow-900',
-                iconColor: 'text-yellow-600',
-                bgIcon: 'bg-yellow-200/50'
+                colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
+                iconColor: 'text-yellow-400',
+                bgIcon: 'bg-yellow-400/20'
             },
             anova: {
                 title: 'Jednoczynnikowa ANOVA',
                 scenario: 'Scenariusz 3',
                 desc: 'Klasyczny test parametryczny służący do porównywania średnich w trzech lub więcej niezależnych grupach. Wymaga zmiennej zależnej o charakterze ilościowym, rozkładu zbliżonego do normalnego w każdej z podgrup oraz jednorodności wariancji (testowanej np. testem Levene\'a).',
-                colorClasses: 'border-emerald-500 bg-emerald-50 text-emerald-900',
-                iconColor: 'text-emerald-600',
-                bgIcon: 'bg-emerald-200/50'
+                colorClasses: 'border-emerald-500 bg-emerald-500/10 text-emerald-200',
+                iconColor: 'text-emerald-400',
+                bgIcon: 'bg-emerald-400/20'
             }
         };
 
@@ -181,20 +189,20 @@
             });
 
             // Reset Boxów decyzyjnych
-            document.getElementById('step-1-box').className = 'bg-white rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300';
-            document.getElementById('step-2-box').className = 'bg-white rounded-2xl p-3 shadow-sm border-2 border-slate-200 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95';
+            document.getElementById('step-1-box').className = 'bg-white/5 rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300';
+            document.getElementById('step-2-box').className = 'bg-white/5 rounded-2xl p-3 shadow-sm border-2 border-white/10 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95';
 
             // Reset Przycisków
             ['btn-jako', 'btn-ilosc'].forEach(id => {
-                document.getElementById(id).className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-yellow-400 hover:bg-yellow-50 flex items-center justify-between cursor-pointer';
+                document.getElementById(id).className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer';
             });
             ['btn-dist-no', 'btn-dist-yes'].forEach(id => {
-                document.getElementById(id).className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-slate-50 border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50 flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+                document.getElementById(id).className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-blue-400 hover:bg-blue-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer';
             });
 
             // Reset Kart z wynikami
             ['card-direct-kruskal', 'card-kruskal-dist-res', 'card-anova-res'].forEach(id => {
-                document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white border-slate-200 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
+                document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
             });
         }
 
@@ -211,7 +219,7 @@
             
             // Odkrycie i aktywacja bloku Kroku 2
             const step2Box = document.getElementById('step-2-box');
-            step2Box.className = 'bg-white rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
+            step2Box.className = 'bg-white/5 rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
             
             showInfoPlaceholder('Wybierz w Kroku 2, czy zależności spełniają założenia parametryczne jednoczynnikowej analizy wariancji.');
         }
@@ -221,23 +229,23 @@
             if (id === 'kruskal_jako') {
                 resetVisuals();
                 // Oznaczenie wyboru Krok 1 -> NIE
-                document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-900 shadow-md flex items-center justify-between cursor-pointer';
+                document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-200 shadow-md flex items-center justify-between cursor-pointer';
                 document.getElementById('path-1').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 1
-                document.getElementById('card-direct-kruskal').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-50 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-direct-kruskal').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
             else if (id === 'kruskal_ilosc') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> NIE
-                document.getElementById('btn-dist-no').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-900 shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
+                document.getElementById('btn-dist-no').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-200 shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
                 
                 // Linia idąca z dołu w górę pod skosem do Scenariusza 2
                 document.getElementById('path-3').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 2
-                document.getElementById('card-kruskal-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-50 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-kruskal-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
             else if (id === 'anova') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
@@ -249,7 +257,7 @@
                 document.getElementById('path-4').setAttribute('class', 'path-line stroke-emerald-400');
                 
                 // Pokaż wynik 3
-                document.getElementById('card-anova-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-50 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-anova-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             }
 
             // Aktualizuj opis tekstowy pod wykresem
@@ -260,7 +268,7 @@
         function showInfoPlaceholder(msg) {
              const panel = document.getElementById('info-panel');
              panel.innerHTML = `
-                <div class="text-center p-6 border-2 border-dashed border-blue-300 bg-blue-50/50 rounded-2xl text-blue-600 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all fade-in">
+                <div class="text-center p-6 border-2 border-dashed border-blue-300 bg-blue-500/10 rounded-2xl text-blue-400 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all fade-in">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-60"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                     <p class="text-sm font-bold">${msg}</p>
                 </div>
@@ -272,7 +280,7 @@
         function updateInfoPanel(info) {
             const panel = document.getElementById('info-panel');
             panel.innerHTML = `
-                <div class="w-full max-w-2xl p-5 rounded-2xl border-l-8 border border-slate-200 border-l-0 shadow-lg transition-all fade-in ${info.colorClasses} flex flex-col sm:flex-row items-start gap-4">
+                <div class="w-full max-w-2xl p-5 rounded-2xl border-l-8 border border-white/10 border-l-0 shadow-lg transition-all fade-in ${info.colorClasses} flex flex-col sm:flex-row items-start gap-4">
                     <div class="p-2 rounded-full flex-shrink-0 shrink-0 ${info.bgIcon} ${info.iconColor}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
@@ -287,5 +295,7 @@
             `;
         }
     </script>
+
+    <script src="../../background.js"></script>
 </body>
 </html>
