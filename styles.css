@@ -489,7 +489,9 @@ footer {
 .intro.page-scroll .main_content.list-layout {
     height: auto !important;          /* Wysokość zależna od tekstu */
     max-height: none !important;      /* Usuwamy limit */
-    overflow: visible !important;     /* Pokaż wszystko */
+    /* overflow zostaje "hidden" z .glass-effect, zeby zaokraglone rogi
+       dalej przycinaly tlo - scrollowanie strony obsluguja osobne
+       nadpisania na .scroll-list-container / .scroll-list ponizej */
     margin-bottom: 20px;
 }
 
