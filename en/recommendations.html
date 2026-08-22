@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WKCSKFHS');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations - Filip Liebersbach</title>
+    <meta name="description" content="Books and films recommended by Filip Liebersbach in the field of psychology." />
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* Odblokowany scroll (strona ma klase page-scroll) */
+        body { background: transparent; overflow-y: auto; overflow-x: hidden; }
+
+        .publication-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .publication-cover {
+            width: 100px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .publication-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .publication-cover {
+                width: 100px;
+                height: 140px;
+                object-fit: contain;
+                background: rgba(255,255,255,0.1);
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKCSKFHS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <canvas id="squares-canvas"></canvas>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="../en.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="experience.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Experience</span><span class="pill-label-hover">Experience</span></span></a></li>
+                        <li><a href="projects.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projects</span><span class="pill-label-hover">Projects</span></span></a></li>
+                        <li><a href="publications.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publications</span><span class="pill-label-hover">Publications</span></span></a></li>
+                        <li><a href="recommendations.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Recommendations</span><span class="pill-label-hover">Recommendations</span></span></a></li>
+                        <li><a href="classes.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Classes</span><span class="pill-label-hover">Classes</span></span></a></li>
+                        <li><a href="../rekomendacje.html" class="pill-logo glass-effect" title="Wersja polska" aria-label="Switch to Polish"><span class="flag-icon">🇵🇱</span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="experience.html" class="mobile-menu-link">Experience</a></li>
+                        <li><a href="projects.html" class="mobile-menu-link">Projects</a></li>
+                        <li><a href="publications.html" class="mobile-menu-link">Publications</a></li>
+                        <li><a href="recommendations.html" class="mobile-menu-link">Recommendations</a></li>
+                        <li><a href="classes.html" class="mobile-menu-link">Classes</a></li>
+                        <li><a href="../rekomendacje.html" class="mobile-menu-link">🇵🇱 Polski</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="intro page-scroll">
+        <div class="main_content glass-effect list-layout">
+
+            <div class="content-header">
+                <h1>Recommendations</h1>
+                <p>Books and films I recommend</p>
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="naukowe"><i class="fa-solid fa-book"></i> Academic Books</button>
+                <button class="filter-btn" data-filter="psychologiczne"><i class="fa-solid fa-brain"></i> Psychology Books</button>
+                <button class="filter-btn" data-filter="filmy"><i class="fa-solid fa-film"></i> Films</button>
+            </div>
+
+            <div class="scroll-list-container">
+                <div class="scroll-list">
+
+                    <div class="list-item" data-category="filmy">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_books/Łoziński P. - Nawet nie wiesz, jak bardzo Cię kocham.png"
+                                 alt="Nawet nie wiesz, jak bardzo Cię kocham"
+                                 class="publication-cover"
+                                 onerror="this.style.display='none'">
+
+                            <div class="publication-content">
+                                <span class="date">Paweł Łoziński</span>
+                                <h3>Nawet nie wiesz jak Cię kocham <span style="font-weight:400; opacity:0.7;">(You Don't Even Know How Much I Love You)</span></h3>
+                                <div class="role">Systemic Psychology · Polish documentary</div>
+                                <p>A film that brilliantly shows how relationships work.</p>
+                                <p style="margin-top: 10px;">
+                                    <a href="https://www.filmweb.pl/film/Nawet+nie+wiesz%2C+jak+bardzo+Ci%C4%99+kocham-2016-765221" target="_blank" style="color: #8ecae6; text-decoration: underline;">
+                                        <i class="fa-solid fa-film"></i> FilmWeb
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="filmy">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_books/Smarzowski - Kuracja.jpeg"
+                                 alt="Kuracja"
+                                 class="publication-cover"
+                                 onerror="this.style.display='none'">
+
+                            <div class="publication-content">
+                                <span class="date">Wojciech Smarzowski</span>
+                                <h3>Kuracja <span style="font-weight:400; opacity:0.7;">(The Cure, TV Theatre)</span></h3>
+                                <div class="role">Psychology · Polish TV theatre</div>
+                                <p>A film every psychology student should watch!</p>
+                                <p style="margin-top: 10px;">
+                                    <a href="https://www.youtube.com/watch?v=-dgrNOASeUQ" target="_blank" style="color: #8ecae6; text-decoration: underline;">
+                                        <i class="fa-brands fa-youtube"></i> YouTube
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_books/Yalom Irvin D. - Istoty ulotne. Opowieści psychoterapeutyczne.jpg"
+                                 alt="Istoty Ulotne"
+                                 class="publication-cover"
+                                 onerror="this.style.display='none'">
+
+                            <div class="publication-content">
+                                <span class="date">Irvin Yalom</span>
+                                <h3>Istoty ulotne. Opowieści psychoterapeutyczne <span style="font-weight:400; opacity:0.7;">(Polish edition, psychotherapy short stories)</span></h3>
+                                <div class="role">Psychology Literature</div>
+                                <p>I thought about this book for a long time, because it stirs up various emotions in me... maybe because it talks about how fleeting life is.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="psychologiczne">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_books/Jon Frederickson - Kłamstwa, którymi żyjemy. Jak zmierzyć się z prawdą, zaakceptować siebie i zmienić swoje życie.jpg"
+                                 alt="Kłamstwa którymi żyjemy"
+                                 class="publication-cover"
+                                 onerror="this.style.display='none'">
+
+                            <div class="publication-content">
+                                <span class="date">Jon Frederickson</span>
+                                <h3>Kłamstwa, którymi żyjemy <span style="font-weight:400; opacity:0.7;">(Polish edition - Lies We Live By)</span></h3>
+                                <div class="role">Psychology / Personal Growth</div>
+                                <p>One of those books that makes you cry – not because a character dies. You cry because something in you dies... and is reborn at the same time.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position: relative; width: 100%; padding: 20px 10px; background: transparent; z-index: 10; margin-top: 40px;">
+        <div class="footer-content" style="pointer-events: auto;">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025–2026 Filip Liebersbach. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/background.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/list.js"></script>
+</body>
+</html>
