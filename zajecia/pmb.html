@@ -99,31 +99,6 @@
         <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
-    <script>
-        // --- Skrypt nawigacji ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const mobileBtn = document.querySelector('.mobile-menu-button');
-            const mobileMenu = document.querySelector('.mobile-menu-popover');
-            
-            if (mobileBtn && mobileMenu) {
-                mobileBtn.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('active');
-                    
-                    const lines = mobileBtn.querySelectorAll('.hamburger-line');
-                    if(mobileMenu.classList.contains('active')) {
-                        gsap.to(lines[0], { rotation: 45, y: 8, duration: 0.3 });
-                        gsap.to(lines[1], { opacity: 0, duration: 0.3 });
-                        gsap.to(lines[2], { rotation: -45, y: -8, duration: 0.3 });
-                    } else {
-                        gsap.to(lines, { rotation: 0, y: 0, opacity: 1, duration: 0.3 });
-                    }
-                });
-            }
-        });
-
-        // --- Skrypt tła ---
-       
-    </script>
     <script src="../js/background.js"></script>
     <script src="../js/nav.js"></script>
 </body>
