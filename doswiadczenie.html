@@ -90,11 +90,16 @@
                 <h1>Doświadczenie</h1>
             </div>
 
+            <div class="tab-switcher">
+                <button class="tab-btn active" data-tab="praca">Praca</button>
+                <button class="tab-btn" data-tab="edukacja">Edukacja</button>
+            </div>
+
+            <div class="tab-panel active" data-panel="praca">
             <div class="filter-container">
                 <button class="filter-btn active" data-filter="all">Wszystkie</button>
                 <button class="filter-btn" data-filter="naukowe"><i class="fa-solid fa-microscope"></i> Naukowe</button>
                 <button class="filter-btn" data-filter="dydaktyczne"><i class="fa-solid fa-paste"></i> Dydaktyczne</button>
-                <button class="filter-btn" data-filter="edukacja"><i class="fa-solid fa-graduation-cap"></i> Edukacja</button>
                 <button class="filter-btn" data-filter="inne"><i class="fa-solid fa-user-group"></i> Inne</button>
             </div>
 
@@ -296,20 +301,22 @@
                         </div>
                     </div>
 
-                    <div class="list-item" data-category="edukacja">
-                        <div class="job-wrapper">
-                            <img src="images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+                </div>
+            </div>
+            </div>
 
-                            <div>
-                                <span class="date">2019 - 2024</span>
-                                <h3>Uniwersytet SWPS, Wrocław</h3>
-                                <div class="role">Studia Magisterskie, Psychologia</div>
-                                <p>Praca magisterska: "Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym". Ocena za staż badawczy: celująca (5.0), pod opieką prof. Dariusza Dolińskiego.</p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="tab-panel" data-panel="edukacja">
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">Wszystkie</button>
+                <button class="filter-btn" data-filter="studia"><i class="fa-solid fa-graduation-cap"></i> Studia</button>
+                <button class="filter-btn" data-filter="podyplomowe"><i class="fa-solid fa-user-graduate"></i> Podyplomowe</button>
+                <button class="filter-btn" data-filter="szkolenia"><i class="fa-solid fa-chalkboard-user"></i> Szkolenia</button>
+            </div>
 
-                    <div class="list-item" data-category="edukacja">
+            <div class="scroll-list-container">
+                <div class="scroll-list">
+
+                    <div class="list-item" data-category="podyplomowe">
                         <div class="job-wrapper">
                             <img src="images/images_experience/U DSW.jpeg" alt="DSW Logo" class="job-logo" onerror="this.style.display='none'">
 
@@ -322,33 +329,7 @@
                         </div>
                     </div>
 
-                    <div class="list-item" data-category="edukacja">
-                        <div class="job-wrapper">
-                            <img src="images/logo.png" alt="Sages Logo" class="job-logo" onerror="this.style.display='none'">
-
-                            <div>
-                                <span class="date">2023 - 2024</span>
-                                <h3>Sages</h3>
-                                <div class="role">Advanced Data Science Program (420h)</div>
-                                <p>Intensywny program obejmujący programowanie w Pythonie, uczenie maszynowe, modelowanie regresyjne i rachunek prawdopodobieństwa.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item" data-category="edukacja">
-                        <div class="job-wrapper">
-                            <img src="images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
-
-                            <div>
-                                <span class="date">2022</span>
-                                <h3>Uniwersytet SWPS</h3>
-                                <div class="role">Program Trenerski (54h)</div>
-                                <p>Profesjonalne przygotowanie do prowadzenia grup warsztatowych na uczelni.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-item" data-category="edukacja">
+                    <div class="list-item" data-category="szkolenia">
                         <div class="job-wrapper">
                             <img src="images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
 
@@ -361,7 +342,47 @@
                         </div>
                     </div>
 
+                    <div class="list-item" data-category="studia">
+                        <div class="job-wrapper">
+                            <img src="images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2019 - 2024</span>
+                                <h3>Uniwersytet SWPS, Wrocław</h3>
+                                <div class="role">Studia Magisterskie, Psychologia</div>
+                                <p>Praca magisterska: "Związek medialnej wielozadaniowości z narcyzmem i lękiem społecznym". Ocena za staż badawczy: celująca (5.0), pod opieką prof. Dariusza Dolińskiego.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="szkolenia">
+                        <div class="job-wrapper">
+                            <img src="images/logo.png" alt="Sages Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2023 - 2024</span>
+                                <h3>Sages</h3>
+                                <div class="role">Advanced Data Science Program (420h)</div>
+                                <p>Intensywny program obejmujący programowanie w Pythonie, uczenie maszynowe, modelowanie regresyjne i rachunek prawdopodobieństwa.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="szkolenia">
+                        <div class="job-wrapper">
+                            <img src="images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2022</span>
+                                <h3>Uniwersytet SWPS</h3>
+                                <div class="role">Program Trenerski (54h)</div>
+                                <p>Profesjonalne przygotowanie do prowadzenia grup warsztatowych na uczelni.</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
             </div>
         </div>
     </main>
