@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /narzedzia/pubquiz.html
+
+Sitemap: https://lieberfilip.pl/sitemap.xml
