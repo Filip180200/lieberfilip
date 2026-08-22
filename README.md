@@ -46,3 +46,7 @@ npx serve .
 ## Wdrożenie
 
 Strona jest hostowana na GitHub Pages i wpięta pod własną domenę przez plik `CNAME` (`lieberfilip.pl`). Wypchnięcie zmian na branch `main` publikuje je automatycznie.
+
+## Dodawanie treści (doświadczenie, publikacje, projekty)
+
+Zobacz [CLAUDE.md](CLAUDE.md) — opisuje jak przełożyć wpis z CV Filipa (`CV.md` w Obsidianie) na fragment HTML w `doswiadczenie.html`, `publikacje.html` lub `projekty.html`, wraz z gotowymi szablonami i listą dozwolonych kategorii filtrowania.
