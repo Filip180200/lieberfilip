@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WKCSKFHS');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Filip Liebersbach</title>
+    <meta name="description" content="Academic and educational projects by Filip Liebersbach, including collaborations with EFPSA, PSSiAP, and Studencki Wieczór." />
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* Odblokowany scroll (strona ma klase page-scroll) */
+        body { background: transparent; overflow-y: auto; overflow-x: hidden; }
+
+        /* --- STYL DLA PROJEKTÓW (Logo + Tekst) --- */
+        .project-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .project-logo {
+            width: 90px;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .project-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .project-logo {
+                width: 100px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKCSKFHS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <canvas id="squares-canvas"></canvas>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="../en.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="experience.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Experience</span><span class="pill-label-hover">Experience</span></span></a></li>
+                        <li><a href="projects.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projects</span><span class="pill-label-hover">Projects</span></span></a></li>
+                        <li><a href="publications.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publications</span><span class="pill-label-hover">Publications</span></span></a></li>
+                        <li><a href="recommendations.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Recommendations</span><span class="pill-label-hover">Recommendations</span></span></a></li>
+                        <li><a href="classes.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Classes</span><span class="pill-label-hover">Classes</span></span></a></li>
+                        <li><a href="../projekty.html" class="pill-logo glass-effect" title="Wersja polska" aria-label="Switch to Polish"><span class="flag-icon">🇵🇱</span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="experience.html" class="mobile-menu-link">Experience</a></li>
+                        <li><a href="projects.html" class="mobile-menu-link">Projects</a></li>
+                        <li><a href="publications.html" class="mobile-menu-link">Publications</a></li>
+                        <li><a href="recommendations.html" class="mobile-menu-link">Recommendations</a></li>
+                        <li><a href="classes.html" class="mobile-menu-link">Classes</a></li>
+                        <li><a href="../projekty.html" class="mobile-menu-link">🇵🇱 Polski</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="intro page-scroll">
+        <div class="main_content glass-effect list-layout">
+
+            <div class="content-header">
+                <h1>Projects</h1>
+                <p>Ongoing initiatives and research</p>
+            </div>
+
+            <div class="scroll-list-container">
+                <div class="scroll-list">
+
+
+                    <div class="list-item" data-category="spoleczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/efpsa_scie.png" alt="EU Project Icon" class="project-logo" onerror="this.style.display='none'">
+                            <div>
+                                <span class="date">December 2025</span>
+                                <h3>6th EFPSA Scientific Conference</h3>
+                                <div class="role">Organizing Committee - Social Team</div>
+                                <p>Organizing a scientific conference!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="spoleczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/ue.png" alt="EU Project Icon" class="project-logo" onerror="this.style.display='none'">
+                            <div>
+                                <span class="date">March 2025</span>
+                                <h3>EU Project Chaperone</h3>
+                                <div class="role">Project: 2023-1-IT01-KA121-VET-000123204</div>
+                                <p>Project co-financed by the European Union. Participated as a chaperone for accompanying persons (09/03/2025 - 23/03/2025). Monitored internships, evaluated results, organized cultural activities, assisted participants, and served as the local representative in Spain.</p>
+                                <p style="margin-top: 8px;">
+                                    <a href="../images/images_projekty/Certificado profes Filip firmados.pdf" target="_blank" style="color: #8ecae6; text-decoration: underline; font-size: 0.9em;">
+                                        <i class="fa-solid fa-file-pdf"></i> See certificate (PDF)
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="analityczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/python.png" alt="Python Logo" class="project-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2023 - 2024</span>
+                                <h3>Python Programming Course</h3>
+                                <div class="role">Instructor</div>
+                                <p>Designed and taught a Python programming course at SWPS University.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="spoleczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/13dni.png" alt="12th Psychology Days" class="project-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2023</span>
+                                <h3>12th Psychology Days</h3>
+                                <div class="role">Finance Coordinator</div>
+                                <p>A popular-science conference promoting knowledge about psychology.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="badawcze">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/efpsa.png" alt="EFPSA RSS" class="project-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">Summer 2024</span>
+                                <h3>EFPSA Research Summer School 2024</h3>
+                                <div class="role">Finance Assistant</div>
+                                <p>An eight-day event kicking off EFPSA's year-long research program, bringing together psychology students, PhD candidates, and researchers from across Europe.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="analityczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/pssiap.png" alt="PSSIAP Logo" class="project-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2024</span>
+                                <h3>PSSIAP Invoicing System</h3>
+                                <div class="role">Vice-President of Finance</div>
+                                <p>Introduced an electronic invoice settlement system and automated analysis of membership transfers. Implemented regulations and electronic event reporting.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="spoleczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/pssiap.png" alt="PSSIAP Logo" class="project-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2024</span>
+                                <h3>Running the Coaching Section</h3>
+                                <div class="role">Section Coordinator</div>
+                                <p>Introduced a new way of running the section (discussing and practicing lesson outlines). Built relationships and ran workshops at the Medical University, University of Wrocław, and in schools.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="spoleczne">
+                        <div class="project-wrapper">
+                            <img src="../images/images_projekty/sw.png" alt="Studencki Wieczór" class="project-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2021 - 2022</span>
+                                <h3>Studencki Wieczór (Student Evening)</h3>
+                                <div class="role">Project Coordinator</div>
+                                <p>Online student meetups (during the pandemic) aimed at fostering integration. Organized on behalf of the SWPS University Student Government.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position: relative; width: 100%; padding: 20px 10px; background: transparent; z-index: 10; margin-top: 40px;">
+        <div class="footer-content" style="pointer-events: auto;">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025–2026 Filip Liebersbach. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/background.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/list.js"></script>
+</body>
+</html>
