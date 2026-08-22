@@ -8,12 +8,14 @@ Filip prowadzi swoje CV w Obsidianie: `C:\Users\liebe\Desktop\obsidian\10 Me\CV.
 
 ## Mapowanie sekcji CV.md → podstrony
 
-| Sekcja w CV.md | Podstrona | Wrapper | Logo/okładka |
-|---|---|---|---|
-| Teaching Experience, Professional Experience, Grants and Research Projects (rola wykonawcza), Leadership/Memberships | `doswiadczenie.html` | `.job-wrapper` | `.job-logo` |
-| Key Publications, Conference Presentations (referaty/postery) | `publikacje.html` | `.publication-wrapper` | `.publication-cover` |
-| Grants and Research Projects (duże projekty), Conference and Event Organization | `projekty.html` | `.project-wrapper` | `.project-logo` |
-| (książki/filmy polecane — nie ma odpowiednika w CV.md) | `rekomendacje.html` | `.publication-wrapper` | `.publication-cover` |
+| Sekcja w CV.md | Podstrona (PL) | Odpowiednik EN | Wrapper | Logo/okładka |
+|---|---|---|---|---|
+| Teaching Experience, Professional Experience, Grants and Research Projects (rola wykonawcza), Leadership/Memberships | `doswiadczenie.html` | `en/experience.html` | `.job-wrapper` | `.job-logo` |
+| Key Publications, Conference Presentations (referaty/postery) | `publikacje.html` | `en/publications.html` | `.publication-wrapper` | `.publication-cover` |
+| Grants and Research Projects (duże projekty), Conference and Event Organization | `projekty.html` | `en/projects.html` | `.project-wrapper` | `.project-logo` |
+| (książki/filmy polecane — nie ma odpowiednika w CV.md) | `rekomendacje.html` | `en/recommendations.html` | `.publication-wrapper` | `.publication-cover` |
+| (podstrony "Zajęcia") | `zajecia.html` | `en/classes.html` | — | — |
+| (strona główna) | `index.html` | `en.html` | — | — |
 
 Każda z tych stron ma tę samą architekturę: `.main_content.list-layout` → `.scroll-list-container` → `.scroll-list` → seria `.list-item[data-category="..."]`. Przyciski filtrowania nad listą (`.filter-btn[data-filter="..."]`) muszą zgadzać się z wartościami `data-category` używanymi w `.list-item` — **nie wymyślaj nowej kategorii bez pytania użytkownika**, bo zepsujesz filtrowanie (obsługiwane przez `js/list.js`).
 
@@ -22,6 +24,18 @@ Dozwolone `data-category` na dziś:
 - `publikacje.html`: `artykul`, `prezentacje`, `plakaty`
 - `projekty.html`: `spoleczne`, `analityczne`, `badawcze` (uwaga: ta strona ma kategorie w danych, ale nie ma obecnie widocznych przycisków filtrowania — sprawdź `<div class="filter-container">` zanim założysz, że jest)
 - `rekomendacje.html`: `naukowe`, `psychologiczne`, `filmy`
+
+## Wersja angielska (en/)
+
+Strona ma angielski odpowiednik dla każdej z głównych podstron (patrz kolumna "Odpowiednik EN" w tabeli wyżej), pod `<html lang="en">`, w plikach `en/*.html` (oraz `en.html` w katalogu głównym dla strony startowej). **Od kiedy dodano tłumaczenie, każdy nowy wpis dodany po polsku (doświadczenie, publikacja, projekt, rekomendacja) trzeba też dodać w analogicznym pliku angielskim** — to nie jest opcjonalne rozszerzenie, tylko stały obowiązek przy edycji treści:
+
+- Tłumaczenie przygotowuje AI (nie trzeba pytać użytkownika o angielski tekst), sięgając do CV.md, jeśli fragment stamtąd pochodzi (np. tytuły publikacji/referatów po angielsku są już w CV.md — kopiuj je dokładnie zamiast tłumaczyć od nowa).
+- Nazwy własne (uczelnie, instytucje, tytuły polskich książek/filmów w `rekomendacje.html`) zostają w oryginale; ewentualny angielski glosariusz dodaj jako `<span style="font-weight:400; opacity:0.7;">(...)</span>` obok tytułu — tak jak w istniejących wpisach `en/recommendations.html`.
+- `data-category` w `en/*.html` używa **tych samych identyfikatorów co po polsku** (np. `naukowe`, `dydaktyczne`, `artykul`) — tłumaczone jest tylko widoczne `data-filter`-owe etykietki przycisków, nie same wartości atrybutu.
+- Ścieżki zasobów w `en/*.html` mają prefiks `../` (np. `../styles.css`, `../images/...`, `../js/list.js`), bo pliki leżą w podkatalogu `en/`.
+- `doswiadczenie.html` / `en/experience.html` mają dodatkowo dwie zakładki (`.tab-switcher` / `.tab-btn` / `.tab-panel[data-panel="praca"|"edukacja"]`) — polskie etykiety to "Działalność"/"Wykształcenie", angielskie to "Work"/"Education" (same `data-tab` wewnętrznie). Nowy wpis trzeba dodać do właściwej zakładki w OBU wersjach językowych.
+- Każda strona PL i jej odpowiednik EN mają wzajemny link z flagą (`.pill-logo` + `<span class="flag-icon">🇬🇧</span>` / `🇵🇱`) w nawigacji (desktop `.pill-list` i mobile `.mobile-menu-list`) — nowa podstrona wymaga tego linku w obie strony.
+- Po dodaniu wpisu w obu wersjach zweryfikuj filtrowanie/zakładki na obu stronach (PL i EN) przed zgłoszeniem zadania jako zakończone.
 
 ## Szablon wpisu — doswiadczenie.html
 

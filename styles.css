@@ -114,7 +114,10 @@ body {
 }
 
 /* Przycisk zmiany jezyka (flaga), stylizowany jak pill-logo */
-.flag-icon { font-size: 1.5rem; line-height: 1; }
+/* Uzywamy biblioteki flag-icons (SVG, klasy .fi.fi-xx) zamiast emoji flag,
+   bo systemowe fonty (m.in. Windows) czesto renderuja flagi emoji jako zwykly tekst "GB"/"PL" */
+.flag-icon { font-size: 1.4rem; line-height: 1; border-radius: 3px; overflow: hidden; }
+.mobile-menu-link .fi { margin-right: 8px; vertical-align: middle; }
 
 /* Menu Items */
 .pill-nav-items {
