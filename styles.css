@@ -366,6 +366,53 @@ body::before {
 .list-item.in-view { opacity: 1; transform: scale(1); }
 .list-item:not(.in-view) { opacity: 0; transform: scale(0.95); }
 
+/* --- DUZE PRZYCISKI MENU (zajecia.html, poradniki.html, mb/pmb/spoleczna/statystyka, narzedzia) --- */
+.menu-buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+
+    transition: all 0.3s ease;
+}
+
+.menu-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.menu-button i {
+    font-size: 1.4rem;
+    color: #8ecae6;
+}
+
 /* --- MEDIA QUERIES --- */
 @media (max-width: 900px) {
     .intro { height: auto; min-height: 100vh; overflow: visible; padding-top: 100px; padding-bottom: 40px; }
