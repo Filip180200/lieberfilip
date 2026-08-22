@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Przydatne Linki – Narzędzia Naukowe</title>
+<link rel="stylesheet" href="../styles.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="icon" href="../images/logo.png" type="image/x-icon">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -52,7 +56,7 @@
 
   .hero {
     position: relative;
-    padding: 64px 24px 48px;
+    padding: 140px 24px 48px;
     text-align: center;
     background: linear-gradient(180deg, rgba(79,163,224,0.08) 0%, transparent 100%);
     border-bottom: 1px solid var(--border);
@@ -332,6 +336,27 @@
 </head>
 <body>
 
+<header>
+    <div class="pill-nav-container">
+        <nav class="pill-nav">
+            <a href="../index.html" class="pill-logo glass-effect">
+                <img src="../images/logo.png" alt="Logo" />
+            </a>
+            <div class="pill-nav-items">
+                <ul class="pill-list">
+                    <li><a href="../zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
+                </ul>
+            </div>
+            <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+            <div class="mobile-menu-popover">
+                <ul class="mobile-menu-list">
+                    <li><a href="../zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
 <div class="hero">
   <div class="hero-label">Przewodnik badacza</div>
   <h1>Przydatne Linki</h1>
@@ -595,5 +620,20 @@
 
 </div>
 
+<footer>
+    <div class="footer-content" style="pointer-events: auto;">
+        <div class="social-icons">
+            <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+            <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+            <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+        </div>
+        <div class="contact-info" style="font-size: 0.7em;">
+            <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+        </div>
+    </div>
+    <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
+</footer>
+
+<script src="../nav.js"></script>
 </body>
 </html>
