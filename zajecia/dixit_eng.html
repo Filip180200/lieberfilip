@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dixit Card Viewer (Fixed Fullscreen Size)</title>
 
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <style>
@@ -158,18 +158,18 @@
     <header>
         <div class="pill-nav-container">
             <nav class="pill-nav">
-                <a href="index.html" class="pill-logo glass-effect">
-                    <img src="images/logo.png" alt="Logo" />
+                <a href="../index.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
                 </a>
                 <div class="pill-nav-items">
                     <ul class="pill-list">
-                        <li><a href="zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
+                        <li><a href="../zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
                     </ul>
                 </div>
                 <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
                 <div class="mobile-menu-popover">
                     <ul class="mobile-menu-list">
-                        <li><a href="zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
+                        <li><a href="../zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
                     </ul>
                 </div>
             </nav>
@@ -197,8 +197,8 @@
             const cardId = i + 1;
             return {
                 id: cardId,
-                // Względna ścieżka do Twoich plików: dixit/1.png, dixit/2.png, itd.
-                imageUrl: `dixit/${cardId}.png` 
+                // Względna ścieżka do Twoich plików: ../dixit/1.png, ../dixit/2.png, itd.
+                imageUrl: `../dixit/${cardId}.png`
             };
         });
 
@@ -257,7 +257,7 @@
         <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
     </footer>
 
-    <script src="background.js"></script>
-    <script src="nav.js"></script>
+    <script src="../background.js"></script>
+    <script src="../nav.js"></script>
 </body>
 </html>
