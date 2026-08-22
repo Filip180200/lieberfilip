@@ -14,10 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     
     <style>
-        /* Blokada scrolla strony na PC */
-        body { background: transparent; overflow: hidden; }
-        /* Odblokowanie na telefonach */
-        @media (max-width: 900px) { body { overflow: auto; } }
+        /* Odblokowany scroll (strona ma klase page-scroll) */
+        body { background: transparent; overflow-y: auto; overflow-x: hidden; }
 
         /* --- STYL UJEDNOLICONY Z PUBLIKACJAMI (Okładka + Tekst) --- */
         .publication-wrapper {
