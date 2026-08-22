@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dixit: 84 Karty + Edycja</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
     <style>
+        #squares-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-color: #111; pointer-events: none;
+        }
+
         :root {
             --card-width: 200px;
             --card-height: 300px;
-            --bg-color: #2c3e50;
             --accent-color: #e67e22;
             --select-color: #2ecc71;
             --remove-color: #e74c3c;
@@ -16,15 +26,15 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
+            background: transparent;
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 100px 20px 40px;
         }
 
         h1 {
@@ -33,20 +43,25 @@
             text-align: center;
         }
 
-        /* Panel sterowania */
+        /* Panel sterowania (warianty glass-effect: te same wartości blur/border/shadow) */
         .controls {
             margin-bottom: 30px;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
-            background: rgba(0,0,0,0.2);
             padding: 20px;
             border-radius: 15px;
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4);
         }
 
         button {
@@ -91,15 +106,17 @@
             padding-bottom: 50px;
         }
 
-        /* Stylizacja karty (wspólna) */
+        /* Stylizacja karty (wspólna) - warianty glass-effect: te same wartości border/shadow */
         .card {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4);
             position: relative;
             background-color: #fff;
             transition: transform 0.2s, border 0.2s;
-            border: 4px solid white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .card img {
@@ -241,8 +258,10 @@
             max-width: 90%;
             max-height: 85vh;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
-            border: 5px solid white;
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .modal-close {
@@ -268,6 +287,28 @@
     </style>
 </head>
 <body>
+    <canvas id="squares-canvas"></canvas>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="zajecia.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Zajęcia</span><span class="pill-label-hover">Zajęcia</span></span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="zajecia.html" class="mobile-menu-link">Zajęcia</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
 
     <h1>🐰 Dixit: Talia 84 Kart</h1>
 
@@ -455,5 +496,21 @@
         });
     </script>
 
+    <footer>
+        <div class="footer-content" style="pointer-events: auto;">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025 Filip Liebersbach. Wszelkie prawa zastrzeżone.</div>
+    </footer>
+
+    <script src="background.js"></script>
+    <script src="nav.js"></script>
 </body>
 </html>
