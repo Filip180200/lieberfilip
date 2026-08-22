@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WKCSKFHS');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experience - Filip Liebersbach</title>
+    <meta name="description" content="Filip Liebersbach's professional and teaching experience – working with students, research projects, and academic collaborations." />
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* Odblokowujemy scroll */
+        body { background: transparent; overflow-y: auto; overflow-x: hidden; }
+
+        /* --- NOWE STYLE DLA LOGOTYPÓW W DOŚWIADCZENIU --- */
+        .job-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: center; /* Wyśrodkowanie w pionie */
+        }
+
+        .job-logo {
+            width: 80px;             /* Rozmiar logo */
+            aspect-ratio: 1 / 1;     /* Kwadrat */
+            object-fit: contain;     /* Całe logo widoczne */
+            background: rgba(255, 255, 255, 0.35); /* Lekkie tło */
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;          /* Nie zgniataj */
+        }
+
+        /* Mobilne */
+        @media (max-width: 600px) {
+            .job-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .job-logo {
+                width: 90px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKCSKFHS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <canvas id="squares-canvas"></canvas>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="../en.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="experience.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Experience</span><span class="pill-label-hover">Experience</span></span></a></li>
+                        <li><a href="projects.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projects</span><span class="pill-label-hover">Projects</span></span></a></li>
+                        <li><a href="publications.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publications</span><span class="pill-label-hover">Publications</span></span></a></li>
+                        <li><a href="recommendations.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Recommendations</span><span class="pill-label-hover">Recommendations</span></span></a></li>
+                        <li><a href="classes.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Classes</span><span class="pill-label-hover">Classes</span></span></a></li>
+                        <li><a href="../doswiadczenie.html" class="pill-logo glass-effect" title="Wersja polska" aria-label="Switch to Polish"><span class="flag-icon">🇵🇱</span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="experience.html" class="mobile-menu-link">Experience</a></li>
+                        <li><a href="projects.html" class="mobile-menu-link">Projects</a></li>
+                        <li><a href="publications.html" class="mobile-menu-link">Publications</a></li>
+                        <li><a href="recommendations.html" class="mobile-menu-link">Recommendations</a></li>
+                        <li><a href="classes.html" class="mobile-menu-link">Classes</a></li>
+                        <li><a href="../doswiadczenie.html" class="mobile-menu-link">🇵🇱 Polski</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="intro page-scroll">
+        <div class="main_content glass-effect list-layout">
+
+            <div class="content-header">
+                <h1>Experience</h1>
+            </div>
+
+            <div class="tab-switcher">
+                <button class="tab-btn active" data-tab="praca">Work</button>
+                <button class="tab-btn" data-tab="edukacja">Education</button>
+            </div>
+
+            <div class="tab-panel active" data-panel="praca">
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="naukowe"><i class="fa-solid fa-microscope"></i> Research</button>
+                <button class="filter-btn" data-filter="dydaktyczne"><i class="fa-solid fa-paste"></i> Teaching</button>
+                <button class="filter-btn" data-filter="inne"><i class="fa-solid fa-user-group"></i> Other</button>
+            </div>
+
+            <div class="scroll-list-container">
+                <div class="scroll-list">
+
+                    <div class="list-item" data-category="naukowe">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2025 – Present</span>
+                                <h3>SWPS University</h3>
+                                <div class="role">Research Collaborator (NCN MINIATURA 8 grant)</div>
+                                <p>Project "Online interactions and their potential to strengthen social polarization: a direct and conceptual replication of research on the disagreement effect" (PI: dr Kamil Antoni Izydorczak, funding: PLN 49,710). Designing e-study infrastructure and preparing a manuscript in Registered Report format.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U DSW.jpeg" alt="DSW Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">October 2024 – Present</span>
+                                <h3>University of Lower Silesia DSW, Wrocław</h3>
+                                <div class="role">Teaching Assistant</div>
+                                <p>Since October 2024, teaching classes in psychology and physiology of vision, as well as managerial competence training. </br>Since October 2025, employed full-time in a teaching role (statistics, social psychology). </br>Supervisor of student internships.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">October 2024 – Present</span>
+                                <h3>SWPS University, Wrocław Branch</h3>
+                                <div class="role">Teaching Assistant</div>
+                                <p>In the 2024/2025 academic year, taught introductory Python programming classes. </br>Since October 2025, teaching academic skills classes (information technology).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                         <div class="job-wrapper">
+                            <img src="../images/images_experience/szkola.jpg" alt="School Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">September 2024 – August 2025</span>
+                                <h3>FECDIE Special School Complex</h3>
+                                <div class="role">School Psychologist</div>
+                                <p>Providing psychological support to students, running prevention and health-promotion classes, collaborating with parents and teachers, diagnosing student needs.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/tryevidence.png" alt="TryEvidence Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">May 2024 – July 2024</span>
+                                <h3>TryEvidence</h3>
+                                <div class="role">Internship: Games User Research</div>
+                                <p>Participated in designing and conducting user experience research for video games. Quantitative and qualitative data analysis, preparation of research reports.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">May 2023 – August 2023; March – April 2024</span>
+                                <h3>SWPS University, Wrocław Branch</h3>
+                                <div class="role">Researcher</div>
+                                <p>Collaboration on NAWA grants No. BPN GIN 2022-1-00035 and No. 1288-31 (PI: prof. Tomasz Grzyb), conducting field and experimental research, recruiting participants, and ensuring adherence to research procedures.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/pssiap.png" alt="PSSIAP Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2023 – 2025</span>
+                                <h3>Polish Association of Psychology Students and Graduates (PSSIAP)</h3>
+                                <div class="role">Vice-President of Finance and Coaching Section Coordinator</div>
+                                <p>Automated conference financial settlement and budgeting systems, managed organizational resources. Managed the coaching section: recruiting and training new coaches, coordinating workshop projects, and organizing events promoting psychological knowledge.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/giganci.png" alt="Giganci Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">December 2023 – December 2024</span>
+                                <h3>Giganci Programowania sp. z o.o.</h3>
+                                <div class="role">Programming Instructor</div>
+                                <p>Taught programming classes (Scratch, Minecraft, Python) to children and teenagers aged 7-12. Developed logical thinking and creativity in the students.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">October 2023 – December 2023; 2021</span>
+                                <h3>SWPS University, Wrocław Branch</h3>
+                                <div class="role">Teaching Assistant (Support)</div>
+                                <p>Assisted in teaching empirical project and statistics classes. Supported students with statistical software (SPSS/Jamovi).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">March 2022 – March 2023</span>
+                                <h3>SWPS University, Wrocław Branch</h3>
+                                <div class="role">Workshop Facilitator for Teenagers</div>
+                                <p>Designed and led psychological workshops for high school students. Topics: stress management, self-presentation, effective learning.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">March 2022 – February 2023</span>
+                                <h3>SWPS University, Wrocław Branch</h3>
+                                <div class="role">Admissions Assistant</div>
+                                <p>Assisted prospective students, provided information about the educational offer, verified application documents, and supported the administrative process.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">January 2022 – October 2022</span>
+                                <h3>SWPS University, Wrocław Branch</h3>
+                                <div class="role">Internship: Research</div>
+                                <p>Planned and conducted field research under the supervision of prof. Dariusz Doliński. Statistical data analysis, literature review, and contributions to publication preparation.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="inne">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/promitis.png" alt="Promotis Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">October 2021 – April 2022</span>
+                                <h3>Promotis – Special Needs Preschool</h3>
+                                <div class="role">Therapist's Assistant</div>
+                                <p>Supported therapists in running individual and group activities for children on the autism spectrum. Assisted with self-care activities.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="dydaktyczne">
+                        <div class="job-wrapper">
+                            <img src="../images/logo.png" alt="My Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">October 2020 – Present</span>
+                                <h3>Independent Work</h3>
+                                <div class="role">Tutor</div>
+                                <p>Tutoring students in statistics, research methodology, and statistical software (SPSS, Jamovi, Python). Helping with data analysis for theses.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="naukowe">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2019 – 2020</span>
+                                <h3>SWPS University, Synergia Student Research Group</h3>
+                                <div class="role">Project Initiator and Lead</div>
+                                <p>Project "Cognitive mechanisms of false memory formation" under the supervision of dr Katarzyna Kulwicka. Designed an experimental paradigm based on the misinformation effect, prepared stimulus materials, and coordinated data collection.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+
+            <div class="tab-panel" data-panel="edukacja">
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="studia"><i class="fa-solid fa-graduation-cap"></i> Studies</button>
+                <button class="filter-btn" data-filter="podyplomowe"><i class="fa-solid fa-user-graduate"></i> Postgraduate</button>
+                <button class="filter-btn" data-filter="szkolenia"><i class="fa-solid fa-chalkboard-user"></i> Trainings</button>
+            </div>
+
+            <div class="scroll-list-container">
+                <div class="scroll-list">
+
+                    <div class="list-item" data-category="podyplomowe">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U DSW.jpeg" alt="DSW Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2024 – 2026</span>
+                                <h3>University of Lower Silesia DSW, Wrocław</h3>
+                                <div class="role">Postgraduate Studies – Pedagogical Preparation</div>
+                                <p>Postgraduate studies preparing for university-level teaching work.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="szkolenia">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2025 – 2026</span>
+                                <h3>SWPS University</h3>
+                                <div class="role">Academic Competencies Week Certificates</div>
+                                <p>10 completed trainings, including: data analysis and visualization in R with the Google Gemini model, coding and analysis of text data in MAXQDA, using generative AI in qualitative analysis, research data management, running master's seminars, and responding to crisis situations in the classroom.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="studia">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2019 – 2024</span>
+                                <h3>SWPS University, Wrocław</h3>
+                                <div class="role">Master's Studies, Psychology</div>
+                                <p>Master's thesis: "The relationship between media multitasking, narcissism, and social anxiety." Research internship grade: excellent (5.0), supervised by prof. Dariusz Doliński.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="szkolenia">
+                        <div class="job-wrapper">
+                            <img src="../images/logo.png" alt="Sages Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2023 – 2024</span>
+                                <h3>Sages</h3>
+                                <div class="role">Advanced Data Science Program (420h)</div>
+                                <p>An intensive program covering Python programming, machine learning, regression modeling, and probability theory.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="szkolenia">
+                        <div class="job-wrapper">
+                            <img src="../images/images_experience/U SWPS.png" alt="SWPS Logo" class="job-logo" onerror="this.style.display='none'">
+
+                            <div>
+                                <span class="date">2022</span>
+                                <h3>SWPS University</h3>
+                                <div class="role">Coaching Program (54h)</div>
+                                <p>Professional preparation for leading workshop groups at the university.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position: relative; width: 100%; padding: 20px 10px; background: transparent; z-index: 10; margin-top: 40px;">
+        <div class="footer-content" style="pointer-events: auto;">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025–2026 Filip Liebersbach. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/background.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/list.js"></script>
+</body>
+</html>
