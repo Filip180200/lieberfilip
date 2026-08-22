@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WKCSKFHS');</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications - Filip Liebersbach</title>
+    <meta name="description" content="Academic publications and talks by Filip Liebersbach in psychology and statistics." />
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <style>
+        /* Odblokowany scroll (strona ma klase page-scroll) */
+        body { background: transparent; overflow-y: auto; overflow-x: hidden; }
+
+        .publication-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .publication-cover {
+            width: 100px;
+            height: 140px;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .publication-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .publication-cover {
+                width: 140px;
+                height: auto;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKCSKFHS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <canvas id="squares-canvas"></canvas>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="../en.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="experience.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Experience</span><span class="pill-label-hover">Experience</span></span></a></li>
+                        <li><a href="projects.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projects</span><span class="pill-label-hover">Projects</span></span></a></li>
+                        <li><a href="publications.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publications</span><span class="pill-label-hover">Publications</span></span></a></li>
+                        <li><a href="recommendations.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Recommendations</span><span class="pill-label-hover">Recommendations</span></span></a></li>
+                        <li><a href="classes.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Classes</span><span class="pill-label-hover">Classes</span></span></a></li>
+                        <li><a href="../publikacje.html" class="pill-logo glass-effect" title="Wersja polska" aria-label="Switch to Polish"><span class="flag-icon">🇵🇱</span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="experience.html" class="mobile-menu-link">Experience</a></li>
+                        <li><a href="projects.html" class="mobile-menu-link">Projects</a></li>
+                        <li><a href="publications.html" class="mobile-menu-link">Publications</a></li>
+                        <li><a href="recommendations.html" class="mobile-menu-link">Recommendations</a></li>
+                        <li><a href="classes.html" class="mobile-menu-link">Classes</a></li>
+                        <li><a href="../publikacje.html" class="mobile-menu-link">🇵🇱 Polski</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="intro page-scroll">
+        <div class="main_content glass-effect list-layout">
+
+            <div class="content-header">
+                <h1>Publications</h1>
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="artykul"><i class="fa-solid fa-file-pen"></i> Article</button>
+                <button class="filter-btn" data-filter="prezentacje"><i class="fa-solid fa-microphone-lines"></i> Talks</button>
+                <button class="filter-btn" data-filter="plakaty"><i class="fa-solid fa-image"></i> Posters</button>
+            </div>
+
+            <div class="scroll-list-container">
+                <div class="scroll-list">
+
+                    <div class="list-item" data-category="prezentacje">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_publikacje/efpsa_scie.png" alt="Cover" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2025</span>
+                                <h3>Online interactions and their potential to strengthen social polarization</h3>
+                                <div class="role">Authors: Kamil Izydorczak, Filip Liebersbach, Kamil Kornacki, Tadeusz Berkowski, Paweł Garduła, Bartosz Stolarski</div>
+                                <p>The aim of this work was to examine the potential of online interactions to strengthen social polarization.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="artykul">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_publikacje/social influence.jpg" alt="Cover" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2024</span>
+                                <h3>‘We are looking for people like you’ – new technique of social influence</h3>
+                                <div class="role">Authors: Dariusz Doliński, Tomasz Grzyb, Wojciech Kulesza, Piotr Błaszczyk, Dominik Laska, Filip Liebersbach, Diana Redkiewicz, Łukasz Strzelczyk</div>
+                                <p>A low response rate in surveys makes the research more expensive and time consuming, but it also, or even more importantly, constitutes a major methodological problem. Therefore, researchers use all kinds of measures in order to increase the response rate. This article describes four experiments.</p>
+                                <p style="margin-top: 10px;">
+                                    <a href="https://doi.org/10.1080/15534510.2024.2316348" target="_blank" style="color: #8ecae6; text-decoration: underline;">
+                                        <i class="fa-solid fa-link"></i> Link to the article
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="prezentacje">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_publikacje/PSPS.png" alt="Cover" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2025</span>
+                                <h3>Online interactions and their potential to strengthen social polarization</h3>
+                                <div class="role">Authors: Kamil Izydorczak, Filip Liebersbach, Kamil Kornacki, Tadeusz Berkowski, Paweł Garduła, Bartosz Stolarski</div>
+                                <p>The aim of this work was to examine the potential of online interactions to strengthen social polarization.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="prezentacje">
+                         <div class="publication-wrapper">
+                            <img src="../images/images_publikacje/PSPS.png" alt="Cover" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2024</span>
+                                <h3>Media multitasking, narcissism, and social anxiety</h3>
+                                <div class="role">Authors: Filip Liebersbach, Julita Koszur</div>
+                                <p>The aim of this work was to examine whether media multitasking is related to social anxiety and narcissism. The study involved students (N = 408).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="plakaty">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_publikacje/U SWPS.png" alt="Cover" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2024</span>
+                                <h3>Media multitasking, narcissism, and social anxiety among students</h3>
+                                <div class="role">Author: Filip Liebersbach</div>
+                                <p>The aim of this work was to examine whether media multitasking is related to social anxiety and narcissism. The study involved students (N = 408), who completed three questionnaires in random order: a media multitasking questionnaire, the Liebowitz Social Anxiety Scale, and the NPI narcissism questionnaire.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-item" data-category="prezentacje">
+                        <div class="publication-wrapper">
+                            <img src="../images/images_publikacje/pssiap_12_dni_psychologii.jpg" alt="Cover" class="publication-cover">
+
+                            <div class="publication-content">
+                                <span class="date">2023</span>
+                                <h3>Technoromance - How Technology Influences Our Relationships</h3>
+                                <div class="role">Authors: Filip Liebersbach, Krzysztof Wiatr</div>
+                                <p>During the 2023 Psychology Days Conference "Romances, Crimes, and Addictions," I presented an overview of research on the influence of technology on human relationships.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content" style="pointer-events: auto;">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025–2026 Filip Liebersbach. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/background.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/list.js"></script>
+</body>
+</html>
