@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wybór Współczynnika Korelacji: Pearson vs Spearman</title>
+    <title>Wybór Testu: t-Student vs Mann-Whitney</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background: transparent; }
@@ -32,8 +32,8 @@
 
     <div class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
         <header class="mb-4 text-center">
-            <h1 class="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Wybór Współczynnika Korelacji</h1>
-            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Badam związek między 2 zmiennymi</p>
+            <h1 class="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Wybór Testu Statystycznego</h1>
+            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Porównuję 2 grupy niezależne (np. kobiety vs mężczyźni)</p>
         </header>
 
         <!-- Zewnętrzny kontener scrollowalny horyzontalnie na urządzeniach mobilnych -->
@@ -42,55 +42,55 @@
             <!-- Przestrzenna, 3-kolumnowa plansza (1000px szerokości, 450px wysokości) -->
             <div class="relative w-[1000px] h-[450px] mx-auto bg-white/5 rounded-3xl shadow-sm border border-white/10 p-0 overflow-hidden">
                 
-                <!-- Warstwa wektorowa SVG ze skorygowanymi współrzędnymi dla idealnej symetrii (lewy margines: 80px) -->
+                <!-- Warstwa wektorowa SVG ze stałym systemem współrzędnych viewBox 1000x450 (bez grotów) -->
                 <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 450" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                     <!-- Path 1: Krok 1 -> Scenariusz 1 (idzie ukośnie w dół - ścieżka NIE) -->
-                    <path id="path-1" d="M 260 225 C 335 225, 335 365, 410 365" class="path-line stroke-slate-300" />
+                    <path id="path-1" d="M 280 225 C 350 225, 350 365, 420 365" class="path-line stroke-slate-300" />
                     <!-- Path 2: Krok 1 -> Krok 2 (idzie ukośnie w górę - ścieżka TAK) -->
-                    <path id="path-2" d="M 260 225 C 335 225, 335 112.5, 410 112.5" class="path-line stroke-slate-300" />
+                    <path id="path-2" d="M 280 225 C 350 225, 350 112.5, 420 112.5" class="path-line stroke-slate-300" />
                     <!-- Path 3: Krok 2 -> Scenariusz 2 (idzie w dół pod stromym kątem - ścieżka NIE) -->
-                    <path id="path-3" d="M 590 112.5 C 665 112.5, 665 365, 740 365" class="path-line stroke-slate-300" />
+                    <path id="path-3" d="M 600 112.5 C 670 112.5, 670 365, 740 365" class="path-line stroke-slate-300" />
                     <!-- Path 4: Krok 2 -> Scenariusz 3 (idzie prosto w prawo - ścieżka TAK) -->
-                    <path id="path-4" d="M 590 112.5 C 665 112.5, 665 113, 740 113" class="path-line stroke-slate-300" />
+                    <path id="path-4" d="M 600 112.5 C 670 112.5, 670 113, 740 113" class="path-line stroke-slate-300" />
                 </svg>
 
                 <!-- Warstwa interaktywnych bloków HTML pozycjonowanych absolutnie względem planszy -->
                 <div class="absolute inset-0 w-full h-full z-10 pointer-events-none">
                     
-                    <!-- KOLUMNA 1: KROK 1 (Przesunięty do lewej krawędzi: left-[80px]) -->
-                    <div class="absolute left-[80px] top-[140px] w-[180px] h-[170px] flex items-center justify-center pointer-events-auto">
+                    <!-- KOLUMNA 1: KROK 1 (Środek pionowy) -->
+                    <div class="absolute left-[100px] top-[140px] w-[180px] h-[170px] flex items-center justify-center pointer-events-auto">
                         <div id="step-1-box" class="bg-white/5 rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300">
                             <div class="text-center">
                                 <span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 1</span>
-                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-100">Czy OBIE zmienne mają charakter ILOŚCIOWY?</p>
+                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-100">Czy zmienna zależna ma charakter ILOŚCIOWY?</p>
                             </div>
                             <div class="flex flex-col gap-1.5">
                                 <button onclick="activateStep2()" id="btn-ilosc" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-blue-400 hover:bg-blue-500/10 flex items-center justify-between cursor-pointer">
-                                    <span>TAK (ilościowe)</span>
+                                    <span>TAK (ilościowa)</span>
                                     <span class="text-green-500 opacity-70 text-xs">✔</span>
                                 </button>
-                                <button onclick="selectPath('spearman_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
-                                    <span>NIE (porządkowe)</span>
+                                <button onclick="selectPath('mann_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
+                                    <span>NIE (porządkowa)</span>
                                     <span class="text-red-500 opacity-70 text-xs">✖</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- KOLUMNA 2: KROK 2 (Środek: left-[410px]) -->
-                    <div class="absolute left-[410px] top-[25px] w-[180px] h-[175px] flex items-center justify-center pointer-events-auto">
+                    <!-- KOLUMNA 2: KROK 2 (GÓRA) - Przeniesiony na ścieżkę parametryczną -->
+                    <div class="absolute left-[420px] top-[30px] w-[180px] h-[165px] flex items-center justify-center pointer-events-auto">
                         <div id="step-2-box" class="bg-white/5 rounded-2xl p-3 shadow-sm border-2 border-white/10 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-40 pointer-events-none scale-95">
                             <div class="text-center">
                                 <span class="text-[9px] font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
                                 <p class="text-[10px] font-bold leading-tight mt-2 text-slate-100">Czy założenia testu są spełnione?</p>
-                                <p class="text-[8px] text-slate-400 leading-none mt-1 mb-5">(Liniowość i rozkład normalny)</p>
+                                <p class="text-[8px] text-slate-400 leading-none mt-1.5 mb-5">(Normalność rozkładu w obu grupach)</p>
                             </div>
                             <div class="flex gap-1.5">
-                                <button onclick="selectPath('pearson')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('t_student')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-green-500 text-xs opacity-70">✔</span>
                                     <span>TAK</span>
                                 </button>
-                                <button onclick="selectPath('spearman_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('mann_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-red-500 text-xs opacity-70">✖</span>
                                     <span>NIE</span>
                                 </button>
@@ -98,29 +98,29 @@
                         </div>
                     </div>
 
-                    <!-- KOLUMNA 2: SCENARIUSZ 1 (Dół-Środek: left-[410px]) -->
-                    <div class="absolute left-[410px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-direct-spearman" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                    <!-- KOLUMNA 2: SCENARIUSZ 1 (DÓŁ) - Przeniesiony jako alternatywa jakościowa -->
+                    <div class="absolute left-[420px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
+                        <div id="card-direct-mann" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Korelacja Spearmana</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Manna-Whitney'a (U)</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
                         </div>
                     </div>
 
-                    <!-- KOLUMNA 3: SCENARIUSZ 3 (Góra-Prawo: left-[740px]) -->
+                    <!-- KOLUMNA 3: SCENARIUSZ 3 (GÓRA-PRAWO) - Sukces parametryczny (t-Student) -->
                     <div class="absolute left-[740px] top-[58px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-pearson-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-tstudent-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-emerald-400/20 text-emerald-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Korelacja Pearsona</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test t-Studenta</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
                         </div>
                     </div>
 
-                    <!-- KOLUMNA 3: SCENARIUSZ 2 (Dół-Prawo: left-[740px]) -->
+                    <!-- KOLUMNA 3: SCENARIUSZ 2 (DÓŁ-PRAWO) - Alternatywa ilościowa (Mann-Whitney) -->
                     <div class="absolute left-[740px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-spearman-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-mann-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Korelacja Spearmana</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Manna-Whitney'a (U)</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
                         </div>
                     </div>
@@ -130,7 +130,7 @@
         </div>
 
         <!-- Panel opisowy z dynamicznym podsumowaniem wybranego testu -->
-        <div id="info-panel" class="mt-4 flex justify-center px-4 w-full">
+        <div id="info-panel" class="mt-4 flex justify-center">
             <div class="text-center p-6 border-2 border-dashed border-white/20 bg-white/5 rounded-2xl text-slate-400 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-40"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                 <p class="text-sm font-medium">Wybierz odpowiedź w Kroku 1 na schemacie, aby rozpocząć wnioskowanie.</p>
@@ -141,26 +141,26 @@
     <!-- Skrypty operacji i animacji interaktywnych ścieżek -->
     <script>
         const pathsData = {
-            spearman_jako: {
-                title: 'Korelacja Spearmana',
+            mann_jako: {
+                title: 'Test U Manna-Whitney\'a',
                 scenario: 'Scenariusz 1',
-                desc: 'Współczynnik korelacji rangowej (Spearmana) jest miarą nieparametryczną. Stosujemy go, gdy przynajmniej jedna zmienna jest mierzona na skali porządkowej lub gdy dane są zliczane w rangach. Pozwala wykryć dowolny związek monotoniczny (również nieliniowy).',
+                desc: 'Podstawowy test nieparametryczny stosowany, gdy przynajmniej jedna z analizowanych grup cechuje się pomiarem na skali porządkowej (np. stopień zadowolenia, oceny szkolne). Nie bada średnich arytmetycznych – opiera się na analizze rangowania i pozwala ocenić, czy rozkłady dwóch grup różnią się od siebie.',
                 colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
                 iconColor: 'text-yellow-400',
                 bgIcon: 'bg-yellow-400/20'
             },
-            spearman_ilosc: {
-                title: 'Korelacja Spearmana',
+            mann_ilosc: {
+                title: 'Test U Manna-Whitney\'a',
                 scenario: 'Scenariusz 2',
-                desc: 'Stosowany dla zmiennych ilościowych, gdy złamane zostały kluczowe założenia współczynnika Pearsona (np. brak normalności rozkładu w zmiennych, występowanie silnych obserwacji odstających lub związek ma charakter nieliniowy, lecz wciąż monotoniczny). Jest wysoce odporny na anomalie w danych.',
+                desc: 'Stosowany dla zmiennej ilościowej, gdy złamane zostały kluczowe założenia testów parametrycznych (np. brak normalności rozkładu w co najmniej jednej grupie, asymetria rozkładu lub występowanie silnych obserwacji odstających). Test ten jest odporny na zniekształcenia wynikające z nietypowych rozkładów prób.',
                 colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
                 iconColor: 'text-yellow-400',
                 bgIcon: 'bg-yellow-400/20'
             },
-            pearson: {
-                title: 'Korelacja Pearsona',
+            t_student: {
+                title: 'Test t-Studenta dla prób niezależnych',
                 scenario: 'Scenariusz 3',
-                desc: 'Współczynnik korelacji liniowej (Pearsona) to klasyczna miara parametryczna. Wymaga, aby obie zmienne były ilościowe (interwałowe lub ilorazowe), miały rozkład zbliżony do normalnego, a ich wzajemna zależność miała charakter wyraźnie liniowy. Jest podatny na wpływ obserwacji odstających.',
+                desc: 'Klasyczny test parametryczny służący do porównania średnich w dwóch niezależnych populacjach. Wymaga, aby zmienna zależna była ilościowa, miała rozkład zbliżony do normalnego w obu grupach oraz aby wariancje w grupach były jednorodne (w przypadku braku jednorodności wariancji, ale przy zachowanej normalności, stosuje się poprawkę Welcha).',
                 colorClasses: 'border-emerald-500 bg-emerald-500/10 text-emerald-200',
                 iconColor: 'text-emerald-400',
                 bgIcon: 'bg-emerald-400/20'
@@ -190,7 +190,7 @@
             });
 
             // Reset Kart z wynikami
-            ['card-direct-spearman', 'card-spearman-dist-res', 'card-pearson-res'].forEach(id => {
+            ['card-direct-mann', 'card-mann-dist-res', 'card-tstudent-res'].forEach(id => {
                 document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
             });
         }
@@ -210,21 +210,21 @@
             const step2Box = document.getElementById('step-2-box');
             step2Box.className = 'bg-white/5 rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
             
-            showInfoPlaceholder('Wybierz w Kroku 2, czy zależności spełniają założenia parametryczne korelacji Pearsona.');
+            showInfoPlaceholder('Wybierz w Kroku 2 na górze, czy zależności spełniają założenia parametryczne testu t-Studenta.');
         }
 
         // Obsługuje wybór ostatecznego scenariusza i podświetla całą poprawną ścieżkę
         function selectPath(id) {
-            if (id === 'spearman_jako') {
+            if (id === 'mann_jako') {
                 resetVisuals();
                 // Oznaczenie wyboru Krok 1 -> NIE
                 document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-200 shadow-md flex items-center justify-between cursor-pointer';
                 document.getElementById('path-1').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 1
-                document.getElementById('card-direct-spearman').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-direct-mann').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
-            else if (id === 'spearman_ilosc') {
+            else if (id === 'mann_ilosc') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> NIE
@@ -234,19 +234,19 @@
                 document.getElementById('path-3').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 2
-                document.getElementById('card-spearman-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-mann-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
-            else if (id === 'pearson') {
+            else if (id === 't_student') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> TAK
                 document.getElementById('btn-dist-yes').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
                 
-                // Linia idąca prosto do Scenariusza 3 (Pearson)
+                // Linia idąca prosto do Scenariusza 3 (t-Student)
                 document.getElementById('path-4').setAttribute('class', 'path-line stroke-emerald-400');
                 
                 // Pokaż wynik 3
-                document.getElementById('card-pearson-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-tstudent-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             }
 
             // Aktualizuj opis tekstowy pod wykresem
@@ -264,26 +264,26 @@
             `;
         }
 
-        // Renderuje bogaty panel ze szczegółami wybranego testu statystycznego bez konfliktów tła i ucinania słów
+        // Renderuje bogaty panel ze szczegółami wybranego testu statystycznego
         function updateInfoPanel(info) {
             const panel = document.getElementById('info-panel');
             panel.innerHTML = `
-                <div class="w-full max-w-2xl p-5 rounded-2xl border-l-8 border border-white/10 border-l-0 shadow-lg transition-all fade-in ${info.colorClasses} flex flex-col sm:flex-row items-start gap-4">
-                    <div class="p-2 rounded-full flex-shrink-0 shrink-0 ${info.bgIcon} ${info.iconColor}">
+                <div class="w-full max-w-2xl p-5 rounded-2xl border-l-8 shadow-lg transition-all fade-in ${info.colorClasses} flex items-start gap-4 bg-white/5">
+                    <div class="p-2 rounded-full flex-shrink-0 ${info.bgIcon} ${info.iconColor}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
                     <div class="text-left flex-grow">
-                        <div class="flex flex-wrap items-center gap-2 mb-2">
-                            <span class="text-[10px] font-black uppercase tracking-wider opacity-80 border border-current px-2 py-0.5 rounded-full shrink-0">${info.scenario}</span>
-                            <h3 class="text-base sm:text-lg font-black tracking-tight leading-snug">${info.title}</h3>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] font-black uppercase tracking-wider opacity-70 border border-current px-2 py-0.5 rounded-full">${info.scenario}</span>
+                            <h3 class="text-lg font-bold">${info.title}</h3>
                         </div>
-                        <p class="text-xs sm:text-sm font-medium opacity-90 leading-relaxed mt-1.5">${info.desc}</p>
+                        <p class="text-[13px] font-medium opacity-90 leading-relaxed mt-1.5">${info.desc}</p>
                     </div>
                 </div>
             `;
         }
     </script>
 
-    <script src="../../js/background.js"></script>
+    <script src="../../../../js/background.js"></script>
 </body>
 </html>
