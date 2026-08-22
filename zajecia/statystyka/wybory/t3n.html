@@ -1,9 +1,10 @@
+<!-- STREAMING_CHUNK: Defining document head and modern styles... -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wybór Współczynnika Korelacji: Pearson vs Spearman</title>
+    <title>Wybór Testu: ANOVA vs Kruskal-Wallis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background: transparent; }
@@ -30,12 +31,14 @@
 <body class="min-h-screen p-4 md:p-6 text-slate-100 flex flex-col items-center justify-between">
     <canvas id="squares-canvas"></canvas>
 
+    <!-- STREAMING_CHUNK: Rendering page header and description... -->
     <div class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
         <header class="mb-4 text-center">
-            <h1 class="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Wybór Współczynnika Korelacji</h1>
-            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Badam związek między 2 zmiennymi</p>
+            <h1 class="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Wybór Testu Statystycznego</h1>
+            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Porównuję więcej niż 2 grupy niezależne</p>
         </header>
 
+        <!-- STREAMING_CHUNK: Drawing flow chart diagram with SVG links... -->
         <!-- Zewnętrzny kontener scrollowalny horyzontalnie na urządzeniach mobilnych -->
         <div class="w-full overflow-x-auto no-scrollbar pb-4">
             
@@ -54,6 +57,7 @@
                     <path id="path-4" d="M 590 112.5 C 665 112.5, 665 113, 740 113" class="path-line stroke-slate-300" />
                 </svg>
 
+                <!-- STREAMING_CHUNK: Placing interactive HTML step cards onto the grid... -->
                 <!-- Warstwa interaktywnych bloków HTML pozycjonowanych absolutnie względem planszy -->
                 <div class="absolute inset-0 w-full h-full z-10 pointer-events-none">
                     
@@ -62,15 +66,15 @@
                         <div id="step-1-box" class="bg-white/5 rounded-2xl p-3 shadow-md border-2 border-blue-400 w-full h-full flex flex-col justify-between transition-all duration-300">
                             <div class="text-center">
                                 <span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 1</span>
-                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-100">Czy OBIE zmienne mają charakter ILOŚCIOWY?</p>
+                                <p class="text-[11px] font-bold leading-tight mt-2 text-slate-100">Czy zmienna zależna ma charakter ILOŚCIOWY?</p>
                             </div>
                             <div class="flex flex-col gap-1.5">
                                 <button onclick="activateStep2()" id="btn-ilosc" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-blue-400 hover:bg-blue-500/10 flex items-center justify-between cursor-pointer">
-                                    <span>TAK (ilościowe)</span>
+                                    <span>TAK (ilościowa)</span>
                                     <span class="text-green-500 opacity-70 text-xs">✔</span>
                                 </button>
-                                <button onclick="selectPath('spearman_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
-                                    <span>NIE (porządkowe)</span>
+                                <button onclick="selectPath('kruskal_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
+                                    <span>NIE (porządkowa)</span>
                                     <span class="text-red-500 opacity-70 text-xs">✖</span>
                                 </button>
                             </div>
@@ -83,14 +87,14 @@
                             <div class="text-center">
                                 <span class="text-[9px] font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
                                 <p class="text-[10px] font-bold leading-tight mt-2 text-slate-100">Czy założenia testu są spełnione?</p>
-                                <p class="text-[8px] text-slate-400 leading-none mt-1 mb-5">(Liniowość i rozkład normalny)</p>
+                                <p class="text-[8px] text-slate-400 leading-none mt-1 mb-5">(Normalność i jednorodność wariancji)</p>
                             </div>
                             <div class="flex gap-1.5">
-                                <button onclick="selectPath('pearson')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('anova')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-green-500 text-xs opacity-70">✔</span>
                                     <span>TAK</span>
                                 </button>
-                                <button onclick="selectPath('spearman_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('kruskal_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-red-500 text-xs opacity-70">✖</span>
                                     <span>NIE</span>
                                 </button>
@@ -100,27 +104,27 @@
 
                     <!-- KOLUMNA 2: SCENARIUSZ 1 (Dół-Środek: left-[410px]) -->
                     <div class="absolute left-[410px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-direct-spearman" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-direct-kruskal" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Korelacja Spearmana</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Kruskala-Wallisa</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
                         </div>
                     </div>
 
                     <!-- KOLUMNA 3: SCENARIUSZ 3 (Góra-Prawo: left-[740px]) -->
                     <div class="absolute left-[740px] top-[58px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-pearson-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-anova-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-emerald-400/20 text-emerald-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Korelacja Pearsona</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Jednoczynnikowa ANOVA</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
                         </div>
                     </div>
 
                     <!-- KOLUMNA 3: SCENARIUSZ 2 (Dół-Prawo: left-[740px]) -->
                     <div class="absolute left-[740px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-spearman-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-kruskal-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Korelacja Spearmana</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Kruskala-Wallisa</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
                         </div>
                     </div>
@@ -129,6 +133,7 @@
             </div>
         </div>
 
+        <!-- STREAMING_CHUNK: Dynamic result panel markup container... -->
         <!-- Panel opisowy z dynamicznym podsumowaniem wybranego testu -->
         <div id="info-panel" class="mt-4 flex justify-center px-4 w-full">
             <div class="text-center p-6 border-2 border-dashed border-white/20 bg-white/5 rounded-2xl text-slate-400 flex flex-col items-center justify-center gap-2 w-full max-w-2xl transition-all">
@@ -138,29 +143,30 @@
         </div>
     </div>
 
+    <!-- STREAMING_CHUNK: Creating reactive application controller scripts... -->
     <!-- Skrypty operacji i animacji interaktywnych ścieżek -->
     <script>
         const pathsData = {
-            spearman_jako: {
-                title: 'Korelacja Spearmana',
+            kruskal_jako: {
+                title: 'Test Kruskala-Wallisa',
                 scenario: 'Scenariusz 1',
-                desc: 'Współczynnik korelacji rangowej (Spearmana) jest miarą nieparametryczną. Stosujemy go, gdy przynajmniej jedna zmienna jest mierzona na skali porządkowej lub gdy dane są zliczane w rangach. Pozwala wykryć dowolny związek monotoniczny (również nieliniowy).',
+                desc: 'Podstawowy test nieparametryczny stosowany, gdy porównujemy więcej niż dwie grupy niezależne, a zmienna zależna mierzona jest na skali porządkowej. Pozwala zweryfikować, czy rozkłady badanej cechy różnią się istotnie statystycznie pomiędzy analizowanymi grupami. Opiera się na rangowaniu danych.',
                 colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
                 iconColor: 'text-yellow-400',
                 bgIcon: 'bg-yellow-400/20'
             },
-            spearman_ilosc: {
-                title: 'Korelacja Spearmana',
+            kruskal_ilosc: {
+                title: 'Test Kruskala-Wallisa',
                 scenario: 'Scenariusz 2',
-                desc: 'Stosowany dla zmiennych ilościowych, gdy złamane zostały kluczowe założenia współczynnika Pearsona (np. brak normalności rozkładu w zmiennych, występowanie silnych obserwacji odstających lub związek ma charakter nieliniowy, lecz wciąż monotoniczny). Jest wysoce odporny na anomalie w danych.',
+                desc: 'Stosowany dla zmiennej ilościowej w sytuacji, gdy złamane zostały kluczowe założenia klasycznej analizy wariancji (brak rozkładu zbliżonego do normalnego w grupach lub rażący brak jednorodności wariancji). Jest wysoce odporny na występowanie silnych obserwacji odstających.',
                 colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
                 iconColor: 'text-yellow-400',
                 bgIcon: 'bg-yellow-400/20'
             },
-            pearson: {
-                title: 'Korelacja Pearsona',
+            anova: {
+                title: 'Jednoczynnikowa ANOVA',
                 scenario: 'Scenariusz 3',
-                desc: 'Współczynnik korelacji liniowej (Pearsona) to klasyczna miara parametryczna. Wymaga, aby obie zmienne były ilościowe (interwałowe lub ilorazowe), miały rozkład zbliżony do normalnego, a ich wzajemna zależność miała charakter wyraźnie liniowy. Jest podatny na wpływ obserwacji odstających.',
+                desc: 'Klasyczny test parametryczny służący do porównywania średnich w trzech lub więcej niezależnych grupach. Wymaga zmiennej zależnej o charakterze ilościowym, rozkładu zbliżonego do normalnego w każdej z podgrup oraz jednorodności wariancji (testowanej np. testem Levene\'a).',
                 colorClasses: 'border-emerald-500 bg-emerald-500/10 text-emerald-200',
                 iconColor: 'text-emerald-400',
                 bgIcon: 'bg-emerald-400/20'
@@ -190,7 +196,7 @@
             });
 
             // Reset Kart z wynikami
-            ['card-direct-spearman', 'card-spearman-dist-res', 'card-pearson-res'].forEach(id => {
+            ['card-direct-kruskal', 'card-kruskal-dist-res', 'card-anova-res'].forEach(id => {
                 document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
             });
         }
@@ -210,21 +216,21 @@
             const step2Box = document.getElementById('step-2-box');
             step2Box.className = 'bg-white/5 rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
             
-            showInfoPlaceholder('Wybierz w Kroku 2, czy zależności spełniają założenia parametryczne korelacji Pearsona.');
+            showInfoPlaceholder('Wybierz w Kroku 2, czy zależności spełniają założenia parametryczne jednoczynnikowej analizy wariancji.');
         }
 
         // Obsługuje wybór ostatecznego scenariusza i podświetla całą poprawną ścieżkę
         function selectPath(id) {
-            if (id === 'spearman_jako') {
+            if (id === 'kruskal_jako') {
                 resetVisuals();
                 // Oznaczenie wyboru Krok 1 -> NIE
                 document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-200 shadow-md flex items-center justify-between cursor-pointer';
                 document.getElementById('path-1').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 1
-                document.getElementById('card-direct-spearman').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-direct-kruskal').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
-            else if (id === 'spearman_ilosc') {
+            else if (id === 'kruskal_ilosc') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> NIE
@@ -234,19 +240,19 @@
                 document.getElementById('path-3').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 2
-                document.getElementById('card-spearman-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-kruskal-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
-            else if (id === 'pearson') {
+            else if (id === 'anova') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> TAK
                 document.getElementById('btn-dist-yes').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
                 
-                // Linia idąca prosto do Scenariusza 3 (Pearson)
+                // Linia idąca prosto do Scenariusza 3 (ANOVA)
                 document.getElementById('path-4').setAttribute('class', 'path-line stroke-emerald-400');
                 
                 // Pokaż wynik 3
-                document.getElementById('card-pearson-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-anova-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             }
 
             // Aktualizuj opis tekstowy pod wykresem
@@ -264,6 +270,7 @@
             `;
         }
 
+        // STREAMING_CHUNK: Injecting clean dynamically rendered result description card...
         // Renderuje bogaty panel ze szczegółami wybranego testu statystycznego bez konfliktów tła i ucinania słów
         function updateInfoPanel(info) {
             const panel = document.getElementById('info-panel');
@@ -284,6 +291,6 @@
         }
     </script>
 
-    <script src="../../../../js/background.js"></script>
+    <script src="../../../js/background.js"></script>
 </body>
 </html>

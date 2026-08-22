@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wybór Testu: ANOVA RM vs Friedman (>2 Grupy Zależne)</title>
+    <title>Wybór Testu: t-Student vs Wilcoxon (Grupy Zależne)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background: transparent; }
@@ -35,7 +35,7 @@
     <div class="w-full max-w-5xl mx-auto flex-grow flex flex-col justify-center">
         <header class="mb-4 text-center">
             <h1 class="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">Wybór Testu Statystycznego</h1>
-            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Porównuję więcej niż 2 grupy zależne (pomiary powtarzane)</p>
+            <p class="text-slate-400 font-bold mt-1 text-sm bg-white/5 inline-block px-4 py-1.5 rounded-full border border-white/10">Porównuję 2 grupy zależne (pary powiązane)</p>
         </header>
 
         <!-- STREAMING_CHUNK: Drawing flow chart diagram with SVG links... -->
@@ -57,7 +57,7 @@
                     <path id="path-4" d="M 590 112.5 C 665 112.5, 665 113, 740 113" class="path-line stroke-slate-300" />
                 </svg>
 
-                <!-- STREAMING_CHUNK: Placing interactive HTML step cards onto the grid... -->
+                <!-- STREAMING_CHUNK: Placing interactive HTML step cards... -->
                 <!-- Warstwa interaktywnych bloków HTML pozycjonowanych absolutnie względem planszy -->
                 <div class="absolute inset-0 w-full h-full z-10 pointer-events-none">
                     
@@ -73,7 +73,7 @@
                                     <span>TAK (ilościowa)</span>
                                     <span class="text-green-500 opacity-70 text-xs">✔</span>
                                 </button>
-                                <button onclick="selectPath('friedman_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
+                                <button onclick="selectPath('wilcoxon_jako')" id="btn-jako" class="w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex items-center justify-between cursor-pointer">
                                     <span>NIE (porządkowa)</span>
                                     <span class="text-red-500 opacity-70 text-xs">✖</span>
                                 </button>
@@ -87,14 +87,14 @@
                             <div class="text-center">
                                 <span class="text-[9px] font-black text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Krok 2</span>
                                 <p class="text-[10px] font-bold leading-tight mt-2 text-slate-100">Czy założenia testu są spełnione?</p>
-                                <p class="text-[8px] text-slate-400 leading-none mt-1 mb-5">(Normalność i sferyczność rozkładu)</p>
+                                <p class="text-[8px] text-slate-400 leading-none mt-1 mb-5">(Normalność rozkładu różnic pomiarów)</p>
                             </div>
                             <div class="flex gap-1.5">
-                                <button onclick="selectPath('anova_rm')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('t_student_dep')" id="btn-dist-yes" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-green-500 text-xs opacity-70">✔</span>
                                     <span>TAK</span>
                                 </button>
-                                <button onclick="selectPath('friedman_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                <button onclick="selectPath('wilcoxon_ilosc')" id="btn-dist-no" class="w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-white/5 border-white/10 text-slate-300 hover:border-yellow-400 hover:bg-yellow-400/10 flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                     <span class="text-red-500 text-xs opacity-70">✖</span>
                                     <span>NIE</span>
                                 </button>
@@ -104,27 +104,27 @@
 
                     <!-- KOLUMNA 2: SCENARIUSZ 1 (Dół-Środek: left-[410px]) -->
                     <div class="absolute left-[410px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-direct-friedman" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-direct-wilcoxon" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 1</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Friedmana</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Wilcoxona</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Zmienna porządkowa</p>
                         </div>
                     </div>
 
                     <!-- KOLUMNA 3: SCENARIUSZ 3 (Góra-Prawo: left-[740px]) -->
                     <div class="absolute left-[740px] top-[58px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-anova-rm-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-tstudent-dep-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-emerald-400/20 text-emerald-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 3</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">ANOVA z powtarzanymi pomiarami</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test t-Studenta dla grup zależnych</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia spełnione</p>
                         </div>
                     </div>
 
                     <!-- KOLUMNA 3: SCENARIUSZ 2 (Dół-Prawo: left-[740px]) -->
                     <div class="absolute left-[740px] top-[310px] w-[180px] h-[110px] flex items-center justify-center pointer-events-auto">
-                        <div id="card-friedman-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
+                        <div id="card-wilcoxon-dist-res" class="p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95">
                             <span class="inline-block mx-auto bg-yellow-400/20 text-yellow-300 text-[8px] font-bold px-2 py-0.5 rounded-full mb-1 w-max">Scenariusz 2</span>
-                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Friedmana</h3>
+                            <h3 class="text-xs font-black text-slate-100 leading-tight">Test Wilcoxona</h3>
                             <p class="text-[8px] text-slate-400 mt-1 uppercase font-bold tracking-wide">Założenia parametryczne złamane</p>
                         </div>
                     </div>
@@ -147,26 +147,26 @@
     <!-- Skrypty operacji i animacji interaktywnych ścieżek -->
     <script>
         const pathsData = {
-            friedman_jako: {
-                title: 'Test Friedmana',
+            wilcoxon_jako: {
+                title: 'Test Wilcoxona',
                 scenario: 'Scenariusz 1',
-                desc: 'Podstawowy nieparametryczny odpowiednik analizy wariancji z powtarzanymi pomiarami. Stosuje się go, gdy ta sama grupa badana jest w trzech lub więcej warunkach (bądź punktach czasowych), a zmienna zależna mierzona jest na skali porządkowej lub ma charakter ilościowy, ale nie jest precyzyjna. Test opiera się na rangowaniu wartości wewnątrz każdego badanego przypadku.',
+                desc: 'Podstawowy test nieparametryczny stosowany do porównania dwóch powiązanych ze sobą prób (np. badanie tego samego pacjenta przed terapią i po niej), gdy badana cecha mierzona jest na skali porządkowej. Opiera się na rangowaniu bezwzględnych różnic między parami pomiarów.',
                 colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
                 iconColor: 'text-yellow-400',
                 bgIcon: 'bg-yellow-400/20'
             },
-            friedman_ilosc: {
-                title: 'Test Friedmana',
+            wilcoxon_ilosc: {
+                title: 'Test Wilcoxona',
                 scenario: 'Scenariusz 2',
-                desc: 'Używany w analizie zmiennych ilościowych, gdy złamane są podstawowe założenia parametrycznej procedury ANOVA z powtarzanymi pomiarami (np. rozkłady zmiennej silnie odbiegają od rozkładu normalnego, występują drastyczne obserwacje odstające lub nie zachodzi założenie o sferyczności wariancji).',
+                desc: 'Stosowany dla zmiennej ilościowej, kiedy nie są spełnione podstawowe założenia parametrycznego testu t-Studenta dla prób zależnych (głównie gdy rozkład różnic między dwoma pomiarami istotnie odbiega od rozkładu normalnego lub występują asymetryczne obserwacje odstające).',
                 colorClasses: 'border-yellow-400 bg-yellow-400/10 text-yellow-200',
                 iconColor: 'text-yellow-400',
                 bgIcon: 'bg-yellow-400/20'
             },
-            anova_rm: {
-                title: 'ANOVA z powtarzanymi pomiarami',
+            t_student_dep: {
+                title: 'Test t-Studenta dla grup zależnych',
                 scenario: 'Scenariusz 3',
-                desc: 'Zaawansowany test parametryczny służący do weryfikacji różnic między średnimi w trzech lub więcej powiązanych pomiarach (np. ten sam pacjent badany przed, w trakcie oraz po zakończeniu leczenia). Wymaga zmiennej zależnej ilościowej o rozkładzie zbliżonym do normalnego w każdym pomiarze oraz spełnienia kluczowego założenia o sferyczności macierzy kowariancji (testowanego m.in. testem sferyczności Mauchly\'ego).',
+                desc: 'Parametryczny test służący do porównania średnich z dwóch powiązanych pomiarów (np. pre-test i post-test w tej samej grupie badanej). Wymaga, aby zmienna zależna była ilościowa, a wyliczone różnice (przyrosty) pomiędzy pierwszym a drugim pomiarem miały rozkład zbliżony do normalnego.',
                 colorClasses: 'border-emerald-500 bg-emerald-500/10 text-emerald-200',
                 iconColor: 'text-emerald-400',
                 bgIcon: 'bg-emerald-400/20'
@@ -196,7 +196,7 @@
             });
 
             // Reset Kart z wynikami
-            ['card-direct-friedman', 'card-friedman-dist-res', 'card-anova-rm-res'].forEach(id => {
+            ['card-direct-wilcoxon', 'card-wilcoxon-dist-res', 'card-tstudent-dep-res'].forEach(id => {
                 document.getElementById(id).className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-sm bg-white/5 border-white/10 opacity-40 w-full h-full flex flex-col justify-center text-center scale-95';
             });
         }
@@ -209,28 +209,28 @@
             const btnIlosc = document.getElementById('btn-ilosc');
             btnIlosc.className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-blue-500 border-blue-600 text-white shadow-md flex items-center justify-between cursor-pointer';
             
-            // Aktywacja linii idącej ukośnie w góry (Path 2)
+            // Aktywacja linii idącej ukośnie w górę (Path 2)
             document.getElementById('path-2').setAttribute('class', 'path-line stroke-blue-400');
             
             // Odkrycie i aktywacja bloku Kroku 2
             const step2Box = document.getElementById('step-2-box');
             step2Box.className = 'bg-white/5 rounded-2xl p-3 shadow-lg border-2 border-indigo-400 w-full h-full flex flex-col justify-between transition-all duration-300 opacity-100 pointer-events-auto scale-100';
             
-            showInfoPlaceholder('Wybierz w Kroku 2, czy rozkład i powiązania spełniają założenia parametryczne ANOVA z powtarzanymi pomiarami.');
+            showInfoPlaceholder('Wybierz w Kroku 2, czy różnice między pomiarami spełniają założenia parametryczne testu t-Studenta.');
         }
 
         // Obsługuje wybór ostatecznego scenariusza i podświetla całą poprawną ścieżkę
         function selectPath(id) {
-            if (id === 'friedman_jako') {
+            if (id === 'wilcoxon_jako') {
                 resetVisuals();
                 // Oznaczenie wyboru Krok 1 -> NIE
                 document.getElementById('btn-jako').className = 'w-full py-1.5 px-2.5 rounded-lg text-[10px] font-bold border-2 transition-all bg-yellow-400 border-yellow-500 text-yellow-200 shadow-md flex items-center justify-between cursor-pointer';
                 document.getElementById('path-1').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 1
-                document.getElementById('card-direct-friedman').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-direct-wilcoxon').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
-            else if (id === 'friedman_ilosc') {
+            else if (id === 'wilcoxon_ilosc') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> NIE
@@ -240,19 +240,19 @@
                 document.getElementById('path-3').setAttribute('class', 'path-line stroke-yellow-400');
                 
                 // Pokaż wynik 2
-                document.getElementById('card-friedman-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-wilcoxon-dist-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-yellow-400/10 border-yellow-400 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             } 
-            else if (id === 'anova_rm') {
+            else if (id === 't_student_dep') {
                 activateStep2(); // odtwarza połączenie Krok 1 -> Krok 2 (góra)
                 
                 // Oznaczenie wyboru Krok 2 -> TAK
                 document.getElementById('btn-dist-yes').className = 'w-full flex-1 py-1.5 px-1 rounded-lg text-[10px] font-bold border-2 transition-all bg-emerald-500 border-emerald-600 text-white shadow-md flex flex-col items-center justify-center gap-0.5 cursor-pointer';
                 
-                // Linia idąca prosto do Scenariusza 3 (ANOVA RM)
+                // Linia idąca prosto do Scenariusza 3 (t-Student)
                 document.getElementById('path-4').setAttribute('class', 'path-line stroke-emerald-400');
                 
                 // Pokaż wynik 3
-                document.getElementById('card-anova-rm-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
+                document.getElementById('card-tstudent-dep-res').className = 'p-3 rounded-2xl border-2 transition-all duration-300 shadow-xl bg-emerald-500/10 border-emerald-500 opacity-100 w-full h-full flex flex-col justify-center text-center scale-105';
             }
 
             // Aktualizuj opis tekstowy pod wykresem
@@ -291,6 +291,6 @@
         }
     </script>
 
-    <script src="../../../../js/background.js"></script>
+    <script src="../../../js/background.js"></script>
 </body>
 </html>
