@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filip Liebersbach</title>
+    <meta name="description" content="Filip Liebersbach – psychologist, teaching assistant, and data analyst. Experience, projects, publications, and teaching materials." />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="../images/logo.png" type="image/x-icon">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WKCSKFHS');</script>
+
+    <style>
+        /* Blokada scrolla na PC */
+        body { background: transparent; overflow: hidden; }
+        @media (max-width: 900px) { body { overflow: auto; } }
+    </style>
+</head>
+<body>
+    <canvas id="squares-canvas"></canvas>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WKCSKFHS"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <header>
+        <div class="pill-nav-container">
+            <nav class="pill-nav">
+                <a href="index.html" class="pill-logo glass-effect">
+                    <img src="../images/logo.png" alt="Logo" />
+                </a>
+                <div class="pill-nav-items">
+                    <ul class="pill-list">
+                        <li><a href="experience.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Experience</span><span class="pill-label-hover">Experience</span></span></a></li>
+                        <li><a href="projects.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Projects</span><span class="pill-label-hover">Projects</span></span></a></li>
+                        <li><a href="publications.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Publications</span><span class="pill-label-hover">Publications</span></span></a></li>
+                        <li><a href="recommendations.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Recommendations</span><span class="pill-label-hover">Recommendations</span></span></a></li>
+                        <li><a href="classes.html" class="pill glass-effect"><span class="hover-circle"></span><span class="label-stack"><span class="pill-label">Classes</span><span class="pill-label-hover">Classes</span></span></a></li>
+                        <li><a href="../index.html" class="pill-logo glass-effect" title="Wersja polska" aria-label="Switch to Polish"><span class="flag-icon">🇵🇱</span></a></li>
+                    </ul>
+                </div>
+                <button class="mobile-menu-button glass-effect"><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+                <div class="mobile-menu-popover">
+                    <ul class="mobile-menu-list">
+                        <li><a href="experience.html" class="mobile-menu-link">Experience</a></li>
+                        <li><a href="projects.html" class="mobile-menu-link">Projects</a></li>
+                        <li><a href="publications.html" class="mobile-menu-link">Publications</a></li>
+                        <li><a href="recommendations.html" class="mobile-menu-link">Recommendations</a></li>
+                        <li><a href="classes.html" class="mobile-menu-link">Classes</a></li>
+                        <li><a href="../index.html" class="mobile-menu-link">🇵🇱 Polski</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="intro">
+        <div class="main_content glass-effect" style="height: calc(100vh - 240px); min-height: 400px; padding: 40px;">
+
+            <div class="profile-photo">
+                <img src="../images/main_photo.png" alt="Profile photo" />
+            </div>
+
+            <div class="intro-text">
+                <h1>Filip Liebersbach</h1>
+                <p><b>Psychologist, Teaching Assistant, Data Analyst</b></p>
+                <p>Passionate about social psychology and the impact of new technologies on human interaction.</p>
+                <p style="margin-top: 15px;">Welcome to my website. Here you'll find information about my experience, projects, publications, and books I recommend.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content" style="pointer-events: auto;">
+            <div class="social-icons">
+                <a href="https://www.youtube.com/@lieberfilip" target="_blank"><i class="fa-brands fa-youtube" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.linkedin.com/in/liebersbach-filip/" target="_blank"><i class="fab fa-linkedin" style="color:white; font-size: 20px;"></i></a>
+                <a href="https://www.researchgate.net/profile/Filip-Liebersbach-2?ev=hdr_xprf" target="_blank"><i class="fa-brands fa-researchgate" style="color:white; font-size: 20px;"></i></a>
+            </div>
+            <div class="contact-info" style="font-size: 0.7em;">
+                <a href="mailto:kontakt@lieberfilip.pl" style="color: white; text-decoration: underline;">kontakt@lieberfilip.pl</a>
+            </div>
+        </div>
+        <div class="copyright" style="font-size: 0.6em; margin-top: 5px;">&copy; 2025–2026 Filip Liebersbach. All rights reserved.</div>
+    </footer>
+
+    <script src="../js/background.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

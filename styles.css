@@ -113,6 +113,9 @@ body {
     background: rgba(255, 255, 255, 0.08);
 }
 
+/* Przycisk zmiany jezyka (flaga), stylizowany jak pill-logo */
+.flag-icon { font-size: 1.5rem; line-height: 1; }
+
 /* Menu Items */
 .pill-nav-items {
     height: var(--nav-h);
