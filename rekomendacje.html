@@ -26,16 +26,19 @@
         .publication-wrapper {
             display: flex;           /* Układ obok siebie */
             gap: 20px;               /* Odstęp między obrazkiem a tekstem */
-            align-items: center; 
+            align-items: center;
         }
 
         .publication-cover {
-            width: 100px;            /* Stała szerokość okładki */
-            height: 140px;           /* Stała wysokość */
-            object-fit: cover;       /* Skalowanie bez zniekształceń */
-            border-radius: 8px;      /* Zaokrąglone rogi */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Cień */
-            flex-shrink: 0;          /* Nie zgniataj obrazka */
+            width: 100px;            /* Twój stały rozmiar */
+            height: 140px;           /* Twój stały rozmiar */
+
+            object-fit: contain;     /* Całe okładka widoczna, bez przycinania */
+            background: rgba(255, 255, 255, 0.35); /* Tło pod puste miejsca w prostokącie */
+
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
 
         /* Na telefonach układamy jedno pod drugim */
@@ -46,15 +49,9 @@
                 text-align: center;
             }
             .publication-cover {
-                width: 100px;            /* Twój stały rozmiar */
-                height: 140px;           /* Twój stały rozmiar */
-                
-                object-fit: contain;     /* ZMIANA: To sprawia, że widać cały obrazek */
-                background: rgba(255,255,255,0.1);/* Tło, żeby puste miejsca w prostokącie były ciemne, a nie przezroczyste */
-                
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-                flex-shrink: 0;
+                width: 140px;
+                height: auto;
+                margin-bottom: 15px;
             }
         }
     </style>

@@ -31,7 +31,8 @@
         .publication-cover {
             width: 100px;
             height: 140px;
-            object-fit: cover;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.35);
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             flex-shrink: 0;
@@ -44,13 +45,9 @@
                 text-align: center;
             }
             .publication-cover {
-                width: 100px;
-                height: 140px;
-                object-fit: contain;
-                background: rgba(255,255,255,0.1);
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-                flex-shrink: 0;
+                width: 140px;
+                height: auto;
+                margin-bottom: 15px;
             }
         }
     </style>
