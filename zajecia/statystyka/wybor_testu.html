@@ -22,26 +22,11 @@
             min-height: 100vh;
         }
 
-        /* Ujednolicone pod .glass-effect (reszta strony), ale mniej przezroczyste niz domyslne 0.01 */
+        /* Plaska karta jak .glass-container-inner ze statystyki_opisowe.html */
         .glass-card {
-            position: relative;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-top: 1px solid rgba(255, 255, 255, 0.4);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-        }
-        .glass-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.0) 100%);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
         }
 
         /* --- DASHBOARD MACIERZOWY --- */
@@ -103,7 +88,7 @@
             z-index: 2;
             transition: color 0.2s ease;
         }
-        .tile-detail-link:hover { color: #60a5fa; }
+        .tile-detail-link:hover { color: #8ecae6; }
 
         .test-tile.active {
             opacity: 1 !important;
@@ -130,9 +115,9 @@
         }
 
         .selection-button.active {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
+            border-color: #8ecae6;
+            background: rgba(142, 202, 230, 0.15);
+            color: #8ecae6;
             font-weight: 700;
         }
 
@@ -147,9 +132,9 @@
         }
 
         .type-pill.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
+            background: #8ecae6;
+            color: #000;
+            border-color: #8ecae6;
         }
 
         .input-glass {
@@ -163,7 +148,7 @@
         }
 
         .input-glass:focus {
-            border-color: #3b82f6;
+            border-color: #8ecae6;
         }
 
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
@@ -173,7 +158,7 @@
         }
 
         .hyp-box {
-            border-left: 2px solid rgba(59, 130, 246, 0.5);
+            border-left: 2px solid rgba(142, 202, 230, 0.5);
             padding-left: 1rem;
             margin-top: 1rem;
         }
@@ -225,7 +210,7 @@
                         Ekspert Statystyczny
                     </h1>
                 </div>
-                <p class="text-slate-500 text-sm font-medium">Inteligentny wybór testów i hipotez</p>
+                <p class="text-slate-400 text-sm font-medium">Inteligentny wybór testów i hipotez</p>
             </div>
         </div>
 
@@ -234,9 +219,9 @@
             <div class="lg:col-span-8 space-y-6">
                 
                 <!-- MACIERZ RÓŻNIC -->
-                <section class="glass-card p-6 shadow-xl border-l-4 border-l-emerald-500 overflow-x-auto">
-                    <h2 class="text-[11px] font-black text-emerald-500 uppercase tracking-widest mb-6 flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group"></i> Macierz Różnic Międzygrupowych
+                <section class="glass-card p-6 overflow-x-auto">
+                    <h2 class="text-[11px] font-black text-white uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-[#8ecae6]"></i> Macierz Różnic Międzygrupowych
                     </h2>
                     <div class="matrix-grid min-w-[700px]">
                         <div></div><div></div>
@@ -288,9 +273,9 @@
                 </section>
 
                 <div class="grid md:grid-cols-2 gap-6">
-                    <section class="glass-card p-6 border-l-4 border-l-yellow-500">
-                        <h2 class="text-[11px] font-black text-yellow-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-link"></i> Związki i Korelacje
+                    <section class="glass-card p-6">
+                        <h2 class="text-[11px] font-black text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-link text-[#8ecae6]"></i> Związki i Korelacje
                         </h2>
                         <div class="grid grid-cols-2 gap-3">
                             <div id="node-corr_normal" class="test-tile" onclick="reverseSelect('corr_normal')">
@@ -307,9 +292,9 @@
                         </div>
                     </section>
 
-                    <section class="glass-card p-6 border-l-4 border-l-purple-500">
-                        <h2 class="text-[11px] font-black text-purple-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-microscope"></i> Zaawansowane Modele
+                    <section class="glass-card p-6">
+                        <h2 class="text-[11px] font-black text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-microscope text-[#8ecae6]"></i> Zaawansowane Modele
                         </h2>
                         <div class="grid grid-cols-2 gap-3">
                             <div id="node-diff_factorial_normal" class="test-tile" onclick="reverseSelect('diff_factorial_normal')">
@@ -327,10 +312,10 @@
                 </div>
 
                 <!-- KONFIGURACJA ZMIENNYCH -->
-                <section id="vars-config" class="glass-card p-6 grid grid-cols-1 lg:grid-cols-3 gap-8 shadow-lg border-t-4 border-t-slate-500">
+                <section id="vars-config" class="glass-card p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="space-y-4">
                         <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-2">
-                            <i class="fa-solid fa-bullseye text-blue-400"></i> Zmienna Zależna (Y)
+                            <i class="fa-solid fa-bullseye text-[#8ecae6]"></i> Zmienna Zależna (Y)
                         </label>
                         <input type="text" id="var-y" value="Wynik testu" class="w-full input-glass" oninput="updateResult()">
                         <div class="flex flex-wrap gap-2">
@@ -342,7 +327,7 @@
                     
                     <div class="space-y-4">
                         <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-2">
-                            <i class="fa-solid fa-users text-emerald-400"></i> Zmienna Niezależna (X)
+                            <i class="fa-solid fa-users text-[#8ecae6]"></i> Zmienna Niezależna (X)
                         </label>
                         <input type="text" id="var-x" value="Grupa" class="w-full input-glass" oninput="updateResult()">
                         <div class="flex flex-wrap gap-2">
@@ -354,10 +339,10 @@
 
                     <div class="space-y-4">
                         <label class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-2">
-                            <i class="fa-solid fa-calculator text-blue-400"></i> Liczebność Próby (N)
+                            <i class="fa-solid fa-calculator text-[#8ecae6]"></i> Liczebność Próby (N)
                         </label>
                         <div class="bg-white/5 p-4 rounded-xl border border-white/5 flex items-center gap-4 h-[46px]">
-                            <input type="number" id="n-input" value="30" min="1" class="bg-transparent text-xl font-bold text-blue-400 w-full focus:outline-none" oninput="handleNChange()">
+                            <input type="number" id="n-input" value="30" min="1" class="bg-transparent text-xl font-bold text-[#8ecae6] w-full focus:outline-none" oninput="handleNChange()">
                             <span class="text-[10px] text-slate-500 font-bold uppercase">N</span>
                         </div>
                     </div>
@@ -367,9 +352,9 @@
                     <div id="dynamic-questions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                     <div id="dist-section" class="pt-6 border-t border-white/5 space-y-4">
                         <div class="flex justify-between items-center">
-                            <h2 class="text-sm font-bold text-blue-400 uppercase tracking-widest">
+                            <h2 class="text-sm font-bold text-white uppercase tracking-widest">
                                 Założenie Normalności
-                                <span id="norm-test-name" class="ml-2 text-[10px] px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded"></span>
+                                <span id="norm-test-name" class="ml-2 text-[10px] px-2 py-0.5 bg-[#8ecae6]/20 text-[#8ecae6] rounded"></span>
                             </h2>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
@@ -388,7 +373,7 @@
 
             <!-- PRAWA KOLUMNA: WYNIK -->
             <div class="lg:col-span-4">
-                <div id="result-area" class="glass-card p-8 sticky top-8 min-h-[600px] flex flex-col border-t-4 border-t-blue-500 shadow-2xl">
+                <div id="result-area" class="glass-card p-8 sticky top-8 min-h-[600px] flex flex-col">
                     <div id="placeholder" class="flex-1 flex flex-col items-center justify-center text-slate-500 text-center space-y-4">
                         <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center animate-pulse">
                             <i class="fa-solid fa-wand-magic-sparkles text-2xl text-slate-600"></i>
@@ -398,7 +383,7 @@
 
                     <div id="result-content" class="hidden fade-in space-y-6 flex-1 flex flex-col">
                         <header>
-                            <span class="text-[10px] font-black uppercase text-blue-500 tracking-widest bg-blue-500/10 px-2 py-1 rounded">Rekomendacja</span>
+                            <span class="text-[10px] font-black uppercase text-[#8ecae6] tracking-widest bg-[#8ecae6]/10 px-2 py-1 rounded">Rekomendacja</span>
                             <h3 id="res-name" class="text-2xl font-black text-white leading-tight mt-4"></h3>
                         </header>
                         
@@ -409,11 +394,11 @@
                                 <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 italic">Hipotezy Dynamiczne:</h4>
                                 <div class="space-y-3">
                                     <div class="p-3 bg-white/5 rounded-lg border border-white/5">
-                                        <div class="text-[10px] text-blue-400 font-bold mb-1">H₀ (Hipoteza Zerowa)</div>
+                                        <div class="text-[10px] text-slate-400 font-bold mb-1">H₀ (Hipoteza Zerowa)</div>
                                         <div id="hyp-0" class="text-xs text-slate-300 leading-normal"></div>
                                     </div>
                                     <div class="p-3 bg-white/5 rounded-lg border border-white/5">
-                                        <div class="text-[10px] text-emerald-400 font-bold mb-1">H₁ (Hipoteza Alternatywna)</div>
+                                        <div class="text-[10px] text-[#8ecae6] font-bold mb-1">H₁ (Hipoteza Alternatywna)</div>
                                         <div id="hyp-1" class="text-xs text-slate-300 leading-normal"></div>
                                     </div>
                                 </div>
@@ -657,15 +642,15 @@
                     <div class="space-y-4 fade-in">
                         <label class="text-[10px] font-bold text-slate-500 uppercase">Struktura Grup (X)</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.groups==='2'?'bg-blue-500/20 border-blue-500 text-blue-400 shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('groups', '2')">2 Grupy</button>
-                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.groups==='more'?'bg-blue-500/20 border-blue-500 text-blue-400 shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('groups', 'more')">3+ Grupy</button>
+                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.groups==='2'?'bg-[#8ecae6]/20 border-[#8ecae6] text-[#8ecae6] shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('groups', '2')">2 Grupy</button>
+                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.groups==='more'?'bg-[#8ecae6]/20 border-[#8ecae6] text-[#8ecae6] shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('groups', 'more')">3+ Grupy</button>
                         </div>
                     </div>
                     <div class="space-y-4 fade-in">
                         <label class="text-[10px] font-bold text-slate-500 uppercase">Relacja Pomiarów</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.dep==='ind'?'bg-blue-500/20 border-blue-500 text-blue-400 shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('dep', 'ind')">Niezależne</button>
-                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.dep==='dep'?'bg-blue-500/20 border-blue-500 text-blue-400 shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('dep', 'dep')">Zależne</button>
+                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.dep==='ind'?'bg-[#8ecae6]/20 border-[#8ecae6] text-[#8ecae6] shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('dep', 'ind')">Niezależne</button>
+                            <button class="py-3 rounded-lg text-xs font-bold border transition-all ${state.dep==='dep'?'bg-[#8ecae6]/20 border-[#8ecae6] text-[#8ecae6] shadow-lg':'border-white/10 opacity-50'}" onclick="setQuestion('dep', 'dep')">Zależne</button>
                         </div>
                     </div>
                 `;
