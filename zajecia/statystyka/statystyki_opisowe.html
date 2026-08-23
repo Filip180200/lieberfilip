@@ -55,10 +55,11 @@
         /* --- POPRAWIONA CZYTELNOŚĆ TABELI --- */
         #dataTableContainer {
             overflow-y: auto;
+            max-height: 560px;
             margin-top: 15px;
             border-radius: 10px;
             /* Ciemne tło pod tabelą dla kontrastu */
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255,255,255,0.15);
         }
 
@@ -113,15 +114,15 @@
             font-size: 0.85rem;
         }
 
-        /* --- POPRAWIONA CZYTELNOŚĆ WYKRESÓW --- */
+        /* --- WYKRESY W CIEMNYM MOTYWIE STRONY --- */
         .chart-box {
-            /* Jasne tło (prawie białe), żeby wykresy były czytelne */
-            background: rgba(255, 255, 255, 0.95); 
+            /* Ciemne, szklane tło spojne z reszta strony (jak .glass-container-inner) */
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 15px;
             margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            color: #333; /* Ciemny tekst wewnątrz boxa wykresu */
+            color: #ddd;
             min-height: 300px;
         }
 
@@ -250,6 +251,10 @@
     <script src="../../js/nav.js"></script>
 
     <script>
+        // Dopasowanie domyslnych kolorow Chart.js do ciemnego motywu strony (siatka, opisy osi, legenda)
+        Chart.defaults.color = '#ccc';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
         // --- Konfiguracja Tabeli ---
         const NUM_COLUMNS = 2; 
         const NUM_ROWS = 40; 
@@ -463,7 +468,7 @@
                             datasets: [{
                                 label: `Liczebność`,
                                 data: categories.map(c => counts[c]),
-                                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                                backgroundColor: 'rgba(142, 202, 230, 0.7)'
                             }]
                         },
                         options: { responsive: true, maintainAspectRatio: false }
@@ -500,7 +505,7 @@
                             datasets: [{
                                 label: 'Histogram',
                                 data: dataBins,
-                                backgroundColor: 'rgba(255, 159, 64, 0.6)'
+                                backgroundColor: 'rgba(255, 159, 64, 0.75)'
                             }]
                         },
                         options: { responsive: true, maintainAspectRatio: false }
