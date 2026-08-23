@@ -1,23 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://lieberfilip.pl/index.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/index.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en.html" />
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://lieberfilip.pl/en.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/index.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en.html" />
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://lieberfilip.pl/doswiadczenie.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/doswiadczenie.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/experience.html" />
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lieberfilip.pl/en/experience.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/doswiadczenie.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/experience.html" />
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://lieberfilip.pl/projekty.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/projekty.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/projects.html" />
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lieberfilip.pl/en/projects.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/projekty.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/projects.html" />
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://lieberfilip.pl/publikacje.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/publikacje.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/publications.html" />
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lieberfilip.pl/en/publications.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/publikacje.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/publications.html" />
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://lieberfilip.pl/rekomendacje.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/rekomendacje.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/recommendations.html" />
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://lieberfilip.pl/en/recommendations.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/rekomendacje.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/recommendations.html" />
         <priority>0.6</priority>
     </url>
     <url>
@@ -26,6 +66,14 @@
     </url>
     <url>
         <loc>https://lieberfilip.pl/zajecia.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/zajecia.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/classes.html" />
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://lieberfilip.pl/en/classes.html</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://lieberfilip.pl/zajecia.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://lieberfilip.pl/en/classes.html" />
         <priority>0.8</priority>
     </url>
     <url>

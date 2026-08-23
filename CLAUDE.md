@@ -20,7 +20,8 @@ Filip prowadzi swoje CV w Obsidianie: `C:\Users\liebe\Desktop\obsidian\10 Me\CV.
 Każda z tych stron ma tę samą architekturę: `.main_content.list-layout` → `.scroll-list-container` → `.scroll-list` → seria `.list-item[data-category="..."]`. Przyciski filtrowania nad listą (`.filter-btn[data-filter="..."]`) muszą zgadzać się z wartościami `data-category` używanymi w `.list-item` — **nie wymyślaj nowej kategorii bez pytania użytkownika**, bo zepsujesz filtrowanie (obsługiwane przez `js/list.js`).
 
 Dozwolone `data-category` na dziś:
-- `doswiadczenie.html`: `naukowe`, `dydaktyczne`, `inne`
+- `doswiadczenie.html`, zakładka "Działalność" (`data-panel="praca"`): `naukowe`, `dydaktyczne`, `inne`
+- `doswiadczenie.html`, zakładka "Wykształcenie" (`data-panel="edukacja"`): `studia`, `podyplomowe`, `szkolenia`
 - `publikacje.html`: `artykul`, `prezentacje`, `plakaty`
 - `projekty.html`: `spoleczne`, `analityczne`, `badawcze` (uwaga: ta strona ma kategorie w danych, ale nie ma obecnie widocznych przycisków filtrowania — sprawdź `<div class="filter-container">` zanim założysz, że jest)
 - `rekomendacje.html`: `naukowe`, `psychologiczne`, `filmy`
